@@ -1,0 +1,31 @@
+<div class="flex h-screen bg-gray-100 overflow-hidden">
+
+  <!-- SIDEBAR -->
+  <app-sidebar
+    [isOpen]="isSidebarOpen()"
+    (close)="closeSidebar()"
+    [rol]="userRol"
+    [nombreUsuario]="userName"
+    (logout)="onLogout()"
+  />
+
+  <!-- MAIN -->
+  <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
+
+    <!-- HEADER -->
+    <app-header
+      [pageTitle]="pageTitle"
+      [pageSubtitle]="pageSubtitle"
+      [pedidosActivos]="pedidosActivos"
+      [nombreUsuario]="userName"
+      [notificaciones]="notificaciones"
+      (notificacionClick)="onNotificacionClick($event)"
+      (toggleSidebar)="toggleSidebar()"
+    />
+
+    <!-- CONTENIDO DE CADA PÁGINA -->
+    <main class="flex-1 overflow-y-auto p-6">
+      <router-outlet/>
+    </main>
+  </div>
+</div>
