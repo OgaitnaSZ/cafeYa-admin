@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
-import { LucideAngularModule } from 'lucide-angular';
+import { ChevronLeft, ChevronRight, LogOut, LucideAngularModule } from 'lucide-angular';
 import { NAV_ITEMS, UserRole, ROL_CONFIG, NavItem} from './nav-items.config';
 
 @Component({
@@ -114,4 +114,9 @@ export class Sidebar {
   onLogout(): void {
     this.logout.emit();
   }
+
+  // Icons
+  readonly ChevronRight = ChevronRight;
+  readonly LogOut = LogOut;
+  readonly ChevronLeft = ChevronLeft;
 }
