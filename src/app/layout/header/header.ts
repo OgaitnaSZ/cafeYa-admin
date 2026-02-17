@@ -18,6 +18,8 @@ export interface Notificacion {
   styleUrl: './header.css',
 })
 export class Header {
+  @Output() toggleSidebar = new EventEmitter<void>();
+  
   @Input() pageTitle: string = 'Dashboard';
   @Input() pageSubtitle: string = '';
   @Input() pedidosActivos: number = 0;

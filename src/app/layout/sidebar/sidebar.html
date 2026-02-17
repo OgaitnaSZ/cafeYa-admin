@@ -1,19 +1,25 @@
 <aside
-    class="
-    relative
+  class="
+    fixed md:relative
+    inset-y-0 left-0
+    z-40
     h-screen flex flex-col
     bg-white border-r border-gray-200
-    transition-all duration-300
+    transition-transform duration-300
     shrink-0
-    "
-    [class.w-64]="!collapsed()"
-    [class.w-16]="collapsed()"
+    md:translate-x-0
+  "
+  [class.w-64]="!collapsed()"
+  [class.w-16]="collapsed()"
+  [class.translate-x-0]="isOpen"
+  [class.-translate-x-full]="!isOpen"
+  [class.md:translate-x-0]="true"
 >
     <!-- LOGO -->
     <div class="h-16 flex items-center gap-3 px-4 border-b border-gray-100 shrink-0">
         <div class="
             w-9 h-9 shrink-0
-            bg-gradient-to-br from-orange-500 to-red-500
+            bg-linear-to-br from-orange-500 to-red-500
             rounded-xl
             flex items-center justify-center
             text-white font-black text-lg
@@ -30,39 +36,106 @@
     </div>
 
     <!-- NAVEGACIÓN -->
-    <nav class="flex-1 overflow-y-auto space-y-0.5">
-        <!-- Label de sección -->
-        @if(!collapsed()) {
-            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest px-3 mb-2">
-            Navegación
-            </p>
-        }
-
+    <nav class="flex-1 overflow-y-auto space-y-0.5 px-2 py-3">
         @for(item of navItems(); track item.id) {
-            <a [routerLink]="item.route"
-            routerLinkActive="nav-item-active"
-            #rla="routerLinkActive"
-            class="
-                w-full flex items-center gap-3 px-3 py-2.5
-                rounded-r-xl transition-all duration-150
-                cursor-pointer
-            "
-            [class.justify-center]="collapsed()"
-            [class.bg-gradient-to-r]="rla.isActive"
-            [class.from-orange-500]="rla.isActive"
-            [class.to-red-500]="rla.isActive"
-            [class.text-white]="rla.isActive"
-            [class.shadow-lg]="rla.isActive"
-            [class.shadow-orange-500]="rla.isActive"
-            [class.text-gray-600]="!rla.isActive"
-            [class.hover:bg-gray-100]="!rla.isActive"
-            [title]="collapsed() ? item.label : ''"
-            >
-            <span class="text-lg shrink-0 leading-none">{{ item.icon }}</span>
-            @if(!collapsed()) {
-                <span class="text-sm font-semibold">{{ item.label }}</span>
+            <div>
+            <!-- ITEM PRINCIPAL -->
+            @if(hasChildren(item)) {
+                <!-- Item con submenú (clickeable para expandir) -->
+                <button
+                (click)="toggleExpand(item.id)"
+                class="
+                    w-full flex items-center gap-3 px-3 py-2.5
+                    rounded-xl transition-all duration-150
+                    cursor-pointer
+                "
+                [class.justify-center]="collapsed()"
+                [class.bg-orange-50]="isItemActive(item) && !collapsed()"
+                [class.text-orange-600]="isItemActive(item)"
+                [class.text-gray-600]="!isItemActive(item)"
+                [class.hover:bg-gray-100]="!isItemActive(item)"
+                [title]="collapsed() ? item.label : ''"
+                >
+                    <span class="text-lg shrink-0 leading-none"><lucide-icon [img]="item.icon" class="shrink-0" [size]="18" /></span>
+                    @if(!collapsed()) {
+                        <span class="text-sm font-semibold flex-1 text-left">{{ item.label }}</span>
+                        <!-- Chevron indicador -->
+                        <svg 
+                        class="w-4 h-4 transition-transform duration-200 shrink-0"
+                        [class.rotate-90]="isExpanded(item.id)"
+                        fill="none" 
+                        stroke="currentColor" 
+                        viewBox="0 0 24 24"
+                        >
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    }
+                </button>
+
+                <!-- SUBMENÚ -->
+                @if(!collapsed() && isExpanded(item.id)) {
+                    <div class="
+                        mt-1 ml-3 pl-3 border-l-2 border-gray-200
+                        space-y-0.5
+                        animate-fade-in
+                    ">
+                        @for(child of item.children; track child.id) {
+                        <a 
+                            [routerLink]="child.route"
+                            (click)="close.emit()"
+                            routerLinkActive="submenu-item-active"
+                            #rla="routerLinkActive"
+                            class="
+                            w-full flex items-center gap-2.5 px-3 py-2
+                            rounded-lg transition-all duration-150
+                            text-sm
+                            "
+                            [class.bg-gradient-to-r]="rla.isActive"
+                            [class.from-orange-500]="rla.isActive"
+                            [class.to-red-500]="rla.isActive"
+                            [class.text-white]="rla.isActive"
+                            [class.shadow-md]="rla.isActive"
+                            [class.shadow-orange-500/20]="rla.isActive"
+                            [class.text-gray-600]="!rla.isActive"
+                            [class.hover:bg-gray-100]="!rla.isActive"
+                            [class.hover:text-gray-900]="!rla.isActive"
+                        >
+                            <lucide-icon [img]="child.icon" class="shrink-0" [size]="16" />
+                            <span class="font-medium">{{ child.label }}</span>
+                        </a>
+                        }
+                    </div>
+                }
+            } @else {
+                <!-- Item sin submenú (link directo) -->
+                <a 
+                [routerLink]="item.route"
+                (click)="close.emit()"
+                routerLinkActive="nav-item-active"
+                #rla="routerLinkActive"
+                class="
+                    w-full flex items-center gap-3 px-3 py-2.5
+                    rounded-xl transition-all duration-150
+                    cursor-pointer
+                "
+                [class.justify-center]="collapsed()"
+                [class.bg-gradient-to-r]="rla.isActive"
+                [class.from-orange-500]="rla.isActive"
+                [class.to-red-500]="rla.isActive"
+                [class.text-white]="rla.isActive"
+                [class.shadow-lg]="rla.isActive"
+                [class.shadow-orange-500/20]="rla.isActive"
+                [class.text-gray-600]="!rla.isActive"
+                [class.hover:bg-gray-100]="!rla.isActive"
+                [title]="collapsed() ? item.label : ''"
+                >
+                    <span class="text-lg shrink-0 leading-none"><lucide-icon [img]="item.icon" class="shrink-0" [size]="18" /></span>
+                    @if(!collapsed()) {
+                        <span class="text-sm font-semibold">{{ item.label }}</span>
+                    }
+                </a>
             }
-            </a>
+            </div>
         }
     </nav>
 
@@ -76,7 +149,7 @@
             <!-- Avatar -->
             <div class="
             w-8 h-8 shrink-0
-            bg-gradient-to-br from-orange-400 to-red-500
+            bg-linear-to-br from-orange-400 to-red-500
             rounded-lg
             flex items-center justify-center
             text-white font-bold text-sm
@@ -129,7 +202,7 @@
         top-1/2 -translate-y-1/2
         -right-3
         w-7 h-7
-        flex items-center justify-center
+        hidden md:flex items-center justify-center
         rounded-full
         bg-white
         border border-gray-200
@@ -151,3 +224,9 @@
     }
     </button>
 </aside>
+@if(isOpen) {
+  <div
+    class="fixed inset-0 bg-black/40 z-30 md:hidden"
+    (click)="close.emit()"
+  ></div>
+}

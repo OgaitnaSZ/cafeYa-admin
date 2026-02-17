@@ -1,8 +1,9 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
 import { filter, map } from 'rxjs';
-import { Sidebar, AdminRol } from './layout/sidebar/sidebar';
+import { Sidebar } from './layout/sidebar/sidebar';
+import { UserRole } from './layout/sidebar/nav-items.config';
 import { Header, Notificacion } from './layout/header/header';
 
 // Mapa de títulos por ruta
@@ -27,9 +28,18 @@ const PAGE_TITLES: Record<string, { title: string, subtitle: string }> = {
 export class App {
   private router = inject(Router);
 
+  // Sidebar
+  isSidebarOpen = signal(false);
+  toggleSidebar() {
+    this.isSidebarOpen.update(v => !v);
+  }
+  closeSidebar() {
+    this.isSidebarOpen.set(false);
+  }
+
   // Datos del usuario
   // TODO: conectar con un servicio
-  userRol: AdminRol = 'admin';
+  userRol: UserRole = 'admin';
   userName: string = 'Diego Ramírez';
   pedidosActivos: number = 3;
 
