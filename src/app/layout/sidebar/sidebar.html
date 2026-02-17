@@ -1,0 +1,153 @@
+<aside
+    class="
+    relative
+    h-screen flex flex-col
+    bg-white border-r border-gray-200
+    transition-all duration-300
+    shrink-0
+    "
+    [class.w-64]="!collapsed()"
+    [class.w-16]="collapsed()"
+>
+    <!-- LOGO -->
+    <div class="h-16 flex items-center gap-3 px-4 border-b border-gray-100 shrink-0">
+        <div class="
+            w-9 h-9 shrink-0
+            bg-gradient-to-br from-orange-500 to-red-500
+            rounded-xl
+            flex items-center justify-center
+            text-white font-black text-lg
+            shadow-lg shadow-orange-500/20
+        ">
+            C
+        </div>
+        @if(!collapsed()) {
+            <div class="flex-1 min-w-0">
+            <p class="font-black text-gray-900 leading-tight">CafeYa</p>
+            <p class="text-[10px] text-gray-400 uppercase tracking-wide">Panel Admin</p>
+            </div>
+        }
+    </div>
+
+    <!-- NAVEGACIÓN -->
+    <nav class="flex-1 overflow-y-auto space-y-0.5">
+        <!-- Label de sección -->
+        @if(!collapsed()) {
+            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest px-3 mb-2">
+            Navegación
+            </p>
+        }
+
+        @for(item of navItems(); track item.id) {
+            <a [routerLink]="item.route"
+            routerLinkActive="nav-item-active"
+            #rla="routerLinkActive"
+            class="
+                w-full flex items-center gap-3 px-3 py-2.5
+                rounded-r-xl transition-all duration-150
+                cursor-pointer
+            "
+            [class.justify-center]="collapsed()"
+            [class.bg-gradient-to-r]="rla.isActive"
+            [class.from-orange-500]="rla.isActive"
+            [class.to-red-500]="rla.isActive"
+            [class.text-white]="rla.isActive"
+            [class.shadow-lg]="rla.isActive"
+            [class.shadow-orange-500]="rla.isActive"
+            [class.text-gray-600]="!rla.isActive"
+            [class.hover:bg-gray-100]="!rla.isActive"
+            [title]="collapsed() ? item.label : ''"
+            >
+            <span class="text-lg shrink-0 leading-none">{{ item.icon }}</span>
+            @if(!collapsed()) {
+                <span class="text-sm font-semibold">{{ item.label }}</span>
+            }
+            </a>
+        }
+    </nav>
+
+    <!-- FOOTER  -->
+    <div class="p-3 border-t border-gray-100 shrink-0">
+        <!-- USUARIO ACTUAL -->
+        <div
+            class="flex items-center gap-2.5 p-2 rounded-xl bg-gray-50"
+            [class.justify-center]="collapsed()"
+        >
+            <!-- Avatar -->
+            <div class="
+            w-8 h-8 shrink-0
+            bg-gradient-to-br from-orange-400 to-red-500
+            rounded-lg
+            flex items-center justify-center
+            text-white font-bold text-sm
+            ">
+                {{ nombreInicial() }}
+            </div>
+
+            @if(!collapsed()) {
+            <div class="flex-1 min-w-0">
+                <p class="text-xs font-bold text-gray-800 truncate">
+                    {{ nombreUsuario }}
+                </p>
+                <span
+                class="text-[10px] font-bold px-1.5 py-0.5 rounded-md"
+                [class]="rolConfig().bg + ' ' + rolConfig().text"
+                >
+                    {{ rolConfig().label }}
+                </span>
+            </div>
+            }
+        </div>
+
+        <!-- LOGOUT -->
+        <button
+            (click)="onLogout()"
+            class="
+            w-full flex items-center gap-3 px-3 py-2.5
+            rounded-xl
+            text-red-500
+            hover:bg-red-50 hover:text-red-600
+            transition
+            "
+            [class.justify-center]="collapsed()"
+            [title]="collapsed() ? 'Cerrar Sesión' : ''"
+        >
+            <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+            </svg>
+            @if(!collapsed()) {
+            <span class="text-sm font-semibold">Cerrar Sesión</span>
+            }
+        </button>
+    </div>
+
+    <!-- Toggle button -->
+    <button
+    (click)="toggleCollapse()"
+    class="
+        absolute
+        top-1/2 -translate-y-1/2
+        -right-3
+        w-7 h-7
+        flex items-center justify-center
+        rounded-full
+        bg-white
+        border border-gray-200
+        shadow-md
+        text-gray-500
+        hover:bg-gray-100 hover:text-gray-700
+        transition
+        z-50
+    "
+    >
+    @if(!collapsed()) {
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/>
+        </svg>
+    } @else {
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/>
+        </svg>
+    }
+    </button>
+</aside>
