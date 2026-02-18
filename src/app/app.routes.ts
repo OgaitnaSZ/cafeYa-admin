@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { authGuard } from './auth.guard';
 
 export const routes: Routes = [
     // Rutas públicas
@@ -15,6 +16,7 @@ export const routes: Routes = [
     // Rutas privadas
     { 
         path: '',
+        canActivate: [authGuard],
         loadComponent: () =>
             import('./layouts/private/private')
             .then(m => m.Private),
