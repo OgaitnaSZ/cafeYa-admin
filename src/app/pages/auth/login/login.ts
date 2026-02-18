@@ -1,53 +1,60 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, effect, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Auth } from '../../../core/services/auth';
+import { User } from '../../../core/interfaces/user.model';
+import { LucideAngularModule, AtSign, LockKeyhole, Eye, EyeOff, CircleAlert } from 'lucide-angular';
 
 @Component({
   selector: 'app-login',
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, LucideAngularModule],
   templateUrl: './login.html',
   styleUrl: './login.css',
 })
 export class Login {
   private fb = inject(FormBuilder);
   private router = inject(Router);
+  private auth = inject(Auth);
 
-  loading = signal(false);
-  error = signal<string | null>(null);
+  user = this.auth.user;
+  loading = this.auth.loading;
+  error = this.auth.error;
+  success = this.auth.success;
   showPassword = signal(false);
 
   formLogin: FormGroup = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required, Validators.minLength(6)]]
+    password: ['', [Validators.required, Validators.minLength(4)]]
   });
 
   togglePasswordVisibility(): void {
     this.showPassword.update(v => !v);
   }
 
-  onLogin(): void {
-    if (this.formLogin.invalid) {
-      this.error.set('Por favor completá todos los campos correctamente');
-      return;
-    }
-
-    this.loading.set(true);
-    this.error.set(null);
-
-    const { email, password } = this.formLogin.value;
-
-    // TODO: Reemplazar con tu servicio de auth
-    // this.authAdminService.login(email, password).subscribe(...)
-    
-    // Simulación temporal
-    setTimeout(() => {
-      if (email === 'admin@cafeya.com' && password === '123456') {
-        this.router.navigate(['/admin/dashboard']);
-      } else {
-        this.error.set('Email o contraseña incorrectos');
-        this.loading.set(false);
+  constructor() {
+    effect(() => {
+      if (this.success()) {
+        this.router.navigate(['dashboard']);
+        this.success.set(null);
       }
-    }, 1000);
+    });
   }
+
+  onLogin() {
+    if (this.formLogin.invalid) return console.error('Faltan datos','Completa los campos requeridos');
+    const { email, password } = this.formLogin.getRawValue(); 
+    const user: User = {
+      email: email,
+      password: password
+    };
+    this.auth.login(user);
+  }
+
+  // Icons
+  readonly AtSign = AtSign;
+  readonly LockKeyhole = LockKeyhole;
+  readonly Eye = Eye;
+  readonly EyeOff = EyeOff;
+  readonly CircleAlert = CircleAlert;
 }

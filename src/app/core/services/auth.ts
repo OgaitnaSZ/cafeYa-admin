@@ -7,8 +7,10 @@ import { TokenService } from './token';
 import { catchError, finalize, of, tap } from 'rxjs';
 
 interface LoginResponse {
-  token: string;
-  user: User;
+  data: {
+    token: string;
+    user: User;
+  }
 }
 
 @Injectable({
@@ -29,10 +31,8 @@ export class Auth {
   error = signal<string | null>(null);
   success = signal<string | null>(null);
 
-  // Computed Estados intermedios
-  readonly isAuthenticated = computed(() => !!this.user() && !!this.token());
-
   // Computed útiles
+  readonly isLoggedIn = computed(() => !!this.token());
   readonly currentUser = computed(() => this.user());
 
   constructor() {
@@ -40,7 +40,7 @@ export class Auth {
     effect(() => {
       const token = this.token();
       const user = this.user();
-
+  
       if (token && user) {
         localStorage.setItem('token', token);
         localStorage.setItem('user', JSON.stringify(user));
@@ -56,12 +56,12 @@ export class Auth {
     this.loading.set(true);
     this.error.set(null);
 
-    this.http.post<LoginResponse>(`${this.authUrl}login`, { user }).pipe(
+    this.http.post<LoginResponse>(`${this.authUrl}login`, user).pipe(
       tap((data) => {
         console.log('Respuesta de login:', data);
         this.success.set("Login exitoso");
-        this.user.set(data.user);
-        this.token.set(data.token);
+        this.user.set(data.data.user);
+        this.token.set(data.data.token);
       }),
       catchError(err => {
         this.error.set('Error al iniciar session');
