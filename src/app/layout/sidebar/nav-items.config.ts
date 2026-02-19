@@ -4,8 +4,7 @@ import {
   Star, CreditCard, Settings2, BarChart2,
   AlertTriangle, User, LucideIconData,
 } from 'lucide-angular';
-
-
+ 
 export interface NavItem {
   id: string;
   label: string;
@@ -14,8 +13,6 @@ export interface NavItem {
   roles: string[];
   children?: NavItem[];
 }
-
-export type UserRole = 'admin' | 'encargado' | 'cocina';
 
 export const NAV_ITEMS: NavItem[] = [
   { id: 'dashboard',      label: 'Dashboard',       icon: LayoutDashboard,  route: '/dashboard', roles: ['admin', 'encargado'] },

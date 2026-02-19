@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Auth } from '../../../core/services/auth';
-import { User } from '../../../core/interfaces/user.model';
+import { UserLogin } from '../../../core/interfaces/user.model';
 import { LucideAngularModule, AtSign, LockKeyhole, Eye, EyeOff, CircleAlert } from 'lucide-angular';
 
 @Component({
@@ -44,7 +44,7 @@ export class Login {
   onLogin() {
     if (this.formLogin.invalid) return console.error('Faltan datos','Completa los campos requeridos');
     const { email, password } = this.formLogin.getRawValue(); 
-    const user: User = {
+    const user: UserLogin = {
       email: email,
       password: password
     };

@@ -3,21 +3,72 @@ import { CommonModule } from '@angular/common';
 import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
 import { filter, map } from 'rxjs';
 import { Sidebar } from '../../layout/sidebar/sidebar';
-import { UserRole } from '../../layout/sidebar/nav-items.config';
 import { Header, Notificacion } from '../../layout/header/header';
+import { Auth } from '../../core/services/auth';
 
 // Mapa de títulos por ruta
 const PAGE_TITLES: Record<string, { title: string, subtitle: string }> = {
-  '/dashboard':      { title: 'Dashboard',      subtitle: 'Resumen general del día' },
-  '/cocina':         { title: 'Vista Cocina',   subtitle: 'Pedidos en tiempo real' },
-  '/pedidos':        { title: 'Pedidos',        subtitle: 'Historial y gestión' },
-  '/mesas':          { title: 'Mesas',          subtitle: 'Estado y configuración' },
-  '/productos':      { title: 'Productos',      subtitle: 'Catálogo completo' },
-  '/calificaciones': { title: 'Calificaciones', subtitle: 'Reseñas de clientes' },
-  '/clientes':       { title: 'Clientes',       subtitle: 'Base de datos' },
-  '/pagos':          { title: 'Pagos',          subtitle: 'Historial de transacciones' },
-  '/usuarios':       { title: 'Usuarios',       subtitle: 'Gestión de staff' },
+  '/dashboard': {
+    title: 'Dashboard',
+    subtitle: 'Resumen general del sistema'
+  },
+
+  '/pedidos-activos': {
+    title: 'Pedidos Activos',
+    subtitle: 'Órdenes en preparación y servicio'
+  },
+
+  '/productos': {
+    title: 'Productos',
+    subtitle: 'Gestión del catálogo y precios'
+  },
+
+  '/mesas/activas': {
+    title: 'Mesas Activas',
+    subtitle: 'Estado actual de mesas en servicio'
+  },
+
+  '/mesas/gestion': {
+    title: 'Gestión de Mesas',
+    subtitle: 'Configuración y administración de mesas'
+  },
+
+  '/clientes': {
+    title: 'Clientes',
+    subtitle: 'Listado y gestión de clientes'
+  },
+
+  '/clientes/pedidos': {
+    title: 'Pedidos de Clientes',
+    subtitle: 'Historial de pedidos realizados'
+  },
+
+  '/clientes/calificaciones': {
+    title: 'Calificaciones',
+    subtitle: 'Reseñas y valoraciones recibidas'
+  },
+
+  '/clientes/pagos': {
+    title: 'Pagos',
+    subtitle: 'Historial y control de transacciones'
+  },
+
+  '/administracion/reportes': {
+    title: 'Reportes e Informes',
+    subtitle: 'Análisis y estadísticas del sistema'
+  },
+
+  '/administracion/logs': {
+    title: 'Error Log',
+    subtitle: 'Registro de eventos y errores del sistema'
+  },
+
+  '/administracion/usuarios': {
+    title: 'Usuarios',
+    subtitle: 'Gestión de usuarios y roles'
+  }
 };
+
 
 @Component({
   selector: 'app-private',
@@ -26,7 +77,13 @@ const PAGE_TITLES: Record<string, { title: string, subtitle: string }> = {
   styleUrl: './private.css',
 })
 export class Private {
+  // Servicios
   private router = inject(Router);
+  public auth = inject(Auth);
+
+  // Datos del usuario
+  usuario = this.auth.user;
+  pedidosActivos: number = 3;
 
   // Sidebar
   isSidebarOpen = signal(false);
@@ -36,12 +93,6 @@ export class Private {
   closeSidebar() {
     this.isSidebarOpen.set(false);
   }
-
-  // Datos del usuario
-  // TODO: conectar con un servicio
-  userRol: UserRole = 'admin';
-  userName: string = 'Diego Ramírez';
-  pedidosActivos: number = 3;
 
   // Título dinámico según la ruta
   pageTitle = 'Dashboard';
@@ -67,7 +118,7 @@ export class Private {
   }
 
   onLogout(): void {
-    this.router.navigate(['/admin/login']);
+    this.auth.logout();
   }
 
   onNotificacionClick(notif: Notificacion): void {

@@ -2,7 +2,8 @@ import { Component, Input, Output, EventEmitter, signal, computed } from '@angul
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { ChevronLeft, ChevronRight, LogOut, LucideAngularModule } from 'lucide-angular';
-import { NAV_ITEMS, UserRole, ROL_CONFIG, NavItem} from './nav-items.config';
+import { NAV_ITEMS, ROL_CONFIG, NavItem} from './nav-items.config';
+import { UserRole } from '../../core/interfaces/user.model';
 
 @Component({
   selector: 'app-sidebar',
@@ -14,8 +15,8 @@ export class Sidebar {
   @Input() isOpen = true;
   @Output() close = new EventEmitter<void>();
   
-  @Input({ required: true }) rol!: UserRole;
-  @Input() nombreUsuario: string = 'Usuario';
+  @Input({ required: true }) rol: UserRole | undefined;
+  @Input() nombreUsuario: string | undefined = 'Usuario';
   @Output() logout = new EventEmitter<void>();
 
   collapsed = signal(false);
@@ -28,10 +29,10 @@ export class Sidebar {
 
   // Items filtrados según el rol
   navItems = computed(() => {
-    return NAV_ITEMS.filter(item => item.roles.includes(this.rol))
+    return NAV_ITEMS.filter(item => item.roles.includes(this.rol!))
       .map(item => ({
         ...item,
-        children: item.children?.filter(child => child.roles.includes(this.rol))
+        children: item.children?.filter(child => child.roles.includes(this.rol!))
       }));
   });
 
@@ -41,7 +42,7 @@ export class Sidebar {
   );
 
   // Config visual del rol
-  rolConfig = computed(() => ROL_CONFIG[this.rol]);
+  rolConfig = computed(() => ROL_CONFIG[this.rol!]);
 
   hasChildren(item: NavItem): boolean {
     return !!(item.children && item.children.length > 0);

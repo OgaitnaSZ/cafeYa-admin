@@ -24,7 +24,7 @@ export class Header {
   @Input() pageTitle: string = 'Dashboard';
   @Input() pageSubtitle: string = '';
   @Input() pedidosActivos: number = 0;
-  @Input() nombreUsuario: string = 'Usuario';
+  @Input() nombreUsuario: string | undefined = 'Usuario';
   @Input() notificaciones: Notificacion[] = [];
   @Output() notificacionClick = new EventEmitter<Notificacion>();
 

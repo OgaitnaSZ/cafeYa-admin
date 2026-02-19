@@ -4,8 +4,8 @@
   <app-sidebar
     [isOpen]="isSidebarOpen()"
     (close)="closeSidebar()"
-    [rol]="userRol"
-    [nombreUsuario]="userName"
+    [rol]="usuario()?.rol"
+    [nombreUsuario]="usuario()?.nombre"
     (logout)="onLogout()"
   />
 
@@ -17,7 +17,7 @@
       [pageTitle]="pageTitle"
       [pageSubtitle]="pageSubtitle"
       [pedidosActivos]="pedidosActivos"
-      [nombreUsuario]="userName"
+      [nombreUsuario]="usuario()?.nombre"
       [notificaciones]="notificaciones"
       (notificacionClick)="onNotificacionClick($event)"
       (toggleSidebar)="toggleSidebar()"
