@@ -1,1 +1,318 @@
-<p>productos works!</p>
+<div class="space-y-6">
+
+  <!-- Header con stats -->
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div>
+      <h2 class="text-2xl font-black text-gray-900">Productos</h2>
+      <p class="text-sm text-gray-500">
+        {{ totalProductos() }} producto{{ totalProductos() !== 1 ? 's' : '' }} registrado{{ totalProductos() !== 1 ? 's' : '' }}
+      </p>
+    </div>
+
+    <!-- Stats mini -->
+    <div class="flex gap-3">
+      <div class="px-4 py-2 bg-green-50 border border-green-200 rounded-xl">
+        <p class="text-xs text-green-600 font-medium">Disponibles</p>
+        <p class="text-xl font-black text-green-700">{{ productosDisponibles() }}</p>
+      </div>
+      <div class="px-4 py-2 bg-amber-50 border border-amber-200 rounded-xl">
+        <p class="text-xs text-amber-600 font-medium">Destacados</p>
+        <p class="text-xl font-black text-amber-700">{{ productosDestacados() }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filtros y búsqueda -->
+  <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
+    <div class="flex flex-col sm:flex-row gap-3">
+      
+      <!-- Búsqueda -->
+      <div class="flex-1 relative">
+        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+          <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+          </svg>
+        </div>
+        <input
+          type="text"
+          [(ngModel)]="searchTerm"
+          (ngModelChange)="searchTerm.set($event)"
+          placeholder="Buscar productos..."
+          class="
+            w-full h-11 pl-10 pr-4
+            text-sm
+            border-2 border-gray-200
+            rounded-xl
+            focus:border-orange-500 focus:outline-none
+            transition
+          "
+        />
+      </div>
+
+      <!-- Filtro categoría -->
+      <select
+        [(ngModel)]="selectedCategoria"
+        (ngModelChange)="selectedCategoria.set($event)"
+        class="
+          h-11 px-4
+          text-sm font-medium
+          border-2 border-gray-200
+          rounded-xl
+          focus:border-orange-500 focus:outline-none
+          transition
+        "
+      >
+        <option value="0">Todas las categorías</option>
+        @for(cat of categorias(); track cat.categoria_id) {
+          <option [value]="cat.categoria_id">{{ cat.nombre }}</option>
+        }
+      </select>
+
+      <!-- Botón agregar -->
+      <button
+        class="
+          h-11 px-5
+          bg-linear-to-r from-orange-500 to-red-500
+          text-white text-sm font-bold
+          rounded-xl
+          shadow-lg shadow-orange-500/20
+          hover:shadow-xl hover:shadow-orange-500/30
+          active:scale-95
+          transition-all
+          flex items-center gap-2
+          whitespace-nowrap
+        "
+      >
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+        </svg>
+        <span class="hidden sm:inline">Nuevo Producto</span>
+        <span class="sm:hidden">Nuevo</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  @if(loadingLista()) {
+    <div class="flex justify-center py-12">
+      <div class="w-12 h-12 border-4 border-orange-200 border-t-orange-500 rounded-full animate-spin"></div>
+    </div>
+  }
+
+  <!-- Lista de productos -->
+  @if(!loadingLista() && filteredProductos().length > 0) {
+    <div class="space-y-3">
+      @for(producto of filteredProductos(); track producto.producto_id) {
+        <div class="
+          bg-white rounded-2xl shadow-sm border border-gray-100
+          hover:shadow-md hover:border-gray-200
+          transition-all duration-200
+          overflow-hidden
+        ">
+          <div class="flex flex-col sm:flex-row gap-4 p-4">
+            
+            <!-- Imagen -->
+            <div class="
+              w-full sm:w-24 h-40 sm:h-24
+              rounded-xl overflow-hidden
+              bg-gray-100
+              shrink-0
+            ">
+              @if(producto.imagen_url) {
+                <img
+                  [src]="producto.imagen_url"
+                  [alt]="producto.nombre"
+                  class="w-full h-full object-cover"
+                  loading="lazy"
+                />
+              } @else {
+                <div class="w-full h-full flex items-center justify-center text-gray-400 text-3xl">
+                  🍕
+                </div>
+              }
+            </div>
+
+            <!-- Info principal -->
+            <div class="flex-1 min-w-0">
+              <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-2 mb-2">
+                <div class="flex-1 min-w-0">
+                  <h3 class="text-lg font-bold text-gray-900 mb-1 truncate">
+                    {{ producto.nombre }}
+                  </h3>
+                  <p class="text-sm text-gray-600 line-clamp-2 mb-2">
+                    {{ producto.descripcion }}
+                  </p>
+                  <div class="flex flex-wrap items-center gap-2">
+                    <span class="px-2.5 py-1 bg-gray-100 text-gray-700 text-xs font-semibold rounded-lg">
+                      {{ getCategoriaNombre(producto.categoria_id) }}
+                    </span>
+                    <span class="text-xl font-black text-gray-900">
+                      ${{ formatPrice(producto.precio_unitario) }}
+                    </span>
+                  </div>
+                </div>
+
+                <!-- Badges destacado -->
+                @if(producto.destacado) {
+                  <span class="
+                    px-3 py-1
+                    bg-linear-to-r from-amber-400 to-orange-400
+                    text-white text-xs font-bold
+                    rounded-full
+                    shadow-md
+                    whitespace-nowrap
+                  ">
+                    ⭐ Destacado
+                  </span>
+                }
+              </div>
+
+              <!-- Controles -->
+              <div class="flex flex-wrap items-center gap-3 pt-3 border-t border-gray-100">
+                
+                <!-- Switch Disponible -->
+                <label class="flex items-center gap-2 cursor-pointer group" [class.opacity-50]="loading()" [class.pointer-events-none]="loading()">
+                  <div class="relative">
+                    <input
+                      type="checkbox"
+                      [checked]="producto.estado == 'Activo'"
+                      (click)="toggleDisponibilidad(producto, $event)"
+                      [disabled]="loading()"
+                      class="sr-only peer"
+                    />
+                    <div class="w-11 h-6 bg-gray-200 rounded-full peer-checked:bg-green-500 transition-colors"></div>
+                    <div class="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform peer-checked:translate-x-5"></div>
+                    
+                    <!-- Mini spinner encima del switch -->
+                    @if(loading()) {
+                      <div class="absolute inset-0 flex items-center justify-center">
+                        <div class="w-3 h-3 border-2 border-gray-400 border-t-transparent rounded-full animate-spin"></div>
+                      </div>
+                    }
+                  </div>
+                  <span class="text-sm font-medium text-gray-700">Disponible</span>
+                </label>
+
+                <!-- Switch Destacado -->
+                <label class="flex items-center gap-2 cursor-pointer group" [class.opacity-50]="loading()" [class.pointer-events-none]="loading()">
+                  <div class="relative">
+                    <input
+                      type="checkbox"
+                      [checked]="producto.destacado"
+                      (click)="toggleDestacado(producto, $event)"
+                      [disabled]="loading()"
+                      class="sr-only peer"
+                    />
+                    <div class="w-11 h-6 bg-gray-200 rounded-full peer-checked:bg-amber-500 transition-colors"></div>
+                    <div class="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform peer-checked:translate-x-5"></div>
+
+                    @if(loading()) {
+                      <div class="absolute inset-0 flex items-center justify-center">
+                        <div class="w-3 h-3 border-2 border-gray-400 border-t-transparent rounded-full animate-spin"></div>
+                      </div>
+                    }
+                  </div>
+                  <span class="text-sm font-medium text-gray-700">Destacado</span>
+                </label>
+
+                <!-- Spacer -->
+                <div class="flex-1"></div>
+
+                <!-- Botones de acción -->
+                <div class="flex gap-2">
+                  <!-- Editar -->
+                  <button
+                    (click)="openEditModal(producto)"
+                    class="
+                      w-9 h-9
+                      flex items-center justify-center
+                      bg-orange-100 text-orange-600
+                      rounded-lg
+                      hover:bg-orange-200
+                      active:scale-95
+                      transition-all
+                    "
+                    title="Editar producto"
+                  >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                    </svg>
+                  </button>
+
+                  <!-- Eliminar -->
+                  <button
+                    (click)="openDeleteModal(producto, $event)"
+                    class="
+                      w-9 h-9
+                      flex items-center justify-center
+                      bg-red-100 text-red-600
+                      rounded-lg
+                      hover:bg-red-200
+                      active:scale-95
+                      transition-all
+                    "
+                    title="Eliminar producto"
+                  >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Estado vacío -->
+  @if(!loadingLista() && filteredProductos().length === 0) {
+    <div class="text-center py-16 bg-white rounded-2xl border-2 border-dashed border-gray-200">
+      <div class="text-6xl mb-4">🔍</div>
+      <h3 class="text-lg font-semibold text-gray-900 mb-2">
+        No se encontraron productos
+      </h3>
+      <p class="text-gray-600 mb-6">
+        Intentá con otros filtros o agregá un nuevo producto
+      </p>
+      <button
+        class="
+          px-6 py-2.5
+          bg-linear-to-r from-orange-500 to-red-500
+          text-white font-bold
+          rounded-xl
+          shadow-lg shadow-orange-500/20
+          hover:shadow-xl
+          active:scale-95
+          transition-all
+        "
+      >
+        Agregar Producto
+      </button>
+    </div>
+  }
+
+</div>
+
+<!-- Modal Editar -->
+@if(showEditModal() && selectedProducto()) {
+  <app-producto-form-modal
+    [producto]="selectedProducto()!"
+    [categorias]="categorias()"
+    (close)="closeEditModal()"
+    (save)="handleProductoSaved($event)"
+  />
+}
+
+<!-- Modal Eliminar -->
+@if(showDeleteModal() && selectedProducto()) {
+  <app-confirm-modal
+    title="Eliminar Producto"
+    [message]="'¿Estás seguro de eliminar &quot;' + selectedProducto()!.nombre + '&quot;? Esta acción no se puede deshacer.'"
+    confirmText="Eliminar"
+    confirmClass="bg-red-500 hover:bg-red-600"
+    (confirm)="handleDeleteConfirmed()"
+    (cancel)="closeDeleteModal()"
+  />
+}
