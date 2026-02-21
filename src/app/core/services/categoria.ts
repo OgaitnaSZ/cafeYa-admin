@@ -34,7 +34,6 @@ export class CategoriaSevice {
     }).pipe(
       tap(data => {
         this.categorias.set(data);
-        this.success.set('Categorias cargadas con exito');
       }),
       catchError(err => {
         this.error.set('Error al cargar categorías');

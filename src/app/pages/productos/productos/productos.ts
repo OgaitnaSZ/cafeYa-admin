@@ -154,9 +154,8 @@ export class Productos {
   // Confirmar eliminación
   handleDeleteConfirmed() {
     const producto = this.selectedProducto();
-    if (!producto) return;
+    if (!producto) return this.toastService.error('Producto inexistente.','El producto no existe.');
     this.productoService.eliminarProducto(producto.producto_id!);
-    this.closeDeleteModal();
   }
 
   // Obtener nombre de categoría

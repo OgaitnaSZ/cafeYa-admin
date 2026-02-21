@@ -1,1 +1,171 @@
-<p>categorias works!</p>
+<div class="space-y-6">
+
+  <!-- Header -->
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div>
+      <h2 class="text-2xl font-black text-gray-900">Categorías</h2>
+      <p class="text-sm text-gray-500">
+        {{ totalCategorias() }} categoría{{ totalCategorias() !== 1 ? 's' : '' }} 
+        • {{ totalProductos() }} producto{{ totalProductos() !== 1 ? 's' : '' }} total{{ totalProductos() !== 1 ? 'es' : '' }}
+      </p>
+    </div>
+
+    <!-- Botón crear -->
+    <button
+      (click)="openCreateModal()"
+      class="
+        h-11 px-5
+        bg-linear-to-r from-orange-500 to-red-500
+        text-white text-sm font-bold
+        rounded-xl
+        shadow-lg shadow-orange-500/20
+        hover:shadow-xl hover:shadow-orange-500/30
+        active:scale-95
+        transition-all
+        flex items-center gap-2
+        whitespace-nowrap cursor-pointer
+      "
+    >
+      <lucide-icon [img]="Plus" class="w-5 h-5"/>
+      Nueva Categoría
+    </button>
+  </div>
+
+  <!-- Loading -->
+  @if(loadingLista()) {
+    <div class="flex justify-center py-12">
+      <div class="w-12 h-12 border-4 border-orange-200 border-t-orange-500 rounded-full animate-spin"></div>
+    </div>
+  }
+
+  <!-- Grid de categorías -->
+  @if(!loadingLista() && categorias().length > 0) {
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+      @for(categoria of categorias(); track categoria.categoria_id) {
+        <div class="
+          bg-white rounded-2xl p-5
+          shadow-sm border border-gray-100
+          hover:shadow-md hover:border-gray-200
+          transition-all duration-200
+          group
+        ">
+          <!-- Emoji grande -->
+          <div class="text-center mb-3">
+            <div class="
+              text-5xl mb-2
+              group-hover:scale-110
+              transition-transform
+            ">
+              {{ categoria.emoji }}
+            </div>
+          </div>
+
+          <!-- Nombre -->
+          <h3 class="text-lg font-bold text-gray-900 text-center mb-2 truncate">
+            {{ categoria.nombre }}
+          </h3>
+
+          <!-- Count de productos -->
+          <div class="text-center mb-4">
+            <p class="text-sm text-gray-600">
+              Usada en 
+              <span class="font-bold text-orange-600">
+                {{ categoria.count || 0 }}
+              </span>
+              producto{{ (categoria.count || 0) !== 1 ? 's' : '' }}
+            </p>
+          </div>
+
+          <!-- Acciones -->
+          <div class="flex gap-2">
+            <!-- Editar -->
+            <button
+              (click)="openEditModal(categoria)"
+              class="
+                flex-1 h-9
+                bg-orange-100 text-orange-600
+                text-sm font-semibold
+                rounded-lg
+                hover:bg-orange-200
+                active:scale-95
+                transition-all cursor-pointer
+                flex items-center justify-center gap-1.5
+              "
+            >
+              <lucide-icon [img]="Pen" class="w-4 h-4"/>
+              <span>Editar</span>
+            </button>
+
+            <!-- Eliminar -->
+            <button
+              (click)="openDeleteModal(categoria, $event)"
+              class="
+                w-9 h-9
+                bg-red-100 text-red-600
+                rounded-lg
+                hover:bg-red-200
+                active:scale-95
+                transition-all cursor-pointer
+                flex items-center justify-center
+              "
+              title="Eliminar categoría"
+            >
+              <lucide-icon [img]="Trash2" class="w-4 h-4"/>
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Estado vacío -->
+  @if(!loadingLista() && categorias().length === 0) {
+    <div class="text-center py-16 bg-white rounded-2xl border-2 border-dashed border-gray-200">
+      <div class="text-6xl mb-4">🏷️</div>
+      <h3 class="text-lg font-semibold text-gray-900 mb-2">
+        No hay categorías
+      </h3>
+      <p class="text-gray-600 mb-6">
+        Creá tu primera categoría para organizar tus productos
+      </p>
+      <button
+        (click)="openCreateModal()"
+        class="
+          px-6 py-2.5
+          bg-linear-to-r from-orange-500 to-red-500
+          text-white font-bold
+          rounded-xl
+          shadow-lg shadow-orange-500/20
+          hover:shadow-xl
+          active:scale-95
+          transition-all
+        "
+      >
+        + Nueva Categoría
+      </button>
+    </div>
+  }
+
+</div>
+
+<!-- Modal Form -->
+@if(showFormModal()) {
+  <app-categoria-form-modal
+    [categoria]="selectedCategoria()"
+    (close)="closeFormModal()"
+    (save)="handleCategoriaSaved($event)"
+  />
+}
+
+<!-- Modal Eliminar -->
+@if(showDeleteModal() && selectedCategoria()) {
+  <app-confirm-modal
+    title="Eliminar Categoría"
+    [message]="'¿Estás seguro de eliminar &quot;' + selectedCategoria()!.nombre + '&quot;?' + 
+               (selectedCategoria()!.count ? '<br/><br/><strong class=\'text-red-600\'>⚠️ Esta categoría tiene ' + selectedCategoria()!.count + ' producto(s) asociado(s)</strong>' : '')"
+    confirmText="Eliminar"
+    confirmClass="bg-red-500 hover:bg-red-600"
+    (confirm)="handleDeleteConfirmed()"
+    (cancel)="closeDeleteModal()"
+  />
+}

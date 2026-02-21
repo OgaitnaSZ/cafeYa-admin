@@ -136,7 +136,7 @@ export class ProductoFormModal {
   }
 
    async onSubmit() {
-    if (this.form.invalid) return;
+    if (this.form.invalid) return this.toastService.error('Faltan datos','Completa los campos requeridos');
 
     // Si está en modo edición y no hubo cambios, cerrar
     if (this.isEditMode() && !this.form.dirty) {

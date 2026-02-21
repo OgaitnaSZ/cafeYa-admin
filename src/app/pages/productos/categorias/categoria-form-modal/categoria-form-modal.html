@@ -1,0 +1,182 @@
+<div
+  class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+  (click)="onBackdropClick($event)"
+>
+  <div
+    class="
+      bg-white rounded-3xl shadow-2xl
+      w-full max-w-md
+      animate-slide-up
+    "
+    (click)="$event.stopPropagation()"
+  >
+    <!-- Header -->
+    <div class="border-b border-gray-100 px-6 py-4 flex items-center justify-between">
+      <div>
+        <h3 class="text-xl font-black text-gray-900">{{ modalTitle() }}</h3>
+        <p class="text-sm text-gray-500">Organizá tus productos</p>
+      </div>
+      <button
+        (click)="onClose()"
+        class="
+          w-9 h-9
+          flex items-center justify-center
+          rounded-lg
+          text-gray-400 hover:text-gray-600 hover:bg-gray-100
+          transition cursor-pointer
+        "
+      >
+        <lucide-icon [img]="X" class="w-5 h-5"/>
+      </button>
+    </div>
+
+    <!-- Form -->
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="p-6 space-y-5">
+      
+      <!-- Emoji selector -->
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-2">
+          Emoji <span class="text-red-500">*</span>
+        </label>
+        
+        <!-- Preview del emoji seleccionado -->
+        <div class="flex items-center gap-3 mb-3">
+          <div class="
+            w-20 h-20
+            bg-linear-to-br from-orange-50 to-amber-50
+            border-2 border-orange-200
+            rounded-2xl
+            flex items-center justify-center
+            text-4xl
+          ">
+            {{ form.get('emoji')?.value }}
+          </div>
+          <button
+            type="button"
+            (click)="showEmojiPicker.set(!showEmojiPicker())"
+            class="
+              px-4 py-2
+              bg-gray-100 text-gray-700
+              text-sm font-semibold
+              rounded-xl
+              hover:bg-gray-200
+              transition cursor-pointer
+            "
+          >
+            {{ showEmojiPicker() ? 'Cerrar' : 'Cambiar emoji' }}
+          </button>
+        </div>
+
+        <!-- Grid de emojis -->
+        @if(showEmojiPicker()) {
+          <div class="
+            grid grid-cols-8 gap-2 p-3
+            bg-gray-50 border border-gray-200
+            rounded-xl
+            max-h-48 overflow-y-auto
+          ">
+            @for(emoji of emojiPresets; track emoji) {
+              <button
+                type="button"
+                (click)="selectEmoji(emoji)"
+                class="
+                  w-10 h-10
+                  flex items-center justify-center
+                  text-2xl
+                  rounded-lg
+                  hover:bg-orange-100
+                  active:scale-90
+                  transition-all cursor-pointer
+                "
+                [class.bg-orange-100]="form.get('emoji')?.value === emoji"
+              >
+                {{ emoji }}
+              </button>
+            }
+          </div>
+        }
+      </div>
+
+      <!-- Nombre -->
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-2">
+          Nombre <span class="text-red-500">*</span>
+        </label>
+        <input
+          formControlName="nombre"
+          type="text"
+          placeholder="Ej: Cafés, Postres, Salados..."
+          maxlength="50"
+          class="
+            w-full h-11 px-4
+            text-sm
+            border-2 border-gray-200
+            rounded-xl
+            focus:border-orange-500 focus:outline-none
+            transition
+          "
+          [class.border-red-300]="form.get('nombre')?.invalid && form.get('nombre')?.touched"
+        />
+        @if(form.get('nombre')?.invalid && form.get('nombre')?.touched) {
+          <p class="text-xs text-red-600 mt-1.5 ml-1">
+            El nombre debe tener al menos 2 caracteres
+          </p>
+        }
+      </div>
+
+      <!-- Preview -->
+      @if(form.get('nombre')?.value) {
+        <div class="p-3 bg-gray-50 border border-gray-200 rounded-xl">
+          <p class="text-xs text-gray-500 mb-2">Vista previa:</p>
+          <div class="flex items-center gap-2">
+            <span class="text-2xl">{{ form.get('emoji')?.value }}</span>
+            <span class="font-semibold text-gray-900">{{ form.get('nombre')?.value }}</span>
+          </div>
+        </div>
+      }
+
+      <!-- Actions -->
+      <div class="flex gap-3 pt-2">
+        <button
+          type="button"
+          (click)="onClose()"
+          [disabled]="saving()"
+          class="
+            flex-1 h-11
+            border-2 border-gray-200
+            text-gray-700 font-semibold
+            rounded-xl
+            hover:bg-gray-50
+            disabled:opacity-50
+            active:scale-95
+            transition-all cursor-pointer
+          "
+        >
+          Cancelar
+        </button>
+        <button
+          type="submit"
+          [disabled]="form.invalid || saving()"
+          class="
+            flex-1 h-11
+            bg-linear-to-r from-orange-500 to-red-500
+            text-white font-bold
+            rounded-xl
+            shadow-lg shadow-orange-500/20
+            disabled:opacity-50 disabled:cursor-not-allowed
+            active:scale-95
+            transition-all cursor-pointer
+            flex items-center justify-center gap-2
+          "
+        >
+          @if(saving()) {
+            <div class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+            <span>Guardando...</span>
+          } @else {
+            <span>{{ isEditMode() ? 'Guardar Cambios' : 'Crear Categoría' }}</span>
+          }
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
