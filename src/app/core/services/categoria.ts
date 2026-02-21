@@ -54,7 +54,7 @@ export class CategoriaSevice {
     }).pipe(
       tap(data => {
         this.categoria.set(data);
-        this.categorias.update(items => [...items, categoria]);
+        this.categorias.update(items => [...items, data]);
         this.success.set('Categoria creada con exito');
       }),
       catchError(err => {

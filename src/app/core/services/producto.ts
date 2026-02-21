@@ -90,7 +90,7 @@ export class ProductoService {
       this.http.post<Producto>(`${this.apiUrl}producto/crear`, producto, { headers: this.tokenService.createAuthHeaders() }).pipe(
           tap((data) => {
               this.producto.set(data);
-              this.productos.update(items => [...items, producto]);
+              this.productos.update(items => [...items, data]);
               this.success.set("Producto creado correctamente");
           }),
           catchError(err => {

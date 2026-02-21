@@ -1,7 +1,7 @@
 import { Component, signal, inject, computed, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CategoriaFormModal } from './categoria-form-modal/categoria-form-modal';
-import { ConfirmModal } from '../productos/confirm-modal/confirm-modal';
+import { ConfirmModal } from '../../../layout/components/confirm-modal/confirm-modal';
 import { ToastService } from '../../../core/services/toast';
 import { Categoria } from '../../../core/interfaces/producto.model';
 import { CategoriaSevice } from '../../../core/services/categoria';
@@ -79,6 +79,7 @@ export class Categorias {
       // CREAR
       this.categoriasService.crearCategoria(categoriaData);
     }
+    this.closeFormModal();
   }
 
   // Abrir modal ELIMINAR
@@ -98,8 +99,8 @@ export class Categorias {
   handleDeleteConfirmed() {
     const categoria = this.selectedCategoria();
     if (!categoria) return this.toastService.error('Categoría inexistente.','La categoría no existe.');
-
     this.categoriasService.eliminarCategoria(categoria.categoria_id);
+    this.closeDeleteModal();
   }
 
   // Icons

@@ -1,7 +1,7 @@
 import { Component, signal, computed, inject, effect, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ConfirmModal } from './confirm-modal/confirm-modal';
+import { ConfirmModal } from '../../../layout/components/confirm-modal/confirm-modal';
 import { Producto } from '../../../core/interfaces/producto.model';
 import { ProductoFormModal } from './producto-form-modal/producto-form-modal';
 import { ProductoService } from '../../../core/services/producto';
@@ -128,10 +128,8 @@ export class Productos {
     );
 
     if (existingIndex >= 0) {
-      // EDITAR: actualizar existente
       this.productoService.actualizarProducto(producto);
     } else {
-      // CREAR: agregar nuevo
       this.productoService.crearProducto(producto);
     }
 
@@ -156,6 +154,7 @@ export class Productos {
     const producto = this.selectedProducto();
     if (!producto) return this.toastService.error('Producto inexistente.','El producto no existe.');
     this.productoService.eliminarProducto(producto.producto_id!);
+    this.closeDeleteModal();
   }
 
   // Obtener nombre de categoría

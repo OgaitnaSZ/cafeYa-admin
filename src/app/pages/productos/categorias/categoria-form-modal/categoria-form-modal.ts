@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Categoria } from '../../../../core/interfaces/producto.model';
 import { ToastService } from '../../../../core/services/toast';
+import { CategoriaSevice } from '../../../../core/services/categoria';
 import { LucideAngularModule, X } from 'lucide-angular';
 
 const EMOJI_PRESETS = [
@@ -18,16 +19,18 @@ const EMOJI_PRESETS = [
   styleUrl: './categoria-form-modal.css',
 })
 export class CategoriaFormModal {
+  // Servicios
+  private categoriaService = inject(CategoriaSevice);
+  private toastService = inject(ToastService);
+  private fb = new FormBuilder();
+
   @Input() categoria: Categoria | null = null;
   @Output() close = new EventEmitter<void>();
   @Output() save = new EventEmitter<Categoria>();
   
-  private fb = new FormBuilder();
-  private toastService = inject(ToastService);
-  
   form!: FormGroup;
-  error = signal<string | null>(null);
-  saving = signal(false);
+  saving = this.categoriaService.loading;
+  error = this.categoriaService.error;
   emojiPresets = EMOJI_PRESETS;
   showEmojiPicker = signal(false);
 

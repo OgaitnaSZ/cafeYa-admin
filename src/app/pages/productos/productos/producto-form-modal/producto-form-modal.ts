@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnInit, signal, computed, inject } from '@angular/core';
+import { Component, Input, Output, EventEmitter, signal, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Producto, Categoria } from '../../../../core/interfaces/producto.model';
@@ -16,24 +16,21 @@ export class ProductoFormModal {
   // Servicios
   private productosService = inject(ProductoService);
   private toastService = inject(ToastService);
+  private fb = new FormBuilder();
 
   @Input() producto: Producto | null = null;
   @Input() categorias: Categoria[] = [];
   @Output() close = new EventEmitter<void>();
   @Output() save = new EventEmitter<Producto>();
-
-  private fb = new FormBuilder();
   
   form!: FormGroup;
-  saving = signal(false);
-  error = signal<string | null>(null);
+  saving = this.productosService.loading;
+  error = this.productosService.error;
   imagePreview = signal<string | null>(null);
   selectedFile = signal<File | null>(null);
   uploadingImage = signal(false);
 
   isEditMode = computed(() => !!this.producto);
-
-  // Textos dinámicos
   modalTitle = computed(() => 
     this.isEditMode() ? 'Editar Producto' : 'Nuevo Producto'
   );
@@ -135,7 +132,7 @@ export class ProductoFormModal {
     this.close.emit();
   }
 
-   async onSubmit() {
+  async onSubmit() {
     if (this.form.invalid) return this.toastService.error('Faltan datos','Completa los campos requeridos');
 
     // Si está en modo edición y no hubo cambios, cerrar

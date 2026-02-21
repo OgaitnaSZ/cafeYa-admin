@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter, OnInit, OnDestroy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Toast } from '../../../core/services/toast';
+import { Toast } from '../../../../core/services/toast';
 import { Check, CircleAlert, Info, LucideAngularModule, X } from 'lucide-angular';
 
 @Component({
