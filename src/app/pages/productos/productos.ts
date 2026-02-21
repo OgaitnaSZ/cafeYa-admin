@@ -2,9 +2,10 @@ import { Component, signal, computed, inject, effect, ChangeDetectorRef, ChangeD
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ConfirmModal } from './confirm-modal/confirm-modal';
-import { Producto, Categoria } from '../../core/interfaces/producto.model';
+import { Producto } from '../../core/interfaces/producto.model';
 import { ProductoFormModal } from './producto-form-modal/producto-form-modal';
 import { ProductoService } from '../../core/services/producto';
+import { LucideAngularModule, Pen, Plus, Search, Trash, Trash2 } from 'lucide-angular';
 
 @Component({
   selector: 'app-productos',
@@ -12,7 +13,8 @@ import { ProductoService } from '../../core/services/producto';
     CommonModule,
     FormsModule,
     ProductoFormModal,
-    ConfirmModal
+    ConfirmModal,
+    LucideAngularModule
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './productos.html',
@@ -40,7 +42,7 @@ export class Productos {
   productosDestacados = this.productoService.productosDestacados;
   
   // Modales
-  showEditModal = signal(false);
+  showFormModal = signal(false);
   showDeleteModal = signal(false);
   selectedProducto = signal<Producto | null>(null);
 
@@ -84,22 +86,39 @@ export class Productos {
     this.productoService.destacarProducto(producto.producto_id!);
   }
 
-  // Abrir modal editar
-  openEditModal(producto: Producto) {
-    this.selectedProducto.set(producto);
-    this.showEditModal.set(true);
+  // Abrir modal para CREAR
+  openCreateModal() {
+    this.selectedProducto.set(null); // ← null indica modo crear
+    this.showFormModal.set(true);
   }
 
-  // Cerrar modal editar
-  closeEditModal() {
-    this.showEditModal.set(false);
+  // Abrir modal para EDITAR
+  openEditModal(producto: Producto) {
+    this.selectedProducto.set(producto); // ← producto indica modo editar
+    this.showFormModal.set(true);
+  }
+
+  // Cerrar modal
+  closeFormModal() {
+    this.showFormModal.set(false);
     this.selectedProducto.set(null);
   }
 
   // Guardar cambios del producto
-  handleProductoSaved(updatedProducto: Producto) {
-    this.productoService.actualizarProducto(updatedProducto);
-    this.closeEditModal();
+  handleProductoSaved(producto: Producto) {
+    const existingIndex = this.productos().findIndex(
+      p => p.producto_id === producto.producto_id
+    );
+
+    if (existingIndex >= 0) {
+      // EDITAR: actualizar existente
+      this.productoService.actualizarProducto(producto);
+    } else {
+      // CREAR: agregar nuevo
+      this.productoService.crearProducto(producto);
+    }
+
+    this.closeFormModal();
   }
 
   // Abrir modal eliminar
@@ -120,7 +139,7 @@ export class Productos {
     const producto = this.selectedProducto();
     if (!producto) return;
     this.productoService.eliminarProducto(producto.producto_id!);
-    this.closeEditModal();
+    this.closeDeleteModal();
   }
 
   // Obtener nombre de categoría
@@ -132,4 +151,10 @@ export class Productos {
   formatPrice(price: number): string {
     return new Intl.NumberFormat('es-AR').format(price);
   }
+
+  // Icons
+  readonly Trash2 = Trash2;
+  readonly Pen = Pen;
+  readonly Search = Search;
+  readonly Plus = Plus;
 }

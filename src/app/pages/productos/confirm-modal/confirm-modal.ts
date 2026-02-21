@@ -1,9 +1,10 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { LucideAngularModule, TriangleAlert } from 'lucide-angular';
 
 @Component({
   selector: 'app-confirm-modal',
-  imports: [CommonModule],
+  imports: [CommonModule, LucideAngularModule],
   templateUrl: './confirm-modal.html',
   styleUrl: './confirm-modal.css',
 })
@@ -30,4 +31,7 @@ export class ConfirmModal {
   onCancel() {
     this.cancel.emit();
   }
+
+  // Icons
+  readonly TriangleAlert = TriangleAlert;
 }

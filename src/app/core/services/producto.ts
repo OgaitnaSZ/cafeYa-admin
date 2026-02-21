@@ -90,6 +90,7 @@ export class ProductoService {
       this.http.post<Producto>(`${this.apiUrl}producto/crear`, producto, { headers: this.tokenService.createAuthHeaders() }).pipe(
           tap((data) => {
               this.producto.set(data);
+              this.productos.update(items => [...items, producto]);
               this.success.set("Producto creado correctamente");
           }),
           catchError(err => {
@@ -108,9 +109,10 @@ export class ProductoService {
       this.http.put<Producto>(`${this.apiUrl}producto/editar`, producto, { headers: this.tokenService.createAuthHeaders() }).pipe(
           tap((data) => {
               this.producto.set(data);
-              this.producto.set(data);
               this.productos.update(items =>
-                items.map(p => p.producto_id === data.producto_id ? data : p)
+                items.map(p =>
+                  p.producto_id === producto.producto_id ? producto : p
+                )
               );
               this.success.set("producto modificado con exito")
           }),
@@ -190,8 +192,12 @@ export class ProductoService {
       this.loading.set(true);
       this.error.set(null);
 
-      this.http.post(`${this.apiUrl}producto/foto`, formData, { headers: this.tokenService.createAuthHeaders({ excludeContentType: true }) }).pipe(
-          tap(() => {
+      this.http.post<Producto>(`${this.apiUrl}producto/foto`, formData, { headers: this.tokenService.createAuthHeaders({ excludeContentType: true }) }).pipe(
+          tap((data) => {
+              this.producto.set(data);
+              this.productos.update(items =>
+                items.map(p => p.producto_id === data.producto_id ? data : p)
+              );
               this.success.set("Foto subida con exito")
           }),
           catchError(err => {
