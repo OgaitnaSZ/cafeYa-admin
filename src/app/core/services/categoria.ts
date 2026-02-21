@@ -40,7 +40,7 @@ export class CategoriaSevice {
   );
 
   cargarCategorias(): void {
-    this.loading.set(true);
+    this.loadingLista.set(true);
     this.error.set(null);
     this.success.set(null);
 
@@ -55,7 +55,7 @@ export class CategoriaSevice {
         console.error(err);
         return [];
       }),
-      finalize(() => this.loading.set(false))
+      finalize(() => this.loadingLista.set(false))
     ).subscribe();
   }
 
