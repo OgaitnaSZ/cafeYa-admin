@@ -34,7 +34,8 @@ export class Productos {
   loading = this.productoService.loading;
   error = this.productoService.error;
   success = this.productoService.success;
-  categorias = this.productoService.categoriasEnUso;
+  categoriasEnUso = this.productoService.categoriasEnUso;
+  todasLasCategorias = this.productoService.todasLasCategorias;
 
   searchTerm = signal('');
   selectedCategoria = signal<number>(0);
@@ -159,7 +160,7 @@ export class Productos {
 
   // Obtener nombre de categoría
   getCategoriaNombre(categoriaId: number): string {
-    return this.categorias().find(c => c.categoria_id === categoriaId)?.nombre || 'Sin categoría';
+    return this.todasLasCategorias().find(c => c.categoria_id === categoriaId)?.nombre || 'Sin categoría';
   }
 
   // Formatear precio

@@ -61,7 +61,7 @@
         "
       >
         <option value="0">Todas las categorías</option>
-        @for(cat of categorias(); track cat.categoria_id) {
+        @for(cat of categoriasEnUso(); track cat.categoria_id) {
           <option [value]="cat.categoria_id">{{ cat.nombre }}</option>
         }
       </select>
@@ -293,7 +293,7 @@
 @if(showFormModal()) {
   <app-producto-form-modal
     [producto]="selectedProducto()"
-    [categorias]="categorias()"
+    [categorias]="todasLasCategorias()"
     (close)="closeFormModal()"
     (save)="handleProductoSaved($event)"
   />
