@@ -25,7 +25,8 @@ export const routes: Routes = [
         children: [
             { path: 'dashboard',      loadComponent: () => import('./pages/dashboard/dashboard').then(m => m.Dashboard) },
             { path: 'pedidos-activos',loadComponent: () => import('./pages/pedidos-activos/pedidos-activos').then(m => m.PedidosActivos) },
-            { path: 'productos',      loadComponent: () => import('./pages/productos/productos').then(m => m.Productos) },
+            { path: 'productos/productos',      loadComponent: () => import('./pages/productos/productos/productos').then(m => m.Productos) },
+            { path: 'productos/categorias',      loadComponent: () => import('./pages/productos/categorias/categorias').then(m => m.Categorias) },
             { path: 'mesas/activas',  loadComponent: () => import('./pages/mesas/mesas-activas/mesas-activas').then(m => m.MesasActivas) },
             { path: 'mesas/gestion',  loadComponent: () => import('./pages/mesas/gestion-mesas/gestion-mesas').then(m => m.GestionMesas) },
             { path: 'clientes',       loadComponent: () => import('./pages/clientes/clientes/clientes').then(m => m.Clientes) },

@@ -1,8 +1,8 @@
 import { Component, Input, Output, EventEmitter, OnInit, signal, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Producto, Categoria } from '../../../core/interfaces/producto.model';
-import { ProductoService } from '../../../core/services/producto';
+import { Producto, Categoria } from '../../../../core/interfaces/producto.model';
+import { ProductoService } from '../../../../core/services/producto';
 import { Image, LucideAngularModule, X } from 'lucide-angular';
 
 @Component({

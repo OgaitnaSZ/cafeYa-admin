@@ -2,9 +2,9 @@ import { Component, signal, computed, inject, effect, ChangeDetectorRef, ChangeD
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ConfirmModal } from './confirm-modal/confirm-modal';
-import { Producto } from '../../core/interfaces/producto.model';
+import { Producto } from '../../../core/interfaces/producto.model';
 import { ProductoFormModal } from './producto-form-modal/producto-form-modal';
-import { ProductoService } from '../../core/services/producto';
+import { ProductoService } from '../../../core/services/producto';
 import { LucideAngularModule, Pen, Plus, Search, Trash, Trash2 } from 'lucide-angular';
 
 @Component({
@@ -58,9 +58,9 @@ export class Productos {
         p.descripcion.toLowerCase().includes(search)
       );
     }
-
+    
     // Filtrar por categoría
-    const catId = this.selectedCategoria();
+    const catId = Number(this.selectedCategoria());
     if (catId && catId !== 0) {
       items = items.filter(p => p.categoria_id === catId);
     }

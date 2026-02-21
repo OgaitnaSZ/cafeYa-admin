@@ -3,6 +3,7 @@ import {
   CheckCircle, Settings, Users, ClipboardList,
   Star, CreditCard, Settings2, BarChart2,
   AlertTriangle, User, LucideIconData,
+  LayoutGrid,
 } from 'lucide-angular';
  
 export interface NavItem {
@@ -18,6 +19,13 @@ export const NAV_ITEMS: NavItem[] = [
   { id: 'dashboard',      label: 'Dashboard',       icon: LayoutDashboard,  route: '/dashboard', roles: ['admin', 'encargado'] },
   { id: 'pedidos-activos',         label: 'Pedidos Activos',  icon: ChefHat,          route: '/pedidos-activos',    roles: ['admin', 'encargado', 'cocina'] },
   { id: 'productos',      label: 'Productos',        icon: Package,          route: '/productos', roles: ['admin'] },
+  {
+    id: 'productos', label: 'Productos', icon: Armchair, roles: ['admin', 'encargado'],
+    children: [
+      { id: 'productos',  label: 'Productos',    icon: Package, route: '/productos/productos',  roles: ['admin', 'encargado'] },
+      { id: 'categorias',  label: 'Categorias',    icon: LayoutGrid, route: '/productos/categorias',  roles: ['admin', 'encargado'] },
+    ]
+  },
   {
     id: 'mesas', label: 'Mesas', icon: Armchair, roles: ['admin', 'encargado'],
     children: [
