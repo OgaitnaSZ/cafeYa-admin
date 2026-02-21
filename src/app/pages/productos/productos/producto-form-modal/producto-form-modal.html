@@ -199,7 +199,6 @@
               transition
             "
           >
-            <option [ngValue]="0">Seleccionar categoría</option>
             @for(cat of categorias; track cat.categoria_id) {
               <option [ngValue]="cat.categoria_id">{{ cat.nombre }}</option>
             }

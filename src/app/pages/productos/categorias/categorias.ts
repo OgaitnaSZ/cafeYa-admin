@@ -29,10 +29,9 @@ export class Categorias {
   selectedCategoria = signal<Categoria | null>(null);
 
   // Stats
-  totalCategorias = computed(() => this.categorias().length);
-  totalProductos = computed(() => 
-    this.categorias().reduce((sum, cat) => sum + (cat.count! || 0), 0)
-  );
+  totalCategorias = this.categoriasService.totalCategorias;
+  totalProductos = this.categoriasService.totalProductos;
+  totalProductosSinCategoria = this.categoriasService.totalProductosSinCategoria;
 
   constructor() {
     effect(() => {

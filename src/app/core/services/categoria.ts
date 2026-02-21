@@ -16,13 +16,28 @@ export class CategoriaSevice {
   tokenService = inject(TokenService)
 
   // Signals
-  categorias = signal<Categoria[]>([]);
+  categoriasRaw = signal<Categoria[]>([]);
+  categorias = computed(() =>
+    this.categoriasRaw().filter(c => c.categoria_id !== 0)
+  );
   categoria = signal<Categoria | null>(null);
 
+  // Estados
   loadingLista = signal(false);
   loading = signal(false);
   error = signal<string | null>(null);
   success = signal<string | null>(null);
+
+  // Computed
+  totalCategorias = computed(() => this.categorias().length);
+  
+  totalProductos = computed(() =>
+    this.categoriasRaw().reduce((sum, cat) => sum + (cat.count ?? 0),0)
+  );
+  
+  totalProductosSinCategoria = computed(() =>
+    this.categoriasRaw().find(c => c.categoria_id === 0)?.count ?? 0
+  );
 
   cargarCategorias(): void {
     this.loading.set(true);
@@ -33,7 +48,7 @@ export class CategoriaSevice {
       headers: this.tokenService.createAuthHeaders(),
     }).pipe(
       tap(data => {
-        this.categorias.set(data);
+        this.categoriasRaw.set(data);
       }),
       catchError(err => {
         this.error.set('Error al cargar categorías');
@@ -54,7 +69,7 @@ export class CategoriaSevice {
     }).pipe(
       tap(data => {
         this.categoria.set(data);
-        this.categorias.update(items => [...items, data]);
+        this.categoriasRaw.update(items => [...items, data]);
         this.success.set('Categoria creada con exito');
       }),
       catchError(err => {
@@ -76,7 +91,7 @@ export class CategoriaSevice {
     }).pipe(
       tap(data => {
         this.categoria.set(data);
-        this.categorias.update(items =>
+        this.categoriasRaw.update(items =>
           items.map(p =>
             p.categoria_id === categoria.categoria_id ? categoria : p
           )
@@ -102,7 +117,7 @@ export class CategoriaSevice {
     }).pipe(
       tap((data) => {
         this.categoria.set(data);
-        this.categorias.update(items =>
+        this.categoriasRaw.update(items =>
           items.filter(c => c.categoria_id !== data.categoria_id)
         );
         this.success.set('Categoria eliminada con exito');
