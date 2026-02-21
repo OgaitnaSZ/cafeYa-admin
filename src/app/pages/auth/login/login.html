@@ -120,22 +120,6 @@
             }
           </div>
 
-          <!-- Mensaje de error general -->
-          @if(error()) {
-            <div class="
-              p-4
-              bg-red-50
-              border-l-4 border-red-500
-              rounded-lg
-              flex items-start gap-3
-            ">
-              <lucide-icon [img]="CircleAlert" class="w-5 h-5 text-red-500 shrink-0 mt-0.5"/>
-              <p class="text-sm text-red-700">
-                {{ error() }}
-              </p>
-            </div>
-          }
-
           <!-- Botón submit -->
           <button
             type="submit"
@@ -147,7 +131,7 @@
               shadow-lg shadow-orange-500/30
               disabled:opacity-50 disabled:shadow-none disabled:cursor-not-allowed
               active:scale-95
-              transition-all
+              transition-all cursor-pointer
               flex items-center justify-center gap-2
             "
             [disabled]="loading() || formLogin.invalid"

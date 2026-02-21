@@ -138,7 +138,7 @@ export class ProductoService {
               this.success.set("Estado actualizado con exito")
           }),
           catchError(err => {
-              this.error.set('Error al eliminar producto');
+              this.error.set('Error al actualizar producto');
               console.error(err);
               return [];
           }),

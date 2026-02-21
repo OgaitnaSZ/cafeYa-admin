@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { Producto, Categoria } from '../../../../core/interfaces/producto.model';
 import { ProductoService } from '../../../../core/services/producto';
 import { Image, LucideAngularModule, X } from 'lucide-angular';
+import { ToastService } from '../../../../core/services/toast';
 
 @Component({
   selector: 'app-producto-form-modal',
@@ -14,6 +15,7 @@ import { Image, LucideAngularModule, X } from 'lucide-angular';
 export class ProductoFormModal {
   // Servicios
   private productosService = inject(ProductoService);
+  private toastService = inject(ToastService);
 
   @Input() producto: Producto | null = null;
   @Input() categorias: Categoria[] = [];
@@ -84,22 +86,13 @@ export class ProductoFormModal {
     if (!file) return;
 
     // Validar tipo
-    if (!file.type.startsWith('image/')) {
-      this.error.set('Por favor seleccioná un archivo de imagen válido');
-      return;
-    }
+    if (!file.type.startsWith('image/')) return this.toastService.error('Tipo de archivo incorrecto','Por favor seleccioná un archivo de imagen válido');
 
     // Validar tamaño (max 5MB)
-    if (file.size > 5 * 1024 * 1024) {
-      this.error.set('La imagen no puede superar los 5MB');
-      return;
-    }
+    if (file.size > 5 * 1024 * 1024) return this.toastService.error('La imagen no puede superar los 5MB','Por favor subí un archivo de menor tamaño');
 
     // Verificar que el producto exista (para editar)
-    if (!this.producto?.producto_id) {
-      this.error.set('Primero debés crear el producto antes de subir la imagen');
-      return;
-    }
+    if (!this.producto?.producto_id) return this.toastService.error('La imagen no tiene producto','Primero debés crear el producto antes de subir la imagen');
 
     this.error.set(null);
     this.uploadingImage.set(true);
@@ -129,18 +122,13 @@ export class ProductoFormModal {
   }
 
   triggerFileInput() {
-    if (!this.producto?.producto_id) {
-      this.error.set('Primero debés crear el producto antes de subir la imagen');
-      return;
-    }
+    if (!this.producto?.producto_id) return this.toastService.error('La imagen no tiene producto','Primero debés crear el producto antes de subir la imagen');
     const fileInput = document.getElementById('fileInput') as HTMLInputElement;
     fileInput?.click();
   }
 
   onBackdropClick(event: Event) {
-    if (event.target === event.currentTarget) {
-      this.onClose();
-    }
+    if (event.target === event.currentTarget) this.onClose();
   }
 
   onClose() {
@@ -152,8 +140,7 @@ export class ProductoFormModal {
 
     // Si está en modo edición y no hubo cambios, cerrar
     if (this.isEditMode() && !this.form.dirty) {
-      this.onClose();
-      return;
+      return this.onClose();
     }
 
     this.saving.set(true);

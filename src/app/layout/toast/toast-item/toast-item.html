@@ -1,0 +1,91 @@
+    <div 
+      class="
+        relative
+        w-full max-w-sm
+        bg-white
+        rounded-2xl
+        shadow-2xl
+        overflow-hidden
+        pointer-events-auto
+        animate-slide-in-right
+      "
+      [class.animate-slide-out-right]="isClosing()"
+    >
+      <!-- Barra de progreso superior -->
+        @if(toast.duration && toast.duration > 0) {
+            <div class="absolute top-0 left-0 right-0 h-1 bg-gray-100">
+            <div 
+                class="h-full transition-all ease-linear"
+                [class.bg-green-500]="toast.type === 'success'"
+                [class.bg-red-500]="toast.type === 'error'"
+                [class.bg-amber-500]="toast.type === 'warning'"
+                [class.bg-blue-500]="toast.type === 'info'"
+                [style.width.%]="progressWidth()"
+                [style.transition]="progressTransition()"
+            ></div>
+            </div>
+        }
+
+      <!-- Contenido -->
+      <div class="flex items-start gap-3 p-4 pt-5">
+        <!-- Ícono -->
+        <div 
+          class="
+            w-10 h-10
+            rounded-xl
+            flex items-center justify-center
+            shrink-0
+          "
+          [class.bg-green-100]="toast.type === 'success'"
+          [class.bg-red-100]="toast.type === 'error'"
+          [class.bg-amber-100]="toast.type === 'warning'"
+          [class.bg-blue-100]="toast.type === 'info'"
+        >
+          @switch (toast.type) {
+            @case ('success') {
+                <lucide-icon [img]="Check" class="w-6 h-6 text-green-600" stroke="currentColor"></lucide-icon>
+            }
+            @case ('error') {
+                <lucide-icon [img]="X" class="w-6 h-6 text-red-600" stroke="currentColor"></lucide-icon>
+            }
+            @case ('warning') {
+                <lucide-icon [img]="CircleAlert" class="w-6 h-6 text-amber-600" stroke="currentColor"></lucide-icon>
+            }
+            @case ('info') {
+              <lucide-icon [img]="Info" class="w-6 h-6 text-blue-600" stroke="currentColor"></lucide-icon>
+            }
+          }
+        </div>
+
+        <!-- Texto -->
+        <div class="flex-1 min-w-0">
+          <h4 class="font-bold text-gray-900 text-sm mb-0.5">
+            {{ toast.title }}
+          </h4>
+          @if(toast.message) {
+            <p class="text-sm text-gray-600 leading-relaxed">
+              {{ toast.message }}
+            </p>
+          }
+        </div>
+
+        <!-- Botón cerrar -->
+        @if(toast.dismissible) {
+          <button
+            (click)="onClose()"
+            class="
+              w-8 h-8
+              flex items-center justify-center
+              rounded-lg
+              text-gray-400
+              hover:text-gray-600
+              hover:bg-gray-100
+              transition
+              shrink-0 cursor-pointer
+            "
+          >
+            <lucide-icon [img]="X" class="w-5 h-5" stroke="currentColor"></lucide-icon>
+          </button>
+        }
+      </div>
+    </div>

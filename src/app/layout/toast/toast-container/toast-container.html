@@ -1,0 +1,18 @@
+<div 
+    class="
+    fixed bottom-0 right-0
+    z-9999
+    p-4
+    pt-safe-top
+    flex flex-col gap-3
+    pointer-events-none
+    "
+    aria-live="polite"
+>
+    @for(toast of toasts(); track toast.id) {
+    <app-toast-item
+        [toast]="toast"
+        (close)="onClose(toast.id)"
+    />
+    }
+</div>

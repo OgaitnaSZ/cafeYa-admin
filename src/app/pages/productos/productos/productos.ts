@@ -6,6 +6,7 @@ import { Producto } from '../../../core/interfaces/producto.model';
 import { ProductoFormModal } from './producto-form-modal/producto-form-modal';
 import { ProductoService } from '../../../core/services/producto';
 import { LucideAngularModule, Pen, Plus, Search, Trash, Trash2 } from 'lucide-angular';
+import { ToastService } from '../../../core/services/toast';
 
 @Component({
   selector: 'app-productos',
@@ -24,12 +25,14 @@ export class Productos {
   // Services
   productoService = inject(ProductoService);
   cdr = inject(ChangeDetectorRef);
+  toastService = inject(ToastService);
 
   // Signals
   productos = this.productoService.productos;
   producto = this.productoService.producto;
   loadingLista = this.productoService.loadingLista;
   loading = this.productoService.loading;
+  error = this.productoService.error;
   success = this.productoService.success;
   categorias = this.productoService.categoriasEnUso;
 
@@ -68,6 +71,18 @@ export class Productos {
     return items;
   });
 
+  constructor() {
+    effect(() => {
+      if (this.success()) {
+        this.toastService.success(this.success()!);
+      }
+      
+      if(this.error()){
+        this.toastService.error(this.error()!);
+      }
+    });
+  }
+
   ngOnInit() {
     this.productoService.cargarDatos();
   }
@@ -83,6 +98,8 @@ export class Productos {
   toggleDestacado(producto: Producto, event: Event) {
     event.preventDefault();
     event.stopPropagation();
+    if(this.productosDestacados() >= 4) return this.toastService.error("Límite alcanzado", "Desmarque un producto destacado para poder seleccionar uno nuevo."); 
+    if(producto.estado === "Inactivo") return this.toastService.error("Producto inactivo", "Habilite el producto para poder destacarlo."); 
     this.productoService.destacarProducto(producto.producto_id!);
   }
 
