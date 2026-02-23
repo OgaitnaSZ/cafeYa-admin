@@ -2,6 +2,7 @@ import { Component, Input, Output, EventEmitter, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Bell, LucideAngularModule, Menu } from 'lucide-angular';
+import { SocketConnection } from '../components/socket-connection/socket-connection';
 
 export interface Notificacion {
   id: string;
@@ -14,7 +15,7 @@ export interface Notificacion {
 
 @Component({
   selector: 'app-header',
-  imports: [CommonModule, RouterLink, LucideAngularModule],
+  imports: [CommonModule, RouterLink, LucideAngularModule, SocketConnection],
   templateUrl: './header.html',
   styleUrl: './header.css',
 })

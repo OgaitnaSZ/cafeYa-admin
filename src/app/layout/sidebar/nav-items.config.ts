@@ -45,8 +45,8 @@ export const NAV_ITEMS: NavItem[] = [
     id: 'administracion', label: 'Administración', icon: Settings2, roles: ['admin'],
     children: [
       { id: 'admin-reportes',  label: 'Reportes e Informes', icon: BarChart2,      route: 'administracion/reportes', roles: ['admin'] },
-      { id: 'admin-errorlog',  label: 'Error Log',           icon: AlertTriangle,  route: 'administracion/logs',     roles: ['admin'] },
       { id: 'admin-usuarios',  label: 'Usuarios',            icon: User,           route: 'administracion/usuarios', roles: ['admin'] },
+      { id: 'admin-errorlog',  label: 'Error Log',           icon: AlertTriangle,  route: 'administracion/logs',     roles: ['admin'] },
     ]
   },
 ];

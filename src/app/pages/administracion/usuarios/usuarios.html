@@ -237,7 +237,6 @@
 @if(showFormModal()) {
   <app-usuario-form-modal
     [usuario]="selectedUsuario()"
-    [saving]="loading()"
     (close)="closeFormModal()"
     (save)="handleUsuarioSaved($event)"
   />

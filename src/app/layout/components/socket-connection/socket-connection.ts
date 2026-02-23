@@ -1,0 +1,58 @@
+import { Component, signal, inject, computed, effect, OnDestroy } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { SocketService } from '../../../core/services/socket';
+import { ToastService } from '../../../core/services/toast';
+
+@Component({
+  selector: 'app-socket-connection',
+  imports: [CommonModule],
+  templateUrl: './socket-connection.html',
+  styleUrl: './socket-connection.css',
+})
+export class SocketConnection {
+  private socketAdminService = inject(SocketService);
+  private toastService = inject(ToastService);
+
+  socketConnected = this.socketAdminService.isConnected;
+  clientesConectados = this.socketAdminService.clientesConectados;
+  totalClientesConectados = this.socketAdminService.totalClientesConectados;
+
+  constructor() {
+    // Conectar socket al iniciar
+    effect(() => {
+      if (!this.socketAdminService.isConnected()) {
+        this.socketAdminService.connect();
+      }
+    });
+
+    // Notificar cuando cambian las conexiones
+    effect(() => {
+      const total = this.totalClientesConectados();
+      console.log(`👥 ${total} cliente(s) conectado(s) en tiempo real`);
+    });
+  }
+
+  ngOnInit() {
+    // Socket listeners
+    this.setupSocketListeners();
+  }
+
+  private setupSocketListeners() {
+    // Escuchar eventos personalizados del servidor
+    this.socketAdminService.on('sesion:iniciada', (data: any) => {
+      console.log('🆕 Nueva sesión iniciada:', data);
+      this.toastService.success('Nueva sesión', `Mesa ${data.mesaNumero} iniciada`);
+    });
+
+    this.socketAdminService.on('pedido:creado', (data: any) => {
+      console.log('🆕 Nuevo pedido:', data);
+      this.toastService.success('Nuevo pedido', `Mesa ${data.mesaNumero}`);
+    });
+  }
+
+  ngOnDestroy() {
+    // Limpiar listeners
+    this.socketAdminService.off('sesion:iniciada');
+    this.socketAdminService.off('pedido:creado');
+  }
+}

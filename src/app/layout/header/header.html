@@ -24,6 +24,8 @@
     <!-- Acciones del header -->
     <div class="flex items-center gap-2">
 
+        <!-- Conexion del socket -->
+        <app-socket-connection/>
         <!-- Pedidos activos (solo cocina/encargado) -->
         @if(pedidosActivos > 0) {
             <div class="
@@ -49,7 +51,7 @@
                 rounded-xl
                 text-gray-600
                 hover:bg-gray-100
-                transition
+                transition cursor-pointer
             "
             [class.bg-gray-100]="showNotifications()"
             >
@@ -177,7 +179,6 @@
         flex items-center justify-center
         text-white font-black
         shadow-md shadow-orange-500/20
-        cursor-pointer
     ">
         {{ nombreInicial }}
     </div>
