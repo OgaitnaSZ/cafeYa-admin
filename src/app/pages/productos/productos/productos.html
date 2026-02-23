@@ -1,6 +1,6 @@
 <div class="space-y-6">
 
-  <!-- Header con stats -->
+  <!-- Header -->
   <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
     <div>
       <h2 class="text-2xl font-black text-gray-900">Productos</h2>
@@ -270,26 +270,12 @@
       <p class="text-gray-600 mb-6">
         Intentá con otros filtros o agregá un nuevo producto
       </p>
-      <button
-        class="
-          px-6 py-2.5
-          bg-linear-to-r from-orange-500 to-red-500
-          text-white font-bold
-          rounded-xl
-          shadow-lg shadow-orange-500/20
-          hover:shadow-xl
-          active:scale-95
-          transition-all
-        "
-      >
-        Agregar Producto
-      </button>
     </div>
   }
 
 </div>
 
-<!-- Modal Editar -->
+<!-- Modal Form -->
 @if(showFormModal()) {
   <app-producto-form-modal
     [producto]="selectedProducto()"

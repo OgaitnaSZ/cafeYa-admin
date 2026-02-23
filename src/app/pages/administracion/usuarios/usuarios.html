@@ -1,1 +1,259 @@
-<p>usuarios works!</p>
+<div class="space-y-6">
+
+  <!-- Header con stats -->
+  <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+    <div>
+      <h2 class="text-2xl font-black text-gray-900">Gestión de Usuarios</h2>
+      <p class="text-sm text-gray-500">
+        {{ totalUsuarios() }} usuario{{ totalUsuarios() !== 1 ? 's' : '' }} registrado{{ totalUsuarios() !== 1 ? 's' : '' }}
+      </p>
+    </div>
+
+    <!-- Botón crear -->
+    <button
+      (click)="openCreateModal()"
+      class="
+        h-11 px-5
+        bg-linear-to-r from-orange-500 to-red-500
+        text-white text-sm font-bold
+        rounded-xl
+        shadow-lg shadow-orange-500/20
+        hover:shadow-xl hover:shadow-orange-500/30
+        active:scale-95
+        transition-all
+        flex items-center gap-2
+        whitespace-nowrap cursor-pointer
+      "
+    >
+      <lucide-angular [img]="UserPlus" class="w-5 h-5"></lucide-angular>
+      <span>Nuevo Usuario</span>
+    </button>
+  </div>
+
+  <!-- Stats cards -->
+  <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+    <!-- Total -->
+    <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+      <div class="w-11 h-11 rounded-xl bg-linear-to-br from-purple-500 to-indigo-600 flex items-center justify-center shadow-lg mb-3">
+        <lucide-angular [img]="Users" class="w-6 h-6 text-white"></lucide-angular>
+      </div>
+      <p class="text-2xl font-black text-gray-900 mb-1">{{ totalUsuarios() }}</p>
+      <p class="text-sm font-semibold text-gray-700">Total usuarios</p>
+    </div>
+
+    <!-- Admins -->
+    <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+      <div class="w-11 h-11 rounded-xl bg-linear-to-br from-red-500 to-rose-600 flex items-center justify-center shadow-lg mb-3">
+        <lucide-angular [img]="Shield" class="w-6 h-6 text-white"></lucide-angular>
+      </div>
+      <p class="text-2xl font-black text-gray-900 mb-1">{{ usuariosPorRol().admin }}</p>
+      <p class="text-sm font-semibold text-gray-700">Administradores</p>
+    </div>
+
+    <!-- Encargados -->
+    <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+      <div class="w-11 h-11 rounded-xl bg-linear-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg mb-3">
+        <lucide-angular [img]="Users" class="w-6 h-6 text-white"></lucide-angular>
+      </div>
+      <p class="text-2xl font-black text-gray-900 mb-1">{{ usuariosPorRol().encargado }}</p>
+      <p class="text-sm font-semibold text-gray-700">Encargados</p>
+    </div>
+
+    <!-- Cocina -->
+    <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+      <div class="w-11 h-11 rounded-xl bg-linear-to-br from-orange-500 to-red-500 flex items-center justify-center shadow-lg mb-3">
+        <lucide-angular [img]="ChefHat" class="w-6 h-6 text-white"></lucide-angular>
+      </div>
+      <p class="text-2xl font-black text-gray-900 mb-1">{{ usuariosPorRol().cocina }}</p>
+      <p class="text-sm font-semibold text-gray-700">Personal cocina</p>
+    </div>
+  </div>
+
+  <!-- Filtros -->
+  <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
+    <div class="flex gap-2 flex-wrap">
+      <button
+        (click)="filtroRol.set('todos')"
+        class="px-4 py-2 rounded-xl text-sm font-semibold transition cursor-pointer"
+        [class.bg-orange-500]="filtroRol() === 'todos'"
+        [class.text-white]="filtroRol() === 'todos'"
+        [class.shadow-md]="filtroRol() === 'todos'"
+        [class.bg-white]="filtroRol() !== 'todos'"
+        [class.text-gray-600]="filtroRol() !== 'todos'"
+        [class.border]="filtroRol() !== 'todos'"
+        [class.border-gray-200]="filtroRol() !== 'todos'"
+      >
+        Todos ({{ totalUsuarios() }})
+      </button>
+      <button
+        (click)="filtroRol.set('admin')"
+        class="px-4 py-2 rounded-xl text-sm font-semibold transition cursor-pointer"
+        [class.bg-red-500]="filtroRol() === 'admin'"
+        [class.text-white]="filtroRol() === 'admin'"
+        [class.shadow-md]="filtroRol() === 'admin'"
+        [class.bg-white]="filtroRol() !== 'admin'"
+        [class.text-gray-600]="filtroRol() !== 'admin'"
+        [class.border]="filtroRol() !== 'admin'"
+        [class.border-gray-200]="filtroRol() !== 'admin'"
+      >
+        Admins ({{ usuariosPorRol().admin }})
+      </button>
+      <button
+        (click)="filtroRol.set('encargado')"
+        class="px-4 py-2 rounded-xl text-sm font-semibold transition cursor-pointer"
+        [class.bg-blue-500]="filtroRol() === 'encargado'"
+        [class.text-white]="filtroRol() === 'encargado'"
+        [class.shadow-md]="filtroRol() === 'encargado'"
+        [class.bg-white]="filtroRol() !== 'encargado'"
+        [class.text-gray-600]="filtroRol() !== 'encargado'"
+        [class.border]="filtroRol() !== 'encargado'"
+        [class.border-gray-200]="filtroRol() !== 'encargado'"
+      >
+        Encargados ({{ usuariosPorRol().encargado }})
+      </button>
+      <button
+        (click)="filtroRol.set('cocina')"
+        class="px-4 py-2 rounded-xl text-sm font-semibold transition cursor-pointer"
+        [class.bg-orange-500]="filtroRol() === 'cocina'"
+        [class.text-white]="filtroRol() === 'cocina'"
+        [class.shadow-md]="filtroRol() === 'cocina'"
+        [class.bg-white]="filtroRol() !== 'cocina'"
+        [class.text-gray-600]="filtroRol() !== 'cocina'"
+        [class.border]="filtroRol() !== 'cocina'"
+        [class.border-gray-200]="filtroRol() !== 'cocina'"
+      >
+        Cocina ({{ usuariosPorRol().cocina }})
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  @if(loadingLista()) {
+    <div class="flex justify-center py-12">
+      <div class="w-12 h-12 border-4 border-orange-200 border-t-orange-500 rounded-full animate-spin"></div>
+    </div>
+  }
+
+  <!-- Grid de usuarios -->
+  @if(!loadingLista() && usuariosFiltrados().length > 0) {
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+      @for(usuario of usuariosFiltrados(); track usuario.id) {
+        @let rolStyles = getRolStyles(usuario.rol);
+        
+        <div class="
+          bg-white rounded-2xl p-5
+          shadow-sm border border-gray-100
+          hover:shadow-md hover:border-gray-200
+          transition-all duration-200
+          group
+        ">
+          <!-- Header -->
+          <div class="flex items-start justify-between mb-4">
+            <!-- Avatar con inicial -->
+            <div class="flex items-center gap-3">
+              <div class="w-12 h-12 rounded-xl bg-linear-to-br from-orange-400 to-red-500 flex items-center justify-center text-white text-xl font-black shadow-md">
+                {{ usuario.nombre.charAt(0).toUpperCase() }}
+              </div>
+              <div>
+                <p class="text-base font-bold text-gray-900">{{ usuario.nombre }}</p>
+                <p class="text-xs text-gray-500">{{ usuario.email }}</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Info -->
+          <div class="space-y-3 mb-4">
+            <!-- Rol -->
+            <div class="flex items-center gap-2">
+              <div 
+                class="px-3 py-1.5 rounded-lg flex items-center gap-2"
+                [ngClass]="[rolStyles.bg]"
+              >
+                <lucide-angular [img]="rolStyles.icon" class="w-4 h-4" [ngClass]="[rolStyles.text]"></lucide-angular>
+                <span class="text-xs font-bold" [ngClass]="[rolStyles.text]">
+                  {{ rolStyles.label }}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Acciones -->
+          <div class="flex gap-2 pt-3 border-t border-gray-100">
+            <!-- Editar -->
+            <button
+              (click)="openEditModal(usuario)"
+              class="
+                flex-1 h-9
+                bg-orange-100 text-orange-600
+                rounded-lg
+                hover:bg-orange-200
+                active:scale-95
+                transition-all
+                flex items-center justify-center gap-1.5
+                text-sm font-semibold
+                cursor-pointer
+              "
+            >
+              <lucide-angular [img]="Pen" class="w-4 h-4"></lucide-angular>
+              <span>Editar</span>
+            </button>
+
+            <!-- Eliminar -->
+            <button
+              (click)="openDeleteModal(usuario, $event)"
+              class="
+                w-9 h-9
+                bg-red-100 text-red-600
+                rounded-lg
+                hover:bg-red-200
+                active:scale-95
+                transition-all
+                flex items-center justify-center
+                cursor-pointer
+              "
+              title="Eliminar usuario"
+            >
+              <lucide-angular [img]="Trash2" class="w-4 h-4"></lucide-angular>
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Estado vacío -->
+  @if(!loadingLista() && usuariosFiltrados().length === 0) {
+    <div class="text-center py-16 bg-white rounded-2xl border-2 border-dashed border-gray-200">
+      <div class="text-6xl mb-4">👥</div>
+      <h3 class="text-lg font-semibold text-gray-900 mb-2">
+        No hay usuarios registrados. Contacta con el programdor.
+      </h3>
+    </div>
+  }
+
+</div>
+
+<!-- Modal Form -->
+@if(showFormModal()) {
+  <app-usuario-form-modal
+    [usuario]="selectedUsuario()"
+    [saving]="loading()"
+    (close)="closeFormModal()"
+    (save)="handleUsuarioSaved($event)"
+  />
+}
+
+<!-- Modal Eliminar -->
+@if(showDeleteModal() && selectedUsuario()) {
+  <app-confirm-modal
+    title="Eliminar Usuario"
+    [message]="'¿Estás seguro de eliminar al usuario &quot;' + selectedUsuario()!.nombre + '&quot;?<br/><br/>' +
+               '<strong>Email:</strong> ' + selectedUsuario()!.email + '<br/>' +
+               '<strong>Rol:</strong> ' + selectedUsuario()!.rol + '<br/><br/>' +
+               'Esta acción no se puede deshacer.'"
+    confirmText="Eliminar"
+    confirmClass="bg-red-500 hover:bg-red-600"
+    (confirm)="handleDeleteConfirmed()"
+    (cancel)="closeDeleteModal()"
+  />
+}

@@ -18,9 +18,14 @@ const PAGE_TITLES: Record<string, { title: string, subtitle: string }> = {
     subtitle: 'Órdenes en preparación y servicio'
   },
 
-  '/productos': {
+  '/productos/productos': {
     title: 'Productos',
     subtitle: 'Gestión del catálogo y precios'
+  },
+
+  '/productos/categorias': {
+    title: 'Categorías',
+    subtitle: 'Gestión categorías'
   },
 
   '/mesas/activas': {
