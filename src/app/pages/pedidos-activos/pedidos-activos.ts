@@ -14,10 +14,11 @@ import {
   Receipt,
   AlertCircle
 } from 'lucide-angular';
+import { SocketConnection } from '../../layout/components/socket-connection/socket-connection';
 
 @Component({
   selector: 'app-pedidos-activos',
-  imports: [CommonModule, LucideAngularModule],
+  imports: [CommonModule, LucideAngularModule, SocketConnection],
   templateUrl: './pedidos-activos.html',
   styleUrl: './pedidos-activos.css',
 })
@@ -28,7 +29,7 @@ export class PedidosActivos {
 
   // Data
   pedidosActivos = this.pedidoService.pedidos;
-  loading = signal(false);
+  loadingLista = this.pedidoService.loadingLista;
   actualizando = signal(false);
 
   // Socket
@@ -98,9 +99,6 @@ export class PedidosActivos {
   }
 
   cargarPedidosActivos() {
-    this.loading.set(true);
-    
-    // Cargar solo pedidos con estados activos
     this.pedidoService.cargarPedidosActivos();
   }
 
@@ -153,7 +151,9 @@ export class PedidosActivos {
     this.pedidoService.cargarPedidosActivos();
   }
 
-  cambiarEstado(pedido: Pedido, nuevoEstado: PedidoEstado) {
+  cambiarEstado(pedido: Pedido, nuevoEstado: PedidoEstado, event: Event) {
+    event.preventDefault();
+    event.stopPropagation();
     this.pedidoService.cambiarEstadoPedido(pedido.pedido_id, nuevoEstado);
     
     // Actualizar localmente para feedback inmediato

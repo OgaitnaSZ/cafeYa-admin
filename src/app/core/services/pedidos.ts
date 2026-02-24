@@ -100,7 +100,7 @@ export class PedidosServices {
       tap(data => {
         const pedidosNormalizados = data.map(p => ({
           ...p,
-          productos: p.productos ?? []
+          productos: p.productos ?? [],
         }));
       
         this.pedidos.set(pedidosNormalizados);
