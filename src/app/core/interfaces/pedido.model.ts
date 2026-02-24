@@ -28,7 +28,7 @@ export interface Pedido {
   };
 }
 
-export type PedidoEstado = 'Pendiente' | 'EnPreparacion' | 'Listo' | 'Entregado' | 'Cancelado';
+export type PedidoEstado = 'Pendiente' | 'En_preparacion' | 'Listo' | 'Entregado' | 'Cancelado';
 
 export interface PedidoProducto {
   pedido_producto_id: number;

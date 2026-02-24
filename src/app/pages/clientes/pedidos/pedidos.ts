@@ -203,7 +203,7 @@ export class Pedidos {
     this.nombreClienteFiltrado.set('');
     this.numeroMesaFiltrada.set(null);
     
-    this.router.navigate(['/admin/pedidos']);
+    this.router.navigate(['/clientes/pedidos']);
     this.pedidoService.limpiarFiltros();
     this.aplicarFiltros();
   }
@@ -236,7 +236,7 @@ export class Pedidos {
 
   // Navegar a página de pagos con filtro de pedido
   verPagos(pedido: Pedido) {
-    this.router.navigate(['/admin/pagos'], {
+    this.router.navigate(['/clientes/pagos'], {
       queryParams: { pedido_id: pedido.pedido_id }
     });
   }
@@ -250,12 +250,12 @@ export class Pedidos {
         icon: Clock,
         label: 'Pendiente'
       },
-      EnPreparacion: { 
+      En_preparacion: { 
         bg: 'bg-blue-100', 
         text: 'text-blue-700',
         border: 'border-blue-200',
         icon: Package,
-        label: 'En Preparación'
+        label: 'En_preparacion'
       },
       Listo: { 
         bg: 'bg-green-100', 

@@ -35,7 +35,7 @@ export class PedidosServices {
     const pedidos = this.pedidos();
     return {
       pendientes: pedidos.filter(p => p.estado === 'Pendiente').length,
-      en_preparacion: pedidos.filter(p => p.estado === 'EnPreparacion').length,
+      en_preparacion: pedidos.filter(p => p.estado === 'En_preparacion').length,
       listos: pedidos.filter(p => p.estado === 'Listo').length,
       entregados: pedidos.filter(p => p.estado === 'Entregado').length,
       cancelados: pedidos.filter(p => p.estado === 'Cancelado').length,
@@ -138,7 +138,7 @@ export class PedidosServices {
     this.error.set(null);
     this.success.set(null);
 
-    this.http.patch<Pedido>(`${this.apiUrl}estado/${pedidoId}`, { estado: nuevoEstado }, {
+    this.http.patch<Pedido>(`${this.apiUrl}estado`, { pedido_id: pedidoId ,estado: nuevoEstado }, {
       headers: this.tokenService.createAuthHeaders()
     }).pipe(
       tap(data => {
