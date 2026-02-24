@@ -35,7 +35,7 @@ export const NAV_ITEMS: NavItem[] = [
   {
     id: 'clientes', label: 'Clientes', icon: Users, roles: ['admin'],
     children: [
-      { id: 'clientes-lista',          label: 'Clientes',       icon: Users,         route: '/clientes',                  roles: ['admin'] },
+      { id: 'clientes-lista',          label: 'Clientes',       icon: Users,         route: '/clientes/clientes',                  roles: ['admin'] },
       { id: 'clientes-pedidos',        label: 'Pedidos',        icon: ClipboardList, route: '/clientes/pedidos',          roles: ['admin'] },
       { id: 'clientes-calificaciones', label: 'Calificaciones', icon: Star,          route: '/clientes/calificaciones',   roles: ['admin'] },
       { id: 'clientes-pagos',          label: 'Pagos',          icon: CreditCard,    route: '/clientes/pagos',            roles: ['admin'] },

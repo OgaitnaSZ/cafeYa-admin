@@ -29,7 +29,7 @@ export const routes: Routes = [
             { path: 'productos/categorias',      loadComponent: () => import('./pages/productos/categorias/categorias').then(m => m.Categorias) },
             { path: 'mesas/activas',  loadComponent: () => import('./pages/mesas/mesas-activas/mesas-activas').then(m => m.MesasActivas) },
             { path: 'mesas/gestion',  loadComponent: () => import('./pages/mesas/gestion-mesas/gestion-mesas').then(m => m.GestionMesas) },
-            { path: 'clientes',       loadComponent: () => import('./pages/clientes/clientes/clientes').then(m => m.Clientes) },
+            { path: 'clientes/clientes',       loadComponent: () => import('./pages/clientes/clientes/clientes').then(m => m.Clientes) },
             { path: 'clientes/pedidos',        loadComponent: () => import('./pages/clientes/pedidos/pedidos').then(m => m.Pedidos) },
             { path: 'clientes/calificaciones', loadComponent: () => import('./pages/clientes/calificaciones/calificaciones').then(m => m.Calificaciones) },
             { path: 'clientes/pagos',          loadComponent: () => import('./pages/clientes/pagos/pagos').then(m => m.Pagos) },

@@ -13,7 +13,7 @@
   <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
     <!-- Total Clientes -->
     <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
-      <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center shadow-lg mb-3">
+      <div class="w-11 h-11 rounded-xl bg-linear-to-br from-purple-500 to-indigo-600 flex items-center justify-center shadow-lg mb-3">
         <lucide-angular [img]="Users" class="w-6 h-6 text-white"></lucide-angular>
       </div>
       <p class="text-2xl font-black text-gray-900 mb-1">{{ totalClientes() }}</p>
@@ -22,7 +22,7 @@
 
     <!-- Con Pedidos -->
     <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
-      <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center shadow-lg mb-3">
+      <div class="w-11 h-11 rounded-xl bg-linear-to-br from-green-500 to-emerald-600 flex items-center justify-center shadow-lg mb-3">
         <lucide-angular [img]="ShoppingBag" class="w-6 h-6 text-white"></lucide-angular>
       </div>
       <p class="text-2xl font-black text-gray-900 mb-1">{{ clientesConPedidos() }}</p>
@@ -31,7 +31,7 @@
 
     <!-- Sin Pedidos -->
     <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
-      <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-gray-400 to-gray-600 flex items-center justify-center shadow-lg mb-3">
+      <div class="w-11 h-11 rounded-xl bg-linear-to-br from-gray-400 to-gray-600 flex items-center justify-center shadow-lg mb-3">
         <lucide-angular [img]="Users" class="w-6 h-6 text-white"></lucide-angular>
       </div>
       <p class="text-2xl font-black text-gray-900 mb-1">{{ clientesSinPedidos() }}</p>
@@ -40,7 +40,7 @@
 
     <!-- Total Pedidos -->
     <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
-      <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center shadow-lg mb-3">
+      <div class="w-11 h-11 rounded-xl bg-linear-to-br from-orange-500 to-red-500 flex items-center justify-center shadow-lg mb-3">
         <lucide-angular [img]="Receipt" class="w-6 h-6 text-white"></lucide-angular>
       </div>
       <p class="text-2xl font-black text-gray-900 mb-1">{{ totalPedidos() }}</p>
@@ -93,7 +93,7 @@
           <div class="flex items-start justify-between mb-4">
             <!-- Avatar -->
             <div class="flex items-center gap-3">
-              <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-400 to-red-500 flex items-center justify-center text-white text-xl font-black shadow-md">
+              <div class="w-12 h-12 rounded-xl bg-linear-to-br from-orange-400 to-red-500 flex items-center justify-center text-white text-xl font-black shadow-md">
                 {{ cliente.nombre.charAt(0).toUpperCase() }}
               </div>
               <div class="flex-1 min-w-0">
@@ -189,7 +189,7 @@
               (click)="verPedidos(cliente)"
               class="
                 w-full h-10
-                bg-gradient-to-r from-orange-500 to-red-500
+                bg-linear-to-r from-orange-500 to-red-500
                 text-white font-semibold
                 rounded-xl
                 shadow-lg shadow-orange-500/20

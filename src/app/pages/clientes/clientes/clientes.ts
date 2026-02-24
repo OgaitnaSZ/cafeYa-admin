@@ -79,7 +79,7 @@ export class Clientes {
 
   // Navegar a pedidos del cliente
   verPedidos(cliente: Cliente) {
-    this.router.navigate(['/admin/pedidos'], {
+    this.router.navigate(['/clientes/pedidos'], {
       queryParams: { cliente_id: cliente.cliente_id }
     });
   }
