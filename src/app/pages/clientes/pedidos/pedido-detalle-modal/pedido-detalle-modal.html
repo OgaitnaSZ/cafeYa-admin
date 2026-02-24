@@ -122,12 +122,12 @@
           <div class="flex gap-3">
             @if(pedido.estado === 'Pendiente') {
               <button
-                (click)="handleCambiarEstado('EnPreparacion')"
+                (click)="handleCambiarEstado('En_preparacion')"
                 class="flex-1 h-11 bg-blue-500 text-white font-bold rounded-xl hover:bg-blue-600 active:scale-95 transition-all cursor-pointer"
               >
                 → En Preparación
               </button>
-            } @else if(pedido.estado === 'EnPreparacion') {
+            } @else if(pedido.estado === 'En_preparacion') {
               <button
                 (click)="handleCambiarEstado('Listo')"
                 class="flex-1 h-11 bg-green-500 text-white font-bold rounded-xl hover:bg-green-600 active:scale-95 transition-all"
