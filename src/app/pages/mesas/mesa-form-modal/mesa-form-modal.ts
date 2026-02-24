@@ -1,10 +1,10 @@
 import { Component, Input, Output, EventEmitter, OnInit, signal, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Mesa } from '../../../../core/interfaces/mesa.model';
+import { Mesa } from '../../../core/interfaces/mesa.model';
 import { Check, LucideAngularModule, X, LockKeyhole } from 'lucide-angular';
-import { ToastService } from '../../../../core/services/toast';
-import { MesaService } from '../../../../core/services/mesa';
+import { ToastService } from '../../../core/services/toast';
+import { MesaService } from '../../../core/services/mesa';
 
 @Component({
   selector: 'app-mesa-form-modal',

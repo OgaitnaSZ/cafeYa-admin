@@ -18,18 +18,12 @@ export interface NavItem {
 export const NAV_ITEMS: NavItem[] = [
   { id: 'dashboard',      label: 'Dashboard',       icon: LayoutDashboard,  route: '/dashboard', roles: ['admin', 'encargado'] },
   { id: 'pedidos-activos',         label: 'Pedidos Activos',  icon: ChefHat,          route: '/pedidos-activos',    roles: ['admin', 'encargado', 'cocina'] },
+  { id: 'mesas',  label: 'Mesas', icon: Armchair,    route: '/mesas',  roles: ['admin', 'encargado'] },
   {
     id: 'productos', label: 'Productos', icon: Armchair, roles: ['admin', 'encargado'],
     children: [
       { id: 'productos',  label: 'Productos',    icon: Package, route: '/productos/productos',  roles: ['admin', 'encargado'] },
       { id: 'categorias',  label: 'Categorias',    icon: LayoutGrid, route: '/productos/categorias',  roles: ['admin', 'encargado'] },
-    ]
-  },
-  {
-    id: 'mesas', label: 'Mesas', icon: Armchair, roles: ['admin', 'encargado'],
-    children: [
-      { id: 'mesas-activas',  label: 'Mesas Activas',    icon: CheckCircle, route: '/mesas/activas',  roles: ['admin', 'encargado'] },
-      { id: 'mesas-gestion',  label: 'Gestión de Mesas', icon: Settings,    route: '/mesas/gestion',  roles: ['admin', 'encargado'] },
     ]
   },
   {

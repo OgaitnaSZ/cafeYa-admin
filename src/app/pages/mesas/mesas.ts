@@ -1,20 +1,20 @@
 import { Component, signal, inject, computed, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MesaFormModal } from './mesa-form-modal/mesa-form-modal';
-import { ConfirmModal } from '../../../layout/components/confirm-modal/confirm-modal';
-import { ToastService } from '../../../core/services/toast';
-import { Mesa } from '../../../core/interfaces/mesa.model';
-import { MesaService } from '../../../core/services/mesa';
+import { ConfirmModal } from '../../layout/components/confirm-modal/confirm-modal';
+import { ToastService } from '../../core/services/toast';
+import { Mesa } from '../../core/interfaces/mesa.model';
+import { MesaService } from '../../core/services/mesa';
 import { LucideAngularModule, Pen, Plus, Trash2, RefreshCw, QrCode, ExternalLink, Copy } from 'lucide-angular';
 import { QRCodeComponent } from 'angularx-qrcode';
 
 @Component({
-  selector: 'app-gestion-mesas',
+  selector: 'app-mesas',
   imports: [CommonModule, MesaFormModal, ConfirmModal, LucideAngularModule, QRCodeComponent],
-  templateUrl: './gestion-mesas.html',
-  styleUrl: './gestion-mesas.css',
+  templateUrl: './mesas.html',
+  styleUrl: './mesas.css',
 })
-export class GestionMesas {
+export class Mesas {
   private mesasService = inject(MesaService);
   private toastService = inject(ToastService);
 

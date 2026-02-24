@@ -28,12 +28,7 @@ const PAGE_TITLES: Record<string, { title: string, subtitle: string }> = {
     subtitle: 'Gestión categorías'
   },
 
-  '/mesas/activas': {
-    title: 'Mesas Activas',
-    subtitle: 'Estado actual de mesas en servicio'
-  },
-
-  '/mesas/gestion': {
+  '/mesas': {
     title: 'Gestión de Mesas',
     subtitle: 'Configuración y administración de mesas'
   },
