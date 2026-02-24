@@ -2,12 +2,13 @@ export interface Producto {
   producto_id?: string;
   nombre: string;
   descripcion: string;
-  precio_unitario: number;
-  imagen_url: string;
   categoria_id: number;
   categoria?: Categoria;
-  estado: estado_producto;
+  imagen_url: string;
+  precio_unitario: number;
   destacado: boolean;
+  estado: estado_producto;
+  stock: number;
 }
 
 export type estado_producto = 'Activo' | 'Inactivo';

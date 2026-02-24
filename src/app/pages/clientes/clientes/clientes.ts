@@ -15,7 +15,8 @@ import {
   Phone,
   Clock,
   Receipt,
-  ChevronRight
+  ChevronRight,
+  Search
 } from 'lucide-angular';
 
 @Component({
@@ -156,4 +157,5 @@ export class Clientes {
   readonly Clock = Clock;
   readonly Receipt = Receipt;
   readonly ChevronRight = ChevronRight;
+  readonly Search = Search;
 }

@@ -49,7 +49,8 @@ export class ProductoFormModal {
       nombre: '',
       descripcion: '',
       precio_unitario: 0,
-      categoria_id: 0
+      categoria_id: 0,
+      stock: 0
     };
 
     // Si hay producto (editar), usar sus valores, sino usar defaults
@@ -58,7 +59,8 @@ export class ProductoFormModal {
           nombre: this.producto.nombre,
           descripcion: this.producto.descripcion,
           precio_unitario: this.producto.precio_unitario,
-          categoria_id: this.producto.categoria_id
+          categoria_id: this.producto.categoria_id,
+          stock: this.producto.stock
         }
       : defaultValues;
 
@@ -67,6 +69,7 @@ export class ProductoFormModal {
       descripcion: [initialValues.descripcion, [Validators.required]],
       precio_unitario: [initialValues.precio_unitario, [Validators.required, Validators.min(0)]],
       categoria_id: [initialValues.categoria_id, [Validators.required]],
+      stock: [initialValues.stock, [Validators.required, Validators.min(0)]],
     });
 
     // Si hay imagen inicial, mostrar preview

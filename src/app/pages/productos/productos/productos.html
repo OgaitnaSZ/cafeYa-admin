@@ -139,9 +139,26 @@
                     {{ producto.descripcion }}
                   </p>
                   <div class="flex flex-wrap items-center gap-2">
+                    <!-- Categoría -->
                     <span class="px-2.5 py-1 bg-gray-100 text-gray-700 text-xs font-semibold rounded-lg">
                       {{ getCategoriaNombre(producto.categoria_id) }}
                     </span>
+                    
+                    <!-- Stock con color dinámico -->
+                    <span 
+                      class="px-2.5 py-1 text-xs font-bold rounded-lg flex items-center gap-1"
+                      [class.bg-green-100]="producto.stock > 10"
+                      [class.text-green-700]="producto.stock > 10"
+                      [class.bg-yellow-100]="producto.stock > 0 && producto.stock <= 10"
+                      [class.text-yellow-700]="producto.stock > 0 && producto.stock <= 10"
+                      [class.bg-red-100]="producto.stock === 0"
+                      [class.text-red-700]="producto.stock === 0"
+                    >
+                      <lucide-angular [img]="Box" class="w-3 h-3"></lucide-angular>
+                      {{ producto.stock }} {{ producto.stock === 1 ? 'unidad' : 'unidades' }}
+                    </span>
+                    
+                    <!-- Precio -->
                     <span class="text-xl font-black text-gray-900">
                       ${{ formatPrice(producto.precio_unitario) }}
                     </span>

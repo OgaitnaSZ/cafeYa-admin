@@ -5,7 +5,7 @@ import { ConfirmModal } from '../../../layout/components/confirm-modal/confirm-m
 import { Producto } from '../../../core/interfaces/producto.model';
 import { ProductoFormModal } from './producto-form-modal/producto-form-modal';
 import { ProductoService } from '../../../core/services/producto';
-import { LucideAngularModule, Pen, Plus, Search, Trash, Trash2 } from 'lucide-angular';
+import { Box, LucideAngularModule, Pen, Plus, Search, Trash, Trash2 } from 'lucide-angular';
 import { ToastService } from '../../../core/services/toast';
 
 @Component({
@@ -173,4 +173,5 @@ export class Productos {
   readonly Pen = Pen;
   readonly Search = Search;
   readonly Plus = Plus;
+  readonly Box = Box;
 }

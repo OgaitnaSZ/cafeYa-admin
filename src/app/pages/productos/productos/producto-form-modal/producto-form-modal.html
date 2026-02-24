@@ -181,8 +181,8 @@
         ></textarea>
       </div>
 
-      <!-- Grid: Categoría y Precio -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <!-- Grid: Categoría, Precio y Stock -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <!-- Categoría -->
         <div>
           <label class="block text-sm font-semibold text-gray-700 mb-2">
@@ -231,6 +231,51 @@
               [class.border-red-300]="form.get('precio_unitario')?.invalid && form.get('precio_unitario')?.touched"
             />
           </div>
+        </div>
+
+        <!-- Stock -->
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-2">
+            Stock <span class="text-red-500">*</span>
+          </label>
+          <div class="relative">
+            <input
+              formControlName="stock"
+              type="number"
+              min="0"
+              placeholder="0"
+              class="
+                w-full h-11 px-4
+                text-sm
+                border-2 border-gray-200
+                rounded-xl
+                focus:border-orange-500 focus:outline-none
+                transition
+              "
+              [class.border-red-300]="form.get('stock')?.invalid && form.get('stock')?.touched"
+              [class.border-red-500]="form.get('stock')?.value === 0"
+              [class.bg-red-50]="form.get('stock')?.value === 0"
+            />
+            <!-- Indicador visual de stock -->
+            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+              @if(form.get('stock')?.value > 10) {
+                <div class="w-2 h-2 rounded-full bg-green-500"></div>
+              } @else if(form.get('stock')?.value > 0) {
+                <div class="w-2 h-2 rounded-full bg-yellow-500"></div>
+              } @else {
+                <div class="w-2 h-2 rounded-full bg-red-500"></div>
+              }
+            </div>
+          </div>
+          @if(form.get('stock')?.value === 0) {
+            <p class="text-xs text-red-600 mt-1.5 ml-1">
+              ⚠️ Sin stock el producto no estará disponible
+            </p>
+          } @else if(form.get('stock')?.value > 0 && form.get('stock')?.value <= 5) {
+            <p class="text-xs text-yellow-600 mt-1.5 ml-1">
+              ⚠️ Stock crítico
+            </p>
+          }
         </div>
       </div>
 
