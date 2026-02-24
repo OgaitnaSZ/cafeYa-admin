@@ -133,6 +133,25 @@ export class PedidosServices {
     ).subscribe();
   }
 
+  cargarPedidosActivos(): void {
+    this.loadingLista.set(true);
+    this.error.set(null);
+
+    this.http.get<Pedido[]>(`${this.apiUrl}activos`, {
+      headers: this.tokenService.createAuthHeaders(),
+    }).pipe(
+      tap(data => {
+        this.pedidos.set(data);
+      }),
+      catchError(err => {
+        this.error.set('Error al cargar pedidos');
+        console.error(err);
+        return [];
+      }),
+      finalize(() => this.loadingLista.set(false))
+    ).subscribe();
+  }
+
   cambiarEstadoPedido(pedidoId: string, nuevoEstado: PedidoEstado): void {
     this.loading.set(true);
     this.error.set(null);
