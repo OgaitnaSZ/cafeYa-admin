@@ -23,12 +23,14 @@ import {
   Eye,
   RefreshCw,
   DollarSign,
-  CreditCard
+  CreditCard,
+  Star
 } from 'lucide-angular';
+import { SocketConnection } from "../../../layout/components/socket-connection/socket-connection";
 
 @Component({
   selector: 'app-pedidos',
-  imports: [CommonModule, PedidoDetalleModal, LucideAngularModule],
+  imports: [CommonModule, PedidoDetalleModal, LucideAngularModule, SocketConnection],
   templateUrl: './pedidos.html',
   styleUrl: './pedidos.css',
 })
@@ -241,6 +243,12 @@ export class Pedidos {
     });
   }
 
+  verCalificacion(pedido: Pedido) {
+    this.router.navigate(['/clientes/calificaciones'], {
+      queryParams: { pedido_id: pedido.pedido_id }
+    });
+  }
+
   getEstadoStyles(estado: PedidoEstado) {
     const styles = {
       Pendiente: { 
@@ -320,4 +328,5 @@ export class Pedidos {
   readonly RefreshCw = RefreshCw;
   readonly DollarSign = DollarSign;
   readonly CreditCard = CreditCard;
+  readonly Star = Star;
 }

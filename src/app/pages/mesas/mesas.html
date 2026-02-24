@@ -1,7 +1,7 @@
 <div class="space-y-6">
 
   <!-- Header con stats -->
-  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+  <div class="flex sm:items-center justify-between gap-4">
     <div>
       <h2 class="text-2xl font-black text-gray-900">Gestión de Mesas</h2>
       <p class="text-sm text-gray-500">
@@ -10,7 +10,7 @@
     </div>
 
     <!-- Stats cards -->
-    <div class="flex flex-wrap gap-3">
+    <div class="flex gap-3">
       <div class="px-4 py-2 bg-green-50 border border-green-200 rounded-xl">
         <p class="text-xs text-green-600 font-medium">Disponibles</p>
         <p class="text-xl font-black text-green-700">{{ mesasDisponibles() }}</p>
@@ -100,7 +100,7 @@
 
   <!-- Grid de mesas -->
   @if(!loadingLista() && mesasFiltradas().length > 0) {
-    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
       @for(mesa of mesasFiltradas(); track mesa.mesa_id) {
         @let estadoStyles = getEstadoStyles(mesa.estado);
         
