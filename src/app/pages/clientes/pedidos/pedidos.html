@@ -23,7 +23,7 @@
       <button
         (click)="recargarPedidos()"
         [disabled]="loadingLista()"
-        class="h-11 px-4 bg-white border-2 border-gray-200 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 disabled:opacity-50 active:scale-95 transition-all flex items-center gap-2"
+        class="h-11 px-4 bg-white border-2 border-gray-200 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 disabled:opacity-50 active:scale-95 transition-all flex items-center gap-2 cursor-pointer"
       >
         <lucide-angular [img]="RefreshCw" class="w-4 h-4" [class.animate-spin]="loadingLista()"></lucide-angular>
         <span class="hidden sm:inline">Actualizar</span>
@@ -157,7 +157,7 @@
       <div class="flex gap-2 flex-wrap">
         <button
           (click)="cambiarFiltroEstado('todos')"
-          class="px-4 py-2 rounded-xl text-sm font-semibold transition"
+          class="px-4 py-2 rounded-xl text-sm font-semibold transition cursor-pointer"
           [class.bg-orange-500]="filtroEstado() === 'todos'"
           [class.text-white]="filtroEstado() === 'todos'"
           [class.shadow-md]="filtroEstado() === 'todos'"
@@ -170,7 +170,7 @@
         </button>
         <button
           (click)="cambiarFiltroEstado('Pendiente')"
-          class="px-4 py-2 rounded-xl text-sm font-semibold transition"
+          class="px-4 py-2 rounded-xl text-sm font-semibold transition cursor-pointer"
           [class.bg-yellow-500]="filtroEstado() === 'Pendiente'"
           [class.text-white]="filtroEstado() === 'Pendiente'"
           [class.shadow-md]="filtroEstado() === 'Pendiente'"
@@ -183,7 +183,7 @@
         </button>
         <button
           (click)="cambiarFiltroEstado('EnPreparacion')"
-          class="px-4 py-2 rounded-xl text-sm font-semibold transition"
+          class="px-4 py-2 rounded-xl text-sm font-semibold transition cursor-pointer"
           [class.bg-blue-500]="filtroEstado() === 'EnPreparacion'"
           [class.text-white]="filtroEstado() === 'EnPreparacion'"
           [class.shadow-md]="filtroEstado() === 'EnPreparacion'"
@@ -196,7 +196,7 @@
         </button>
         <button
           (click)="cambiarFiltroEstado('Listo')"
-          class="px-4 py-2 rounded-xl text-sm font-semibold transition"
+          class="px-4 py-2 rounded-xl text-sm font-semibold transition cursor-pointer"
           [class.bg-green-500]="filtroEstado() === 'Listo'"
           [class.text-white]="filtroEstado() === 'Listo'"
           [class.shadow-md]="filtroEstado() === 'Listo'"
@@ -351,7 +351,7 @@
                   active:scale-95
                   transition-all
                   flex items-center justify-center gap-2
-                  text-sm font-semibold
+                  text-sm font-semibold cursor-pointer
                 "
               >
                 <lucide-angular [img]="Eye" class="w-4 h-4"></lucide-angular>
@@ -370,7 +370,7 @@
                   active:scale-95
                   transition-all
                   flex items-center justify-center gap-2
-                  text-sm font-semibold
+                  text-sm font-semibold cursor-pointer
                 "
               >
                 <lucide-angular [img]="CreditCard" class="w-4 h-4"></lucide-angular>
@@ -391,7 +391,7 @@
                       hover:shadow-lg hover:shadow-blue-500/50
                       active:scale-95
                       transition-all
-                      text-sm font-bold
+                      text-sm font-bold cursor-pointer
                     "
                   >
                     → Preparar

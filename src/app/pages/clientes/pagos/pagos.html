@@ -13,7 +13,7 @@
     <button
       (click)="recargarPagos()"
       [disabled]="loadingLista()"
-      class="h-11 px-4 bg-white border-2 border-gray-200 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 disabled:opacity-50 active:scale-95 transition-all flex items-center gap-2"
+      class="h-11 px-4 bg-white border-2 border-gray-200 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 disabled:opacity-50 active:scale-95 transition-all flex items-center gap-2 cursor-pointer"
     >
       <lucide-angular [img]="RefreshCw" class="w-4 h-4" [class.animate-spin]="loadingLista()"></lucide-angular>
       <span class="hidden sm:inline">Actualizar</span>
@@ -117,7 +117,7 @@
     <div class="flex gap-2 flex-wrap">
       <button
         (click)="cambiarFiltroMedioPago('todos')"
-        class="px-4 py-2 rounded-xl text-sm font-semibold transition"
+        class="px-4 py-2 rounded-xl text-sm font-semibold transition cursor-pointer"
         [class.bg-orange-500]="filtroMedioPago() === 'todos'"
         [class.text-white]="filtroMedioPago() === 'todos'"
         [class.shadow-md]="filtroMedioPago() === 'todos'"
@@ -130,7 +130,7 @@
       </button>
       <button
         (click)="cambiarFiltroMedioPago('app')"
-        class="px-4 py-2 rounded-xl text-sm font-semibold transition"
+        class="px-4 py-2 rounded-xl text-sm font-semibold transition cursor-pointer"
         [class.bg-blue-500]="filtroMedioPago() === 'app'"
         [class.text-white]="filtroMedioPago() === 'app'"
         [class.shadow-md]="filtroMedioPago() === 'app'"
@@ -143,7 +143,7 @@
       </button>
       <button
         (click)="cambiarFiltroMedioPago('tarjeta')"
-        class="px-4 py-2 rounded-xl text-sm font-semibold transition"
+        class="px-4 py-2 rounded-xl text-sm font-semibold transition cursor-pointer"
         [class.bg-purple-500]="filtroMedioPago() === 'tarjeta'"
         [class.text-white]="filtroMedioPago() === 'tarjeta'"
         [class.shadow-md]="filtroMedioPago() === 'tarjeta'"
@@ -156,7 +156,7 @@
       </button>
       <button
         (click)="cambiarFiltroMedioPago('efectivo')"
-        class="px-4 py-2 rounded-xl text-sm font-semibold transition"
+        class="px-4 py-2 rounded-xl text-sm font-semibold transition cursor-pointer"
         [class.bg-green-500]="filtroMedioPago() === 'efectivo'"
         [class.text-white]="filtroMedioPago() === 'efectivo'"
         [class.shadow-md]="filtroMedioPago() === 'efectivo'"

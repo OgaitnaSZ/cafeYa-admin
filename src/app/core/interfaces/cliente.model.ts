@@ -11,5 +11,4 @@ export interface Cliente {
     pedidos: number;
   };
   total_gastado?: number;
-  ultimo_pedido?: Date;
 }
