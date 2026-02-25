@@ -157,7 +157,7 @@ export class Pagos {
 
   // Ver recibo para imprimir
   verRecibo(pago: Pago) {
-    console.log(pago);
+    this.pagoService.generarRecibo(pago.pago_id);
   }
 
   // Helper para obtener estilos según medio de pago

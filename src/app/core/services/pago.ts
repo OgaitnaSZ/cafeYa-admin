@@ -17,6 +17,7 @@ export class PagoService {
   // Signals
   pagos = signal<Pago[]>([]);
   pago = signal<Pago | null>(null);
+  recibo_url = signal<string | null>(null);
   stats = signal<StatsPagos | null>(null);
 
   // Estados
@@ -118,7 +119,12 @@ export class PagoService {
     ).subscribe();
   }
 
+  generarRecibo(pago_id: string): void {
+    window.open(`${environment.apiUrl}pago/${pago_id}/recibo`, '_blank');
+  }
+
   limpiarFiltros(): void {
     this.filtrosActivos.set({});
   }
 }
+
