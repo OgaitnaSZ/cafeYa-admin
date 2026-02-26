@@ -1,1 +1,364 @@
-<p>dashboard works!</p>
+<div class="space-y-6 pb-10">
+
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+    <div>
+      <h2 class="text-2xl font-black text-gray-900">
+        {{ saludo }}, <span class="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-red-500">{{ usuario()?.nombre }}!</span>
+      </h2>
+      <p class="text-sm text-gray-500 capitalize">{{ fechaHoy }}</p>
+    </div>
+
+    <div class="flex items-center gap-3">
+      <!-- Última actualización -->
+      <span class="text-xs text-gray-400 hidden sm:block">
+        Actualizado {{ formatHora(lastUpdated()) }}
+      </span>
+
+      <!-- Botón refresh -->
+      <button
+        (click)="refreshData()"
+        [class.animate-spin]="loading()"
+        class="w-9 h-9 flex items-center justify-center bg-white border-2 border-gray-200 rounded-xl hover:border-orange-400 transition-all cursor-pointer"
+        title="Actualizar"
+      >
+        <lucide-angular [img]="RefreshCw" class="w-4 h-4 text-gray-500"></lucide-angular>
+      </button>
+
+      <!-- Botón ir a reportes -->
+      <a
+        routerLink="/reportes"
+        class="h-9 px-4 flex items-center gap-2 bg-gradient-to-r from-orange-500 to-red-500 text-white text-sm font-bold rounded-xl shadow-lg shadow-orange-500/20 hover:shadow-xl hover:shadow-orange-500/30 active:scale-95 transition-all whitespace-nowrap"
+      >
+        Ver reportes
+        <lucide-angular [img]="ArrowRight" class="w-4 h-4"></lucide-angular>
+      </a>
+    </div>
+  </div>
+
+  <!-- ── KPI Cards ───────────────────────────────────────────────────────── -->
+  <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+
+    <!-- Recaudado hoy -->
+    <div class="col-span-2 sm:col-span-1 bg-gradient-to-br from-orange-500 to-red-500 rounded-2xl p-4 shadow-lg shadow-orange-500/25 text-white">
+      <div class="flex items-start justify-between mb-3">
+        <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
+          <lucide-angular [img]="TrendingUp" class="w-5 h-5 text-white"></lucide-angular>
+        </div>
+        <span
+          class="text-xs font-bold px-2 py-1 rounded-full"
+          [class.bg-white/20]="variacionRecaudado() >= 0"
+          [class.bg-red-900/30]="variacionRecaudado() < 0"
+        >
+          {{ variacionRecaudado() >= 0 ? '+' : '' }}{{ variacionRecaudado().toFixed(1) }}%
+        </span>
+      </div>
+      <p class="text-sm text-white/70 mb-1">Recaudado hoy</p>
+      <p class="text-2xl font-black">${{ formatPrice(recaudadoHoy()) }}</p>
+      <p class="text-xs text-white/60 mt-1">vs ${{ formatPrice(recaudadoAyer()) }} ayer</p>
+    </div>
+
+    <!-- Pedidos del día -->
+    <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
+      <div class="flex items-start justify-between mb-3">
+        <div class="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center">
+          <lucide-angular [img]="ShoppingBag" class="w-5 h-5 text-blue-600"></lucide-angular>
+        </div>
+        <span class="text-xs font-bold px-2 py-1 rounded-full"
+          [class.bg-green-100]="variacionPedidos() >= 0" [class.text-green-700]="variacionPedidos() >= 0"
+          [class.bg-red-100]="variacionPedidos() < 0" [class.text-red-700]="variacionPedidos() < 0"
+        >
+          {{ variacionPedidos() >= 0 ? '+' : '' }}{{ variacionPedidos().toFixed(0) }}%
+        </span>
+      </div>
+      <p class="text-sm text-gray-500 mb-1">Pedidos hoy</p>
+      <p class="text-2xl font-black text-gray-900">{{ totalPedidosHoy() }}</p>
+      <p class="text-xs text-gray-400 mt-1">{{ pedidosAyer() }} ayer</p>
+    </div>
+
+    <!-- Mesas -->
+    <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
+      <div class="w-10 h-10 bg-purple-50 rounded-xl flex items-center justify-center mb-3">
+        <lucide-angular [img]="Utensils" class="w-5 h-5 text-purple-600"></lucide-angular>
+      </div>
+      <p class="text-sm text-gray-500 mb-1">Mesas ocupadas</p>
+      <p class="text-2xl font-black text-gray-900">{{ mesasOcupadas() }} <span class="text-sm font-medium text-gray-400">/ {{ mesas().length }}</span></p>
+      <div class="mt-2 w-full bg-gray-100 rounded-full h-1.5">
+        <div
+          class="bg-purple-500 h-1.5 rounded-full transition-all"
+          [style.width.%]="(mesasOcupadas() / mesas().length) * 100"
+        ></div>
+      </div>
+    </div>
+
+    <!-- Calificación -->
+    <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
+      <div class="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center mb-3">
+        <lucide-angular [img]="Star" class="w-5 h-5 text-amber-500"></lucide-angular>
+      </div>
+      <p class="text-sm text-gray-500 mb-1">Calificación hoy</p>
+      <p class="text-2xl font-black text-gray-900">{{ calificacionPromedio() }} <span class="text-sm font-normal text-amber-500">★</span></p>
+      <p class="text-xs text-gray-400 mt-1">{{ totalCalificaciones() }} reseñas</p>
+    </div>
+
+  </div>
+
+  <!-- ── Pedidos activos + Mesas ─────────────────────────────────────────── -->
+  <div class="grid grid-cols-1 lg:grid-cols-5 gap-4">
+
+    <!-- Pedidos activos (col 3) -->
+    <div class="lg:col-span-3 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+      <div class="p-4 border-b border-gray-100 flex items-center justify-between">
+        <div>
+          <h3 class="font-black text-gray-900">Pedidos activos</h3>
+          <p class="text-xs text-gray-400">En tiempo real</p>
+        </div>
+        <!-- Contadores por estado -->
+        <div class="flex gap-2">
+          <span class="px-2.5 py-1 bg-amber-50 border border-amber-200 text-amber-700 text-xs font-bold rounded-lg">
+            {{ pedidosPorEstado().pendientes }} pendiente{{ pedidosPorEstado().pendientes !== 1 ? 's' : '' }}
+          </span>
+          <span class="px-2.5 py-1 bg-blue-50 border border-blue-200 text-blue-700 text-xs font-bold rounded-lg">
+            {{ pedidosPorEstado().en_preparacion }} en prep.
+          </span>
+          <span class="px-2.5 py-1 bg-green-50 border border-green-200 text-green-700 text-xs font-bold rounded-lg">
+            {{ pedidosPorEstado().listos }} listo{{ pedidosPorEstado().listos !== 1 ? 's' : '' }}
+          </span>
+          <span class="px-2.5 py-1 bg-orange-50 border border-orange-200 text-orange-700 text-xs font-bold rounded-lg">
+            {{ pedidosPorEstado().entregados }} entregado{{ pedidosPorEstado().entregados !== 1 ? 's' : '' }}
+          </span>
+        </div>
+      </div>
+
+      <div class="divide-y divide-gray-50">
+        @if(pedidosPorEstado().pendientes === 0) {
+          <div class="py-12 text-center">
+            <div class="text-4xl mb-2">🎉</div>
+            <p class="text-sm text-gray-500">No hay pedidos activos</p>
+          </div>
+        }
+
+        @for(pedido of pedidos(); track pedido.pedido_id) {
+          @let badge = getEstadoBadge(pedido.estado);
+          <div class="p-4 hover:bg-gray-50/50 transition-colors">
+            <div class="flex items-start justify-between gap-3">
+              <div class="flex items-start gap-3 min-w-0">
+                <!-- Mesa badge -->
+                <div class="w-10 h-10 bg-gray-900 rounded-xl flex items-center justify-center shrink-0">
+                  <span class="text-white text-sm font-black">{{ pedido.mesa?.numero || 'N/A' }}</span>
+                </div>
+                <div class="min-w-0">
+                  <div class="flex items-center gap-2 mb-0.5">
+                    <p class="font-bold text-gray-900 text-sm">{{ pedido.nombre_cliente }}</p>
+                    <span class="text-xs text-gray-400">{{ pedido.numero_pedido }}</span>
+                  </div>
+                  <p class="text-xs text-gray-500 truncate">{{ pedido.productos.join(' · ') }}</p>
+                </div>
+              </div>
+
+              <div class="flex flex-col items-end gap-1 shrink-0">
+                <!-- Estado badge -->
+                <span class="px-2.5 py-1 border text-xs font-bold rounded-lg flex items-center gap-1.5 {{ badge.bg }} {{ badge.text }}">
+                  <span class="w-1.5 h-1.5 rounded-full {{ badge.dot }}"></span>
+                  {{ badge.label }}
+                </span>
+                <div class="flex items-center gap-2">
+                  <span class="text-xs text-gray-400 flex items-center gap-1">
+                    <lucide-angular [img]="Clock" class="w-3 h-3"></lucide-angular>
+                    {{ formatTime(pedido.created_at) }}
+                  </span>
+                  <span class="text-sm font-black text-gray-900">${{ formatPrice(pedido.precio_total) }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Estado de mesas (col 2) -->
+    <div class="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+      <div class="p-4 border-b border-gray-100">
+        <h3 class="font-black text-gray-900">Estado de mesas</h3>
+        <p class="text-xs text-gray-400">{{ mesasOcupadas() }} ocupadas · {{ mesasDisponibles() }} disponibles</p>
+      </div>
+      <div class="p-4 grid grid-cols-3 gap-2">
+        @for(mesa of mesas(); track mesa.mesa_id) {
+          <div
+            class="rounded-xl p-2.5 border-2 transition-all cursor-default"
+            [class.bg-red-50]="mesa.estado === 'Ocupada'"
+            [class.border-red-200]="mesa.estado === 'Ocupada'"
+            [class.bg-green-50]="mesa.estado === 'Disponible'"
+            [class.border-green-200]="mesa.estado === 'Disponible'"
+            [title]="mesa.estado === 'Ocupada' && mesa.pedido_activo ? mesa.pedido_activo.nombre_cliente + ' - ' + mesa.pedido_activo.numero_pedido : 'Disponible'"
+          >
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-xs font-black"
+                [class.text-red-700]="mesa.estado === 'Ocupada'"
+                [class.text-green-700]="mesa.estado === 'Disponible'"
+              >Mesa {{ mesa.numero }}</span>
+              <span class="w-2 h-2 rounded-full"
+                [class.bg-red-400]="mesa.estado === 'Ocupada'"
+                [class.bg-green-400]="mesa.estado === 'Disponible'"
+              ></span>
+            </div>
+            @if(mesa.estado === 'Ocupada' && mesa.pedido_activo) {
+              <p class="text-xs text-red-600 truncate font-medium leading-tight">{{ mesa.pedido_activo.nombre_cliente }}</p>
+              <p class="text-xs text-red-500 font-bold">${{ formatPrice(mesa.pedido_activo.precio_total) }}</p>
+            } @else {
+              <p class="text-xs text-green-600 font-medium">Libre</p>
+            }
+          </div>
+        }
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── Top Productos + Pagos + Calificaciones ──────────────────────────── -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+    <!-- Top Productos -->
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+      <div class="p-4 border-b border-gray-100">
+        <h3 class="font-black text-gray-900">Top productos</h3>
+        <p class="text-xs text-gray-400">Más vendidos hoy</p>
+      </div>
+      <div class="divide-y divide-gray-50">
+        @for(prod of topProductos(); track prod.nombre; let i = $index) {
+          <div class="p-3 flex items-center gap-3">
+            <span class="w-7 h-7 flex items-center justify-center rounded-lg text-base shrink-0"
+              [class.bg-amber-100]="i === 0"
+              [class.bg-gray-100]="i > 0"
+            >{{ prod.emoji }}</span>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-bold text-gray-900 truncate">{{ prod.nombre }}</p>
+              <p class="text-xs text-gray-400">{{ prod.cantidad }} vendidos</p>
+            </div>
+            <span class="text-sm font-black text-gray-900 shrink-0">${{ formatPrice(prod.total) }}</span>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Métodos de pago -->
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+      <div class="p-4 border-b border-gray-100">
+        <h3 class="font-black text-gray-900">Métodos de pago</h3>
+        <p class="text-xs text-gray-400">Distribución del día</p>
+      </div>
+      <div class="p-4 space-y-4">
+
+        <!-- Efectivo -->
+        <div>
+          <div class="flex items-center justify-between mb-1.5">
+            <div class="flex items-center gap-2">
+              <lucide-angular [img]="Banknote" class="w-4 h-4 text-green-600"></lucide-angular>
+              <span class="text-sm font-semibold text-gray-700">Efectivo</span>
+            </div>
+            <div class="text-right">
+              <span class="text-sm font-black text-gray-900">${{ formatPrice(resumenPagos().efectivo) }}</span>
+              <span class="text-xs text-gray-400 ml-1">{{ getPagosPorcentaje('efectivo') }}%</span>
+            </div>
+          </div>
+          <div class="w-full bg-gray-100 rounded-full h-2">
+            <div class="bg-green-500 h-2 rounded-full transition-all" [style.width.%]="getPagosPorcentaje('efectivo')"></div>
+          </div>
+        </div>
+
+        <!-- Tarjeta -->
+        <div>
+          <div class="flex items-center justify-between mb-1.5">
+            <div class="flex items-center gap-2">
+              <lucide-angular [img]="CreditCard" class="w-4 h-4 text-blue-600"></lucide-angular>
+              <span class="text-sm font-semibold text-gray-700">Tarjeta</span>
+            </div>
+            <div class="text-right">
+              <span class="text-sm font-black text-gray-900">${{ formatPrice(resumenPagos().tarjeta) }}</span>
+              <span class="text-xs text-gray-400 ml-1">{{ getPagosPorcentaje('tarjeta') }}%</span>
+            </div>
+          </div>
+          <div class="w-full bg-gray-100 rounded-full h-2">
+            <div class="bg-blue-500 h-2 rounded-full transition-all" [style.width.%]="getPagosPorcentaje('tarjeta')"></div>
+          </div>
+        </div>
+
+        <!-- App -->
+        <div>
+          <div class="flex items-center justify-between mb-1.5">
+            <div class="flex items-center gap-2">
+              <lucide-angular [img]="Smartphone" class="w-4 h-4 text-purple-600"></lucide-angular>
+              <span class="text-sm font-semibold text-gray-700">App</span>
+            </div>
+            <div class="text-right">
+              <span class="text-sm font-black text-gray-900">${{ formatPrice(resumenPagos().app) }}</span>
+              <span class="text-xs text-gray-400 ml-1">{{ getPagosPorcentaje('app') }}%</span>
+            </div>
+          </div>
+          <div class="w-full bg-gray-100 rounded-full h-2">
+            <div class="bg-purple-500 h-2 rounded-full transition-all" [style.width.%]="getPagosPorcentaje('app')"></div>
+          </div>
+        </div>
+
+        <!-- Total -->
+        <div class="pt-2 border-t border-gray-100 flex items-center justify-between">
+          <span class="text-sm text-gray-500 font-medium">Total cobrado</span>
+          <span class="text-base font-black text-gray-900">${{ formatPrice(resumenPagos().efectivo + resumenPagos().tarjeta + resumenPagos().app) }}</span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Calificaciones recientes -->
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+      <div class="p-4 border-b border-gray-100 flex items-center justify-between">
+        <div>
+          <h3 class="font-black text-gray-900">Últimas reseñas</h3>
+          <p class="text-xs text-gray-400">Opiniones de hoy</p>
+        </div>
+        <div class="flex items-center gap-1 px-3 py-1.5 bg-amber-50 border border-amber-200 rounded-xl">
+          <span class="text-amber-500 text-sm">★</span>
+          <span class="text-amber-700 font-black text-sm">{{ calificacionPromedio() }}</span>
+        </div>
+      </div>
+
+      <div class="divide-y divide-gray-50">
+        @if(calificacionesRecientes().length === 0) {
+          <div class="py-8 text-center">
+            <p class="text-sm text-gray-400">Sin calificaciones aún</p>
+          </div>
+        }
+        @for(cal of calificacionesRecientes(); track cal.numero_pedido) {
+          <div class="p-3">
+            <div class="flex items-center justify-between mb-1">
+              <p class="text-sm font-bold text-gray-900">{{ cal.nombre_cliente }}</p>
+              <div class="flex">
+                @for(s of stars(cal.puntuacion); track $index) {
+                  <span class="text-amber-400 text-xs">★</span>
+                }
+              </div>
+            </div>
+            <p class="text-xs text-gray-500 line-clamp-2 mb-1">{{ cal.resena }}</p>
+            <p class="text-xs text-gray-400">{{ formatTime(cal.created_at) }} · {{ cal.numero_pedido }}</p>
+          </div>
+        }
+      </div>
+    </div>
+
+  </div>
+ 
+  <!-- Ir a reportes -->
+  <div class="bg-gradient-to-r from-gray-900 to-gray-800 rounded-2xl p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+    <div>
+      <h3 class="text-white font-black text-lg">¿Querés ver el análisis completo?</h3>
+      <p class="text-gray-400 text-sm">Accedé a reportes de ventas, tendencias, exportaciones y más.</p>
+    </div>
+    <a
+      routerLink="/administracion/reportes"
+      class="shrink-0 flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-orange-500 to-red-500 text-white text-sm font-bold rounded-xl shadow-lg shadow-orange-500/30 hover:shadow-xl hover:shadow-orange-500/40 active:scale-95 transition-all whitespace-nowrap"
+    >
+      Ver reportes completos
+      <lucide-angular [img]="ArrowRight" class="w-4 h-4"></lucide-angular>
+    </a>
+  </div>
+
+</div>
