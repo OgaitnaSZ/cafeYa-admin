@@ -1,25 +1,18 @@
 <div class="space-y-6 pb-12">
 
-  <!-- ── Header ─────────────────────────────────────────────────────────── -->
+  <!-- Header -->
   <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-    <div class="flex items-center gap-3">
-      <a routerLink="/dashboard"
-        class="w-9 h-9 flex items-center justify-center bg-white border-2 border-gray-200 rounded-xl hover:border-orange-400 transition-all cursor-pointer"
-        title="Volver al dashboard">
-        <lucide-angular [img]="ArrowLeft" class="w-4 h-4 text-gray-500"></lucide-angular>
-      </a>
-      <div>
-        <h2 class="text-2xl font-black text-gray-900">Reportes e informes</h2>
-        <p class="text-sm text-gray-500">Análisis del período seleccionado</p>
-      </div>
+    <div>
+      <h2 class="text-2xl font-black text-gray-900">Reportes e informes</h2>
+      <p class="text-sm text-gray-500">Análisis del período seleccionado</p>
     </div>
 
-    <!-- ── Filtros de fecha ────────────────────────────────────────────── -->
+    <!-- Filtros de fecha -->
     <div class="flex flex-wrap items-center gap-2">
       @for(preset of [['7d','7 días'],['30d','30 días'],['90d','90 días']]; track preset[0]) {
         <button
           (click)="setPreset(preset[0])"
-          class="h-9 px-4 text-sm font-bold rounded-xl border-2 transition-all cursor-pointer"
+          class="px-4 py-2 rounded-xl text-sm font-semibold transition cursor-pointer"
           [class.bg-orange-500]="rangoPreset() === preset[0]"
           [class.text-white]="rangoPreset() === preset[0]"
           [class.border-orange-500]="rangoPreset() === preset[0]"
@@ -31,7 +24,7 @@
       }
 
       <!-- Custom range -->
-      <div class="flex items-center gap-1.5 h-9 px-3 bg-white border-2 rounded-xl transition-all"
+      <div class="flex items-center gap-1.5 h-9 px-4 py-2 bg-white border-2 rounded-xl transition-all"
         [class.border-orange-400]="rangoPreset() === 'custom'"
         [class.border-gray-200]="rangoPreset() !== 'custom'"
       >
@@ -47,26 +40,15 @@
     </div>
   </div>
 
-  <!-- ── Loading ────────────────────────────────────────────────────────── -->
-  @if(loading() && !rs.resumen()) {
-    <div class="flex justify-center py-16">
+  <!-- Loading inicial -->
+  @if(loading()) {
+    <div class="flex justify-center py-12">
       <div class="w-12 h-12 border-4 border-orange-200 border-t-orange-500 rounded-full animate-spin"></div>
     </div>
   }
 
-  <!-- ── Error ──────────────────────────────────────────────────────────── -->
-  @if(error()) {
-    <div class="flex items-center gap-3 p-4 bg-red-50 border border-red-200 rounded-2xl text-red-700 text-sm font-medium">
-      <lucide-angular [img]="AlertCircle" class="w-5 h-5 shrink-0"></lucide-angular>
-      {{ error() }}
-    </div>
-  }
-
   @if(rs.resumen()) {
-
-    <!-- ════════════════════════════════════════════════════════════════════ -->
-    <!-- KPI CARDS                                                            -->
-    <!-- ════════════════════════════════════════════════════════════════════ -->
+    <!-- KPI CARDS -->
     <div class="grid grid-cols-2 lg:grid-cols-5 gap-3">
 
       <!-- Recaudado -->
@@ -152,9 +134,7 @@
 
     </div>
 
-    <!-- ════════════════════════════════════════════════════════════════════ -->
-    <!-- GRÁFICO PRINCIPAL                                                    -->
-    <!-- ════════════════════════════════════════════════════════════════════ -->
+    <!-- GRÁFICO PRINCIPAL -->
     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
 
       <div class="p-4 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -236,9 +216,7 @@
       </div>
     </div>
 
-    <!-- ════════════════════════════════════════════════════════════════════ -->
-    <!-- CALENDARIO HEATMAP                                                   -->
-    <!-- ════════════════════════════════════════════════════════════════════ -->
+    <!-- CALENDARIO HEATMAP -->
     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
 
       <div class="p-4 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -338,9 +316,7 @@
       </div>
     </div>
 
-    <!-- ════════════════════════════════════════════════════════════════════ -->
-    <!-- GRID ANALÍTICO                                                       -->
-    <!-- ════════════════════════════════════════════════════════════════════ -->
+    <!-- GRID ANALÍTICO -->
     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
 
       <!-- Top Productos -->
@@ -480,9 +456,7 @@
 
     </div>
 
-    <!-- ════════════════════════════════════════════════════════════════════ -->
-    <!-- HORAS PICO                                                           -->
-    <!-- ════════════════════════════════════════════════════════════════════ -->
+    <!-- HORAS PICO -->
     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
       <div class="p-4 border-b border-gray-100">
         <h3 class="font-black text-gray-900">Horas pico</h3>
@@ -495,7 +469,7 @@
         } @else {
           <div class="flex items-end gap-1.5 h-24">
             @for(hora of horasPico(); track hora.hora) {
-              <div class="flex-1 flex flex-col items-center gap-1 group">
+              <div class="flex-1 h-full flex flex-col justify-end items-center gap-1 group">
                 <div
                   class="w-full rounded-t-lg transition-all group-hover:opacity-80 cursor-default"
                   [style.height.%]="hora.intensity * 100"

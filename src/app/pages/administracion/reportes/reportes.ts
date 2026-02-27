@@ -10,12 +10,10 @@ import {
   BarChart2, Calendar, Package, Clock, ChevronLeft, ChevronRight,
   Activity, AlertCircle, RefreshCw,
 } from 'lucide-angular';
-import { RouterLink } from '@angular/router';
 import { ReportesService } from '../../../core/services/reportes';
 import { TopProductoReporte, HoraPicoReporte } from '../../../core/interfaces/reportes.model';
 
-// ─── Tipos internos (solo para el componente) ─────────────────────────────────
-
+// Tipos internos
 type RangoPreset    = '7d' | '30d' | '90d' | 'custom';
 type ChartMetric    = 'recaudado' | 'pedidos' | 'clientes';
 type CalendarMetric = 'recaudado' | 'pedidos' | 'clientes';
@@ -39,45 +37,15 @@ interface EstadoCount {
   bgColor: string;
 }
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
-
-function parseFecha(fecha: string): Date {
-  const [y, m, d] = fecha.split('-').map(Number);
-  return new Date(y, m - 1, d); // local midnight, sin problemas de timezone
-}
-
-// ─── Component ────────────────────────────────────────────────────────────────
-
 @Component({
   selector: 'app-reportes',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, LucideAngularModule],
+  imports: [CommonModule, FormsModule, LucideAngularModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './reportes.html',
 })
 export class Reportes {
-
-  // ── Icons ──────────────────────────────────────────────────────────────────
-  readonly TrendingUp   = TrendingUp;
-  readonly TrendingDown = TrendingDown;
-  readonly ShoppingBag  = ShoppingBag;
-  readonly Users        = Users;
-  readonly Star         = Star;
-  readonly CreditCard   = CreditCard;
-  readonly Banknote     = Banknote;
-  readonly Smartphone   = Smartphone;
-  readonly ArrowLeft    = ArrowLeft;
-  readonly BarChart2    = BarChart2;
-  readonly Calendar     = Calendar;
-  readonly Package      = Package;
-  readonly Clock        = Clock;
-  readonly ChevronLeft  = ChevronLeft;
-  readonly ChevronRight = ChevronRight;
-  readonly Activity     = Activity;
-  readonly AlertCircle  = AlertCircle;
-  readonly RefreshCw    = RefreshCw;
-
-  // ── Servicio ───────────────────────────────────────────────────────────────
+  // Servicios
   readonly rs = inject(ReportesService);
 
   // Alias directo para el template
@@ -85,12 +53,18 @@ export class Reportes {
   loadingCalendario = this.rs.loadingCalendario;
   error             = this.rs.error;
 
-  // ── Filtros ────────────────────────────────────────────────────────────────
+  // Filtros
   rangoPreset = signal<RangoPreset>('7d');
   customFrom  = signal<string>(this.toInputDate(this.daysAgo(30)));
   customTo    = signal<string>(this.toInputDate(new Date()));
 
-  // ── Chart / Calendar UI state ──────────────────────────────────────────────
+  private presetDays: Record<Exclude<RangoPreset, 'custom'>, number> = {
+    '7d': 7,
+    '30d': 30,
+    '90d': 90
+  };
+
+  // Chart / Calendar UI state
   chartMetric = signal<ChartMetric>('recaudado');
   calMetric   = signal<CalendarMetric>('recaudado');
   calMonth    = signal<Date>(new Date(new Date().getFullYear(), new Date().getMonth(), 1));
@@ -99,7 +73,7 @@ export class Reportes {
   hoveredIndex = signal<number>(-1);
   hoveredCalDay = signal<{ date: Date; value: number } | null>(null);
 
-  // ── Effect: recarga al cambiar filtro ─────────────────────────────────────
+  // Effect: recarga al cambiar filtro
   constructor() {
     effect(() => {
       const { from, to } = this.getFromTo();
@@ -107,18 +81,17 @@ export class Reportes {
     });
   }
 
-  // ── AllData: serie del período convertida a DayData ───────────────────────
+  // AllData: serie del período convertida a DayData
   private readonly allData = computed<DayData[]>(() =>
     (this.rs.resumen()?.serie ?? []).map(d => ({
-      date:      parseFecha(d.fecha),
+      date:      this.parseFecha(d.fecha),
       pedidos:   d.pedidos,
       clientes:  d.clientes,
       recaudado: d.recaudado,
     }))
   );
 
-  // ── CalendarMonthData: datos del mes visible en el calendario ─────────────
-  // Usa allData si el mes está cubierto, sino usa el endpoint /calendario
+  // CalendarMonthData: datos del mes visible en el calendario
   private calendarMonthData = computed<DayData[]>(() => {
     const m  = this.calMonth();
     const y  = m.getFullYear();
@@ -132,7 +105,7 @@ export class Reportes {
     const cal = this.rs.calendario();
     if (cal && cal.year === y && cal.month === mo + 1) {
       return cal.dias.map(d => ({
-        date:      parseFecha(d.fecha),
+        date:      this.parseFecha(d.fecha),
         pedidos:   d.pedidos,
         clientes:  d.clientes,
         recaudado: d.recaudado,
@@ -141,26 +114,26 @@ export class Reportes {
     return [];
   });
 
-  // ── Período filtrado (para el gráfico de línea) ───────────────────────────
+  // Período filtrado (para el gráfico de línea)
   periodoData = computed<DayData[]>(() => {
     const { from, to } = this.getRange();
     return this.allData().filter(d => d.date >= from && d.date <= to);
   });
 
-  // ── KPIs (del backend) ────────────────────────────────────────────────────
+  // KPIs (del backend)
   kpiRecaudado = computed(() => this.rs.resumen()?.kpis.recaudado    ?? 0);
   kpiPedidos   = computed(() => this.rs.resumen()?.kpis.pedidos      ?? 0);
   kpiClientes  = computed(() => this.rs.resumen()?.kpis.clientes     ?? 0);
   kpiTicket    = computed(() => this.rs.resumen()?.kpis.ticket       ?? 0);
   kpiCalif     = computed(() => this.rs.resumen()?.kpis.calificacion ?? null);
 
-  // ── Variaciones (del backend, null = sin datos previos) ───────────────────
+  // Variaciones (del backend, null = sin datos previos)
   kpiRecaudadoVar = computed(() => this.rs.resumen()?.variaciones.recaudado ?? null);
   kpiPedidosVar   = computed(() => this.rs.resumen()?.variaciones.pedidos   ?? null);
   kpiClientesVar  = computed(() => this.rs.resumen()?.variaciones.clientes  ?? null);
   kpiTicketVar    = computed(() => this.rs.resumen()?.variaciones.ticket    ?? null);
 
-  // ── Chart SVG ─────────────────────────────────────────────────────────────
+  // Chart SVG
   chartPoints = computed<ChartPoint[]>(() => {
     const metric = this.chartMetric();
     return this.periodoData().map(d => ({
@@ -202,7 +175,7 @@ export class Reportes {
 
   chartLabelStep = computed(() => Math.ceil(this.chartPoints().length / 6));
 
-  // ── Calendario heatmap ────────────────────────────────────────────────────
+  // Calendario heatmap
   calendarWeeks = computed(() => {
     const month  = this.calMonth();
     const metric = this.calMetric();
@@ -247,17 +220,17 @@ export class Reportes {
     this.calMonth().toLocaleDateString('es-AR', { month: 'long', year: 'numeric' })
   );
 
-  // ── Top productos ─────────────────────────────────────────────────────────
+  // Top productos
   topProductos = computed<TopProductoReporte[]>(() =>
     this.rs.resumen()?.topProductos ?? []
   );
 
-  // ── Pagos ─────────────────────────────────────────────────────────────────
+  // Pagos 
   pagoEfectivo = computed(() => this.rs.resumen()?.pagos.efectivo ?? 0);
   pagoTarjeta  = computed(() => this.rs.resumen()?.pagos.tarjeta  ?? 0);
   pagoApp      = computed(() => this.rs.resumen()?.pagos.app      ?? 0);
 
-  // ── Pedidos por estado ────────────────────────────────────────────────────
+  // Pedidos por estado
   estadosPedido = computed<EstadoCount[]>(() => {
     const e = this.rs.resumen()?.estados;
     if (!e) return [];
@@ -280,7 +253,7 @@ export class Reportes {
     return Math.round((e.Entregado / total) * 100);
   });
 
-  // ── Horas pico ────────────────────────────────────────────────────────────
+  // Horas pico
   horasPico = computed<HoraPicoReporte[]>(() =>
     this.rs.resumen()?.horasPico ?? []
   );
@@ -298,9 +271,12 @@ export class Reportes {
     return `${max.hora}h – ${max.hora + 1}h`;
   });
 
-  // ── Range helpers ─────────────────────────────────────────────────────────
+  // Helpers
+  parseFecha(fecha: string): Date {
+    const [y, m, d] = fecha.split('-').map(Number);
+    return new Date(y, m - 1, d);
+  }
 
-  /** Devuelve from/to como strings YYYY-MM-DD, leyendo los signals de filtro */
   getFromTo(): { from: string; to: string } {
     const preset = this.rangoPreset();
     if (preset === 'custom') {
@@ -325,9 +301,17 @@ export class Reportes {
     };
   }
 
-  setPreset(p: string) { this.rangoPreset.set(p as RangoPreset); }
+  setPreset(preset: RangoPreset) {
+    this.rangoPreset.set(preset);
 
-  // ── Calendar nav ──────────────────────────────────────────────────────────
+    if (preset !== 'custom') {
+      const today = new Date();
+      const from = this.daysAgo(this.presetDays[preset]);
+
+      this.customFrom.set(this.toInputDate(from));
+      this.customTo.set(this.toInputDate(today));
+    }
+  }
 
   prevMonth() {
     const m    = this.calMonth();
@@ -361,8 +345,7 @@ export class Reportes {
     }
   }
 
-  // ── Chart hover ───────────────────────────────────────────────────────────
-
+  // Chart hover
   onChartHover(event: MouseEvent, container: HTMLElement) {
     const pts = this.chartPoints();
     if (!pts.length) return;
@@ -393,12 +376,11 @@ export class Reportes {
     return H - PAD - ((pts[idx].value - min) / range) * (H - PAD * 2);
   }
 
-  // ── Typed setters ─────────────────────────────────────────────────────────
+  // Typed setters
   setChartMetric(m: string) { this.chartMetric.set(m as ChartMetric); }
   setCalMetric(m: string)   { this.calMetric.set(m as CalendarMetric); }
 
-  // ── Formatters ────────────────────────────────────────────────────────────
-
+  // Formatters
   formatPrice(v: number): string {
     if (v >= 1_000_000) return '$' + (v / 1_000_000).toFixed(1) + 'M';
     if (v >= 1_000)     return '$' + (v / 1_000).toFixed(1) + 'K';
@@ -455,7 +437,7 @@ export class Reportes {
   varPositiva(v: number | null): boolean { return v !== null && v >= 0; }
   varNegativa(v: number | null): boolean { return v !== null && v < 0; }
 
-  // ── Misc ──────────────────────────────────────────────────────────────────
+  // Misc 
   readonly DAY_LABELS = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
 
   private daysAgo(n: number): Date {
@@ -465,4 +447,23 @@ export class Reportes {
   private toInputDate(d: Date): string {
     return d.toISOString().slice(0, 10);
   }
+
+  readonly TrendingUp   = TrendingUp;
+  readonly TrendingDown = TrendingDown;
+  readonly ShoppingBag  = ShoppingBag;
+  readonly Users        = Users;
+  readonly Star         = Star;
+  readonly CreditCard   = CreditCard;
+  readonly Banknote     = Banknote;
+  readonly Smartphone   = Smartphone;
+  readonly ArrowLeft    = ArrowLeft;
+  readonly BarChart2    = BarChart2;
+  readonly Calendar     = Calendar;
+  readonly Package      = Package;
+  readonly Clock        = Clock;
+  readonly ChevronLeft  = ChevronLeft;
+  readonly ChevronRight = ChevronRight;
+  readonly Activity     = Activity;
+  readonly AlertCircle  = AlertCircle;
+  readonly RefreshCw    = RefreshCw;
 }

@@ -14,7 +14,7 @@ export class ReportesService {
   http = inject(HttpClient);
   tokenService = inject(TokenService);
 
-  // ── Signals ────────────────────────────────────────────────────────────────
+  // Signals
   resumen    = signal<ReportesResumen | null>(null);
   calendario = signal<CalendarioReporte | null>(null);
 
@@ -23,7 +23,7 @@ export class ReportesService {
   loadingCalendario  = signal(false);
   error              = signal<string | null>(null);
 
-  // ── Métodos ────────────────────────────────────────────────────────────────
+  // Métodos
 
   cargarResumen(from: string, to: string): void {
     this.loading.set(true);
