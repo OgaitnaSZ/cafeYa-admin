@@ -1,15 +1,13 @@
 <div class="space-y-6 pb-12">
 
-  <!-- ══════════════════════════════════════════════════════════════════════ -->
-  <!-- HEADER                                                                  -->
-  <!-- ══════════════════════════════════════════════════════════════════════ -->
+  <!-- HEADER -->
   <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
     <div>
       <h2 class="text-2xl font-black text-gray-900">Reportes e informes</h2>
       <p class="text-sm text-gray-500">Análisis del período seleccionado</p>
     </div>
 
-    <!-- ── Filtros de fecha ──────────────────────────────────────────────── -->
+    <!-- ── Filtros de fecha -->
     <div class="flex flex-wrap items-center gap-2">
       <!-- Presets -->
       @for(preset of [['7d','7 días'],['30d','30 días'],['90d','90 días']] ; track preset[0]) {
