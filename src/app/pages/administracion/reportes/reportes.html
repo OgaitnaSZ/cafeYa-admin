@@ -1,16 +1,22 @@
 <div class="space-y-6 pb-12">
 
-  <!-- HEADER -->
+  <!-- ── Header ─────────────────────────────────────────────────────────── -->
   <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-    <div>
-      <h2 class="text-2xl font-black text-gray-900">Reportes e informes</h2>
-      <p class="text-sm text-gray-500">Análisis del período seleccionado</p>
+    <div class="flex items-center gap-3">
+      <a routerLink="/dashboard"
+        class="w-9 h-9 flex items-center justify-center bg-white border-2 border-gray-200 rounded-xl hover:border-orange-400 transition-all cursor-pointer"
+        title="Volver al dashboard">
+        <lucide-angular [img]="ArrowLeft" class="w-4 h-4 text-gray-500"></lucide-angular>
+      </a>
+      <div>
+        <h2 class="text-2xl font-black text-gray-900">Reportes e informes</h2>
+        <p class="text-sm text-gray-500">Análisis del período seleccionado</p>
+      </div>
     </div>
 
-    <!-- ── Filtros de fecha -->
+    <!-- ── Filtros de fecha ────────────────────────────────────────────── -->
     <div class="flex flex-wrap items-center gap-2">
-      <!-- Presets -->
-      @for(preset of [['7d','7 días'],['30d','30 días'],['90d','90 días']] ; track preset[0]) {
+      @for(preset of [['7d','7 días'],['30d','30 días'],['90d','90 días']]; track preset[0]) {
         <button
           (click)="setPreset(preset[0])"
           class="h-9 px-4 text-sm font-bold rounded-xl border-2 transition-all cursor-pointer"
@@ -18,16 +24,14 @@
           [class.text-white]="rangoPreset() === preset[0]"
           [class.border-orange-500]="rangoPreset() === preset[0]"
           [class.shadow-lg]="rangoPreset() === preset[0]"
-          [class.shadow-orange-500/20]="rangoPreset() === preset[0]"
           [class.bg-white]="rangoPreset() !== preset[0]"
           [class.text-gray-600]="rangoPreset() !== preset[0]"
           [class.border-gray-200]="rangoPreset() !== preset[0]"
-          [class.hover:border-orange-300]="rangoPreset() !== preset[0]"
         >{{ preset[1] }}</button>
       }
 
       <!-- Custom range -->
-      <div class="flex items-center gap-1.5 h-9 px-3 bg-white border-2 rounded-xl transition-all cursor-pointer"
+      <div class="flex items-center gap-1.5 h-9 px-3 bg-white border-2 rounded-xl transition-all"
         [class.border-orange-400]="rangoPreset() === 'custom'"
         [class.border-gray-200]="rangoPreset() !== 'custom'"
       >
@@ -43,504 +47,497 @@
     </div>
   </div>
 
-  <!-- ══════════════════════════════════════════════════════════════════════ -->
-  <!-- KPI CARDS                                                               -->
-  <!-- ══════════════════════════════════════════════════════════════════════ -->
-  <div class="grid grid-cols-2 lg:grid-cols-5 gap-3">
-
-    <!-- Recaudado -->
-    <div class="col-span-2 sm:col-span-1 bg-gradient-to-br from-orange-500 to-red-500 rounded-2xl p-4 shadow-lg shadow-orange-500/25 text-white">
-      <div class="flex items-start justify-between mb-3">
-        <div class="w-9 h-9 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
-          <lucide-angular [img]="TrendingUp" class="w-4 h-4 text-white"></lucide-angular>
-        </div>
-        <span class="text-xs font-bold px-2 py-1 rounded-full"
-          [class.bg-white/20]="kpiRecaudadoVar() >= 0"
-          [class.bg-black/20]="kpiRecaudadoVar() < 0">
-          {{ formatVar(kpiRecaudadoVar()) }}
-        </span>
-      </div>
-      <p class="text-xs text-white/70 mb-0.5">Recaudado</p>
-      <p class="text-xl font-black leading-tight">{{ formatPrice(kpiRecaudado()) }}</p>
-      <p class="text-xs text-white/50 mt-1">vs período anterior</p>
+  <!-- ── Loading ────────────────────────────────────────────────────────── -->
+  @if(loading() && !rs.resumen()) {
+    <div class="flex justify-center py-16">
+      <div class="w-12 h-12 border-4 border-orange-200 border-t-orange-500 rounded-full animate-spin"></div>
     </div>
+  }
 
-    <!-- Pedidos -->
-    <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
-      <div class="flex items-start justify-between mb-3">
-        <div class="w-9 h-9 bg-blue-50 rounded-xl flex items-center justify-center">
-          <lucide-angular [img]="ShoppingBag" class="w-4 h-4 text-blue-600"></lucide-angular>
-        </div>
-        <span class="text-xs font-bold px-2 py-1 rounded-full"
-          [class.bg-green-100]="kpiPedidosVar() >= 0" [class.text-green-700]="kpiPedidosVar() >= 0"
-          [class.bg-red-100]="kpiPedidosVar() < 0" [class.text-red-700]="kpiPedidosVar() < 0">
-          {{ formatVar(kpiPedidosVar()) }}
-        </span>
-      </div>
-      <p class="text-xs text-gray-400 mb-0.5">Pedidos</p>
-      <p class="text-xl font-black text-gray-900">{{ kpiPedidos() }}</p>
+  <!-- ── Error ──────────────────────────────────────────────────────────── -->
+  @if(error()) {
+    <div class="flex items-center gap-3 p-4 bg-red-50 border border-red-200 rounded-2xl text-red-700 text-sm font-medium">
+      <lucide-angular [img]="AlertCircle" class="w-5 h-5 shrink-0"></lucide-angular>
+      {{ error() }}
     </div>
+  }
 
-    <!-- Clientes -->
-    <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
-      <div class="flex items-start justify-between mb-3">
-        <div class="w-9 h-9 bg-green-50 rounded-xl flex items-center justify-center">
-          <lucide-angular [img]="Users" class="w-4 h-4 text-green-600"></lucide-angular>
-        </div>
-        <span class="text-xs font-bold px-2 py-1 rounded-full"
-          [class.bg-green-100]="kpiClientesVar() >= 0" [class.text-green-700]="kpiClientesVar() >= 0"
-          [class.bg-red-100]="kpiClientesVar() < 0" [class.text-red-700]="kpiClientesVar() < 0">
-          {{ formatVar(kpiClientesVar()) }}
-        </span>
-      </div>
-      <p class="text-xs text-gray-400 mb-0.5">Clientes</p>
-      <p class="text-xl font-black text-gray-900">{{ kpiClientes() }}</p>
-    </div>
+  @if(rs.resumen()) {
 
-    <!-- Ticket promedio -->
-    <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
-      <div class="flex items-start justify-between mb-3">
-        <div class="w-9 h-9 bg-purple-50 rounded-xl flex items-center justify-center">
-          <lucide-angular [img]="Activity" class="w-4 h-4 text-purple-600"></lucide-angular>
-        </div>
-        <span class="text-xs font-bold px-2 py-1 rounded-full"
-          [class.bg-green-100]="kpiTicketVar() >= 0" [class.text-green-700]="kpiTicketVar() >= 0"
-          [class.bg-red-100]="kpiTicketVar() < 0" [class.text-red-700]="kpiTicketVar() < 0">
-          {{ formatVar(kpiTicketVar()) }}
-        </span>
-      </div>
-      <p class="text-xs text-gray-400 mb-0.5">Ticket promedio</p>
-      <p class="text-xl font-black text-gray-900">{{ formatPrice(kpiTicket()) }}</p>
-    </div>
+    <!-- ════════════════════════════════════════════════════════════════════ -->
+    <!-- KPI CARDS                                                            -->
+    <!-- ════════════════════════════════════════════════════════════════════ -->
+    <div class="grid grid-cols-2 lg:grid-cols-5 gap-3">
 
-    <!-- Calificación -->
-    <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
-      <div class="w-9 h-9 bg-amber-50 rounded-xl flex items-center justify-center mb-3">
-        <lucide-angular [img]="Star" class="w-4 h-4 text-amber-500"></lucide-angular>
-      </div>
-      <p class="text-xs text-gray-400 mb-0.5">Calificación</p>
-      <p class="text-xl font-black text-gray-900">{{ kpiCalif() }} <span class="text-sm font-normal text-amber-400">★</span></p>
-      <p class="text-xs text-gray-400 mt-1">promedio del período</p>
-    </div>
-
-  </div>
-
-  <!-- ══════════════════════════════════════════════════════════════════════ -->
-  <!-- GRÁFICO PRINCIPAL                                                       -->
-  <!-- ══════════════════════════════════════════════════════════════════════ -->
-  <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-
-    <!-- Header del gráfico -->
-    <div class="p-4 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-      <div>
-        <h3 class="font-black text-gray-900">Evolución por período</h3>
-        <p class="text-xs text-gray-400">{{ periodoData().length }} días seleccionados</p>
-      </div>
-
-      <!-- Toggle métrica -->
-      <div class="flex gap-2 p-1 bg-gray-100 rounded-xl">
-        @for(m of [['recaudado','Recaudado'],['pedidos','Pedidos'],['clientes','Clientes']]; track m[0]) {
-          <button
-            (click)="setChartMetric(m[0])"
-            class="px-3 py-1.5 text-xs font-bold rounded-lg transition-all cursor-pointer"
-            [class.bg-white]="chartMetric() === m[0]"
-            [class.shadow-sm]="chartMetric() === m[0]"
-            [class.text-gray-900]="chartMetric() === m[0]"
-            [class.text-gray-500]="chartMetric() !== m[0]"
-          >{{ m[1] }}</button>
-        }
-      </div>
-    </div>
-
-    <!-- SVG Chart -->
-    <div class="px-4 pt-4 pb-2">
-
-      <!-- Valor hover o max/min -->
-      <div class="flex items-end justify-between mb-3 h-10">
-        @if(hoveredPoint()) {
-          <div>
-            <p class="text-2xl font-black text-gray-900">{{ formatChartVal(hoveredPoint()!.value) }}</p>
-            <p class="text-xs text-gray-400">{{ hoveredPoint()!.label }}</p>
+      <!-- Recaudado -->
+      <div class="col-span-2 sm:col-span-1 bg-gradient-to-br from-orange-500 to-red-500 rounded-2xl p-4 shadow-lg shadow-orange-500/25 text-white">
+        <div class="flex items-start justify-between mb-3">
+          <div class="w-9 h-9 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
+            <lucide-angular [img]="TrendingUp" class="w-4 h-4 text-white"></lucide-angular>
           </div>
-        } @else {
-          <div>
-            <p class="text-2xl font-black text-gray-900">{{ formatChartVal(chartMax()) }}</p>
-            <p class="text-xs text-gray-400">Máximo del período</p>
+          <span class="text-xs font-bold px-2 py-1 rounded-full"
+            [class.bg-white/20]="varPositiva(kpiRecaudadoVar())"
+            [class.bg-black/20]="varNegativa(kpiRecaudadoVar())">
+            {{ formatVar(kpiRecaudadoVar()) }}
+          </span>
+        </div>
+        <p class="text-xs text-white/70 mb-0.5">Recaudado</p>
+        <p class="text-xl font-black leading-tight">{{ formatPrice(kpiRecaudado()) }}</p>
+        <p class="text-xs text-white/50 mt-1">vs período anterior</p>
+      </div>
+
+      <!-- Pedidos -->
+      <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
+        <div class="flex items-start justify-between mb-3">
+          <div class="w-9 h-9 bg-blue-50 rounded-xl flex items-center justify-center">
+            <lucide-angular [img]="ShoppingBag" class="w-4 h-4 text-blue-600"></lucide-angular>
           </div>
-        }
-        <div class="text-right">
-          <p class="text-xs text-gray-400">Mínimo</p>
-          <p class="text-sm font-bold text-gray-600">{{ formatChartVal(chartMin()) }}</p>
+          <span class="text-xs font-bold px-2 py-1 rounded-full"
+            [class.bg-green-100]="varPositiva(kpiPedidosVar())" [class.text-green-700]="varPositiva(kpiPedidosVar())"
+            [class.bg-red-100]="varNegativa(kpiPedidosVar())"   [class.text-red-700]="varNegativa(kpiPedidosVar())"
+            [class.bg-gray-100]="kpiPedidosVar() === null"      [class.text-gray-500]="kpiPedidosVar() === null">
+            {{ formatVar(kpiPedidosVar()) }}
+          </span>
         </div>
+        <p class="text-xs text-gray-400 mb-0.5">Pedidos</p>
+        <p class="text-xl font-black text-gray-900">{{ kpiPedidos() }}</p>
       </div>
 
-      <!-- SVG container -->
-      <div
-        class="relative w-full cursor-crosshair"
-        #chartContainer
-        (mousemove)="onChartHover($event, chartContainer)"
-        (mouseleave)="onChartLeave()"
-      >
-        <svg viewBox="0 0 800 200" class="w-full" preserveAspectRatio="none" style="height: 200px;">
-          <defs>
-            <linearGradient [id]="'areaGrad'" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" [attr.stop-color]="chartColor()" stop-opacity="0.18"/>
-              <stop offset="100%" [attr.stop-color]="chartColor()" stop-opacity="0"/>
-            </linearGradient>
-          </defs>
-
-          <!-- Grid lines -->
-          @for(y of [0.25,0.5,0.75]; track y) {
-            <line x1="10" [attr.x2]="790" [attr.y1]="190 - y*160" [attr.y2]="190 - y*160"
-              stroke="#f3f4f6" stroke-width="1"/>
-          }
-
-          <!-- Area fill -->
-          @if(svgArea()) {
-            <polygon [attr.points]="svgArea()" fill="url(#areaGrad)"/>
-          }
-
-          <!-- Line -->
-          @if(svgPolyline()) {
-            <polyline [attr.points]="svgPolyline()"
-              fill="none"
-              [attr.stroke]="chartColor()"
-              stroke-width="2.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"/>
-          }
-
-          <!-- Hover indicator -->
-          @if(hoveredIndex() >= 0) {
-            <line
-              [attr.x1]="getHoverX(hoveredIndex())"
-              [attr.x2]="getHoverX(hoveredIndex())"
-              y1="10" y2="190"
-              [attr.stroke]="chartColor()"
-              stroke-width="1.5"
-              stroke-dasharray="4 3"
-              opacity="0.6"/>
-            <circle
-              [attr.cx]="getHoverX(hoveredIndex())"
-              [attr.cy]="getHoverY(hoveredIndex())"
-              r="5"
-              [attr.fill]="chartColor()"
-              stroke="white"
-              stroke-width="2.5"/>
-          }
-        </svg>
-
-        <!-- X-axis labels (solo algunos) -->
-        <div class="flex justify-between mt-1 px-1">
-          @for(pt of chartPoints(); track pt.label; let i = $index) {
-            @if(chartPoints().length <= 10 || i === 0 || i === chartPoints().length - 1 || i % chartLabelStep() === 0) {
-              <span class="text-[10px] text-gray-400">{{ pt.label }}</span>
-            }
-          }
+      <!-- Clientes -->
+      <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
+        <div class="flex items-start justify-between mb-3">
+          <div class="w-9 h-9 bg-green-50 rounded-xl flex items-center justify-center">
+            <lucide-angular [img]="Users" class="w-4 h-4 text-green-600"></lucide-angular>
+          </div>
+          <span class="text-xs font-bold px-2 py-1 rounded-full"
+            [class.bg-green-100]="varPositiva(kpiClientesVar())" [class.text-green-700]="varPositiva(kpiClientesVar())"
+            [class.bg-red-100]="varNegativa(kpiClientesVar())"   [class.text-red-700]="varNegativa(kpiClientesVar())"
+            [class.bg-gray-100]="kpiClientesVar() === null"      [class.text-gray-500]="kpiClientesVar() === null">
+            {{ formatVar(kpiClientesVar()) }}
+          </span>
         </div>
+        <p class="text-xs text-gray-400 mb-0.5">Clientes</p>
+        <p class="text-xl font-black text-gray-900">{{ kpiClientes() }}</p>
       </div>
+
+      <!-- Ticket promedio -->
+      <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
+        <div class="flex items-start justify-between mb-3">
+          <div class="w-9 h-9 bg-purple-50 rounded-xl flex items-center justify-center">
+            <lucide-angular [img]="Activity" class="w-4 h-4 text-purple-600"></lucide-angular>
+          </div>
+          <span class="text-xs font-bold px-2 py-1 rounded-full"
+            [class.bg-green-100]="varPositiva(kpiTicketVar())" [class.text-green-700]="varPositiva(kpiTicketVar())"
+            [class.bg-red-100]="varNegativa(kpiTicketVar())"   [class.text-red-700]="varNegativa(kpiTicketVar())"
+            [class.bg-gray-100]="kpiTicketVar() === null"      [class.text-gray-500]="kpiTicketVar() === null">
+            {{ formatVar(kpiTicketVar()) }}
+          </span>
+        </div>
+        <p class="text-xs text-gray-400 mb-0.5">Ticket promedio</p>
+        <p class="text-xl font-black text-gray-900">{{ formatPrice(kpiTicket()) }}</p>
+      </div>
+
+      <!-- Calificación -->
+      <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
+        <div class="w-9 h-9 bg-amber-50 rounded-xl flex items-center justify-center mb-3">
+          <lucide-angular [img]="Star" class="w-4 h-4 text-amber-500"></lucide-angular>
+        </div>
+        <p class="text-xs text-gray-400 mb-0.5">Calificación</p>
+        <p class="text-xl font-black text-gray-900">
+          {{ kpiCalif() ?? '—' }}
+          <span class="text-sm font-normal text-amber-400">★</span>
+        </p>
+        <p class="text-xs text-gray-400 mt-1">promedio del período</p>
+      </div>
+
     </div>
-  </div>
 
-  <!-- ══════════════════════════════════════════════════════════════════════ -->
-  <!-- CALENDARIO HEATMAP                                                      -->
-  <!-- ══════════════════════════════════════════════════════════════════════ -->
-  <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+    <!-- ════════════════════════════════════════════════════════════════════ -->
+    <!-- GRÁFICO PRINCIPAL                                                    -->
+    <!-- ════════════════════════════════════════════════════════════════════ -->
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
 
-    <div class="p-4 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-      <div>
-        <h3 class="font-black text-gray-900">Calendario de actividad</h3>
-        <p class="text-xs text-gray-400">{{ calMetricLabel() }} diario · {{ calendarMonthTotal() | number:'1.0-0' }} total del mes</p>
-      </div>
-
-      <div class="flex items-center gap-3">
-        <!-- Toggle métrica calendario -->
-        <div class="flex gap-1 p-1 bg-gray-100 rounded-xl">
-          @for(m of [['recaudado','$'],['pedidos','🛍'],['clientes','👥']]; track m[0]) {
-            <button
-              (click)="setCalMetric(m[0])"
-              class="w-8 h-7 text-xs font-bold rounded-lg transition-all cursor-pointer"
-              [class.bg-white]="calMetric() === m[0]"
-              [class.shadow-sm]="calMetric() === m[0]"
-              [class.text-gray-900]="calMetric() === m[0]"
-              [class.text-gray-400]="calMetric() !== m[0]"
+      <div class="p-4 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div>
+          <h3 class="font-black text-gray-900">Evolución por período</h3>
+          <p class="text-xs text-gray-400">{{ periodoData().length }} días seleccionados</p>
+        </div>
+        <div class="flex gap-2 p-1 bg-gray-100 rounded-xl">
+          @for(m of [['recaudado','Recaudado'],['pedidos','Pedidos'],['clientes','Clientes']]; track m[0]) {
+            <button (click)="setChartMetric(m[0])"
+              class="px-3 py-1.5 text-xs font-bold rounded-lg transition-all cursor-pointer"
+              [class.bg-white]="chartMetric() === m[0]"   [class.shadow-sm]="chartMetric() === m[0]"
+              [class.text-gray-900]="chartMetric() === m[0]" [class.text-gray-500]="chartMetric() !== m[0]"
             >{{ m[1] }}</button>
           }
         </div>
+      </div>
 
-        <!-- Nav mes -->
-        <div class="flex items-center gap-2">
-          <button (click)="prevMonth()"
-            class="w-7 h-7 flex items-center justify-center rounded-lg bg-gray-100 hover:bg-gray-200 transition cursor-pointer">
-            <lucide-angular [img]="ChevronLeft" class="w-3.5 h-3.5 text-gray-600"></lucide-angular>
-          </button>
-          <span class="text-sm font-bold text-gray-700 capitalize min-w-32 text-center">{{ calMonthLabel() }}</span>
-          <button (click)="nextMonth()" [disabled]="!canGoNext()"
-            class="w-7 h-7 flex items-center justify-center rounded-lg transition cursor-pointer"
-            [class.bg-gray-100]="canGoNext()" [class.hover:bg-gray-200]="canGoNext()"
-            [class.bg-gray-50]="!canGoNext()" [class.opacity-30]="!canGoNext()">
-            <lucide-angular [img]="ChevronRight" class="w-3.5 h-3.5 text-gray-600"></lucide-angular>
-          </button>
+      <div class="px-4 pt-4 pb-2">
+        <div class="flex items-end justify-between mb-3 h-10">
+          @if(hoveredPoint()) {
+            <div>
+              <p class="text-2xl font-black text-gray-900">{{ formatChartVal(hoveredPoint()!.value) }}</p>
+              <p class="text-xs text-gray-400">{{ hoveredPoint()!.label }}</p>
+            </div>
+          } @else {
+            <div>
+              <p class="text-2xl font-black text-gray-900">{{ formatChartVal(chartMax()) }}</p>
+              <p class="text-xs text-gray-400">Máximo del período</p>
+            </div>
+          }
+          <div class="text-right">
+            <p class="text-xs text-gray-400">Mínimo</p>
+            <p class="text-sm font-bold text-gray-600">{{ formatChartVal(chartMin()) }}</p>
+          </div>
+        </div>
+
+        <div class="relative w-full cursor-crosshair" #chartContainer
+          (mousemove)="onChartHover($event, chartContainer)"
+          (mouseleave)="onChartLeave()">
+
+          <svg viewBox="0 0 800 200" class="w-full" preserveAspectRatio="none" style="height: 200px;">
+            <defs>
+              <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%"   [attr.stop-color]="chartColor()" stop-opacity="0.18"/>
+                <stop offset="100%" [attr.stop-color]="chartColor()" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+            @for(y of [0.25, 0.5, 0.75]; track y) {
+              <line x1="10" x2="790" [attr.y1]="190 - y*160" [attr.y2]="190 - y*160" stroke="#f3f4f6" stroke-width="1"/>
+            }
+            @if(svgArea()) {
+              <polygon [attr.points]="svgArea()" fill="url(#areaGrad)"/>
+            }
+            @if(svgPolyline()) {
+              <polyline [attr.points]="svgPolyline()" fill="none"
+                [attr.stroke]="chartColor()" stroke-width="2.5"
+                stroke-linecap="round" stroke-linejoin="round"/>
+            }
+            @if(hoveredIndex() >= 0) {
+              <line
+                [attr.x1]="getHoverX(hoveredIndex())" [attr.x2]="getHoverX(hoveredIndex())"
+                y1="10" y2="190" [attr.stroke]="chartColor()" stroke-width="1.5"
+                stroke-dasharray="4 3" opacity="0.6"/>
+              <circle
+                [attr.cx]="getHoverX(hoveredIndex())" [attr.cy]="getHoverY(hoveredIndex())"
+                r="5" [attr.fill]="chartColor()" stroke="white" stroke-width="2.5"/>
+            }
+          </svg>
+
+          <div class="flex justify-between mt-1 px-1">
+            @for(pt of chartPoints(); track pt.label; let i = $index) {
+              @if(chartPoints().length <= 10 || i === 0 || i === chartPoints().length - 1 || i % chartLabelStep() === 0) {
+                <span class="text-[10px] text-gray-400">{{ pt.label }}</span>
+              }
+            }
+          </div>
         </div>
       </div>
     </div>
 
-    <div class="p-4">
-      <!-- Días de la semana -->
-      <div class="grid grid-cols-7 gap-1.5 mb-1.5">
-        @for(day of DAY_LABELS; track day) {
-          <div class="text-center text-[10px] font-bold text-gray-400 pb-1">{{ day }}</div>
-        }
+    <!-- ════════════════════════════════════════════════════════════════════ -->
+    <!-- CALENDARIO HEATMAP                                                   -->
+    <!-- ════════════════════════════════════════════════════════════════════ -->
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+
+      <div class="p-4 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div>
+          <h3 class="font-black text-gray-900">Calendario de actividad</h3>
+          <p class="text-xs text-gray-400">
+            {{ calMetricLabel() }} diario
+            @if(loadingCalendario()) {
+              · <span class="text-orange-400">cargando...</span>
+            } @else {
+              · {{ calendarMonthTotal() | number:'1.0-0' }} total del mes
+            }
+          </p>
+        </div>
+        <div class="flex items-center gap-3">
+          <!-- Toggle métrica -->
+          <div class="flex gap-1 p-1 bg-gray-100 rounded-xl">
+            @for(m of [['recaudado','$'],['pedidos','🛍'],['clientes','👥']]; track m[0]) {
+              <button (click)="setCalMetric(m[0])"
+                class="w-8 h-7 text-xs font-bold rounded-lg transition-all cursor-pointer"
+                [class.bg-white]="calMetric() === m[0]"   [class.shadow-sm]="calMetric() === m[0]"
+                [class.text-gray-900]="calMetric() === m[0]" [class.text-gray-400]="calMetric() !== m[0]"
+              >{{ m[1] }}</button>
+            }
+          </div>
+          <!-- Nav mes -->
+          <div class="flex items-center gap-2">
+            <button (click)="prevMonth()"
+              class="w-7 h-7 flex items-center justify-center rounded-lg bg-gray-100 hover:bg-gray-200 transition cursor-pointer">
+              <lucide-angular [img]="ChevronLeft" class="w-3.5 h-3.5 text-gray-600"></lucide-angular>
+            </button>
+            <span class="text-sm font-bold text-gray-700 capitalize min-w-32 text-center">{{ calMonthLabel() }}</span>
+            <button (click)="nextMonth()" [disabled]="!canGoNext()"
+              class="w-7 h-7 flex items-center justify-center rounded-lg transition cursor-pointer"
+              [class.bg-gray-100]="canGoNext()"  [class.hover:bg-gray-200]="canGoNext()"
+              [class.bg-gray-50]="!canGoNext()"  [class.opacity-30]="!canGoNext()">
+              <lucide-angular [img]="ChevronRight" class="w-3.5 h-3.5 text-gray-600"></lucide-angular>
+            </button>
+          </div>
+        </div>
       </div>
 
-      <!-- Semanas -->
-      @for(week of calendarWeeks(); track $index) {
+      <div class="p-4">
         <div class="grid grid-cols-7 gap-1.5 mb-1.5">
-          @for(cell of week; track $index) {
-            @if(cell) {
-              <div
-                class="relative rounded-xl h-12 flex flex-col items-center justify-center cursor-default transition-all hover:ring-2 hover:ring-orange-400 hover:ring-offset-1 group"
-                [class]="getIntensityClass(cell.intensity)"
-                [class.ring-2]="isToday(cell.date)"
-                [class.ring-orange-500]="isToday(cell.date)"
-                [class.ring-offset-1]="isToday(cell.date)"
-                (mouseenter)="hoveredCalDay.set({ date: cell.date, value: cell.value })"
-                (mouseleave)="hoveredCalDay.set(null)"
-                [title]="cell.date.toLocaleDateString('es-AR') + ': ' + (calMetric() === 'recaudado' ? formatPriceFull(cell.value) : cell.value)"
-              >
-                <span class="text-[11px] font-black"
-                  [class.text-white]="cell.intensity > 0.55"
-                  [class.text-gray-800]="cell.intensity <= 0.55 && cell.intensity > 0"
-                  [class.text-gray-300]="cell.intensity === 0"
-                >{{ cell.date.getDate() }}</span>
-
-                @if(cell.value > 0) {
-                  <span class="text-[9px] font-bold leading-none mt-0.5"
-                    [class.text-white/80]="cell.intensity > 0.55"
-                    [class.text-gray-600]="cell.intensity <= 0.55"
-                  >
-                    {{ calMetric() === 'recaudado' ? formatPrice(cell.value) : cell.value }}
-                  </span>
-                }
-
-                <!-- Today badge -->
-                @if(isToday(cell.date)) {
-                  <span class="absolute -top-1 -right-1 w-2 h-2 bg-orange-500 rounded-full border border-white"></span>
-                }
-              </div>
-            } @else {
-              <div class="h-12 rounded-xl bg-gray-50/50"></div>
-            }
+          @for(day of DAY_LABELS; track day) {
+            <div class="text-center text-[10px] font-bold text-gray-400 pb-1">{{ day }}</div>
           }
         </div>
-      }
 
-      <!-- Leyenda -->
-      <div class="flex items-center justify-end gap-2 mt-3 pt-3 border-t border-gray-100">
-        <span class="text-xs text-gray-400">Menos</span>
-        @for(i of [0,1,2,3,4,5,6]; track i) {
-          <div class="w-5 h-5 rounded-md"
-            [class]="getIntensityClass(i / 6)">
+        @for(week of calendarWeeks(); track $index) {
+          <div class="grid grid-cols-7 gap-1.5 mb-1.5">
+            @for(cell of week; track $index) {
+              @if(cell) {
+                <div
+                  class="relative rounded-xl h-12 flex flex-col items-center justify-center cursor-default transition-all hover:ring-2 hover:ring-orange-400 hover:ring-offset-1"
+                  [class]="getIntensityClass(cell.intensity)"
+                  [class.ring-2]="isToday(cell.date)"
+                  [class.ring-orange-500]="isToday(cell.date)"
+                  [class.ring-offset-1]="isToday(cell.date)"
+                  (mouseenter)="hoveredCalDay.set({ date: cell.date, value: cell.value })"
+                  (mouseleave)="hoveredCalDay.set(null)"
+                  [title]="cell.date.toLocaleDateString('es-AR') + ': ' + (calMetric() === 'recaudado' ? formatPriceFull(cell.value) : cell.value)"
+                >
+                  <span class="text-[11px] font-black"
+                    [class.text-white]="cell.intensity > 0.55"
+                    [class.text-gray-800]="cell.intensity <= 0.55 && cell.intensity > 0"
+                    [class.text-gray-300]="cell.intensity === 0"
+                  >{{ cell.date.getDate() }}</span>
+
+                  @if(cell.value > 0) {
+                    <span class="text-[9px] font-bold leading-none mt-0.5"
+                      [class.text-white/80]="cell.intensity > 0.55"
+                      [class.text-gray-600]="cell.intensity <= 0.55"
+                    >
+                      {{ calMetric() === 'recaudado' ? formatPrice(cell.value) : cell.value }}
+                    </span>
+                  }
+
+                  @if(isToday(cell.date)) {
+                    <span class="absolute -top-1 -right-1 w-2 h-2 bg-orange-500 rounded-full border border-white"></span>
+                  }
+                </div>
+              } @else {
+                <div class="h-12 rounded-xl bg-gray-50/50"></div>
+              }
+            }
           </div>
         }
-        <span class="text-xs text-gray-400">Más</span>
+
+        <div class="flex items-center justify-end gap-2 mt-3 pt-3 border-t border-gray-100">
+          <span class="text-xs text-gray-400">Menos</span>
+          @for(i of [0,1,2,3,4,5,6]; track i) {
+            <div class="w-5 h-5 rounded-md" [class]="getIntensityClass(i / 6)"></div>
+          }
+          <span class="text-xs text-gray-400">Más</span>
+        </div>
       </div>
     </div>
-  </div>
 
-  <!-- ══════════════════════════════════════════════════════════════════════ -->
-  <!-- GRID ANALÍTICO                                                          -->
-  <!-- ══════════════════════════════════════════════════════════════════════ -->
-  <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+    <!-- ════════════════════════════════════════════════════════════════════ -->
+    <!-- GRID ANALÍTICO                                                       -->
+    <!-- ════════════════════════════════════════════════════════════════════ -->
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
 
-    <!-- Top Productos -->
-    <div class="xl:col-span-2 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-      <div class="p-4 border-b border-gray-100">
-        <h3 class="font-black text-gray-900">Top productos del período</h3>
-        <p class="text-xs text-gray-400">Por cantidad vendida</p>
-      </div>
-      <div class="p-4 space-y-3">
-        @for(prod of topProductos(); track prod.nombre; let i = $index) {
-          <div class="flex items-center gap-3">
-            <!-- Rank + emoji -->
-            <div class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 text-base"
-              [class.bg-amber-100]="i === 0"
-              [class.bg-gray-100]="i > 0">
-              {{ prod.emoji }}
-            </div>
-
-            <div class="flex-1 min-w-0">
-              <div class="flex items-center justify-between mb-1">
-                <span class="text-sm font-bold text-gray-900 truncate">{{ prod.nombre }}</span>
-                <span class="text-sm font-black text-gray-700 ml-2 shrink-0">{{ prod.cantidad }} uds</span>
+      <!-- Top Productos -->
+      <div class="xl:col-span-2 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="p-4 border-b border-gray-100">
+          <h3 class="font-black text-gray-900">Top productos del período</h3>
+          <p class="text-xs text-gray-400">Por cantidad vendida</p>
+        </div>
+        <div class="p-4 space-y-3">
+          @if(topProductos().length === 0) {
+            <p class="text-sm text-gray-400 text-center py-4">Sin datos para el período</p>
+          }
+          @for(prod of topProductos(); track prod.producto_id; let i = $index) {
+            <div class="flex items-center gap-3">
+              <!-- Ranking -->
+              <div class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 text-sm font-black"
+                [class.bg-amber-100]="i === 0" [class.text-amber-600]="i === 0"
+                [class.bg-gray-100]="i > 0"    [class.text-gray-500]="i > 0">
+                {{ i + 1 }}
               </div>
-              <div class="w-full bg-gray-100 rounded-full h-1.5">
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center justify-between mb-1">
+                  <span class="text-sm font-bold text-gray-900 truncate">{{ prod.nombre }}</span>
+                  <span class="text-sm font-black text-gray-700 ml-2 shrink-0">{{ prod.cantidad }} uds</span>
+                </div>
+                <div class="w-full bg-gray-100 rounded-full h-1.5">
+                  <div
+                    class="h-1.5 rounded-full transition-all"
+                    [class.bg-amber-400]="i === 0"
+                    [class.bg-orange-300]="i === 1"
+                    [class.bg-gray-400]="i > 1"
+                    [style.width.%]="prod.porcentaje">
+                  </div>
+                </div>
+              </div>
+              <span class="text-xs font-bold text-gray-500 shrink-0 text-right w-16">
+                {{ formatPrice(prod.total) }}
+              </span>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Medios de pago -->
+      <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="p-4 border-b border-gray-100">
+          <h3 class="font-black text-gray-900">Medios de pago</h3>
+          <p class="text-xs text-gray-400">Distribución del período</p>
+        </div>
+        <div class="p-4 space-y-4">
+          <!-- Donut -->
+          <div class="flex justify-center py-2">
+            <div class="relative w-28 h-28">
+              <svg viewBox="0 0 36 36" class="w-full h-full -rotate-90">
+                <circle cx="18" cy="18" r="14" fill="none" stroke="#dcfce7" stroke-width="5"/>
+                <circle cx="18" cy="18" r="14" fill="none" stroke="#22c55e" stroke-width="5"
+                  [attr.stroke-dasharray]="getPagosPct(pagoEfectivo()) + ' ' + (100 - getPagosPct(pagoEfectivo()))"
+                  stroke-dashoffset="0"/>
+                <circle cx="18" cy="18" r="14" fill="none" stroke="#3b82f6" stroke-width="5"
+                  [attr.stroke-dasharray]="getPagosPct(pagoTarjeta()) + ' ' + (100 - getPagosPct(pagoTarjeta()))"
+                  [attr.stroke-dashoffset]="-(getPagosPct(pagoEfectivo()))"/>
+                <circle cx="18" cy="18" r="14" fill="none" stroke="#a855f7" stroke-width="5"
+                  [attr.stroke-dasharray]="getPagosPct(pagoApp()) + ' ' + (100 - getPagosPct(pagoApp()))"
+                  [attr.stroke-dashoffset]="-(getPagosPct(pagoEfectivo()) + getPagosPct(pagoTarjeta()))"/>
+              </svg>
+              <div class="absolute inset-0 flex items-center justify-center">
+                <span class="text-xs font-black text-gray-700">{{ formatPrice(kpiRecaudado()) }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="space-y-2">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <div class="w-2.5 h-2.5 rounded-full bg-green-500"></div>
+                <lucide-angular [img]="Banknote" class="w-3.5 h-3.5 text-green-600"></lucide-angular>
+                <span class="text-xs font-medium text-gray-600">Efectivo</span>
+              </div>
+              <div class="text-right">
+                <span class="text-xs font-black text-gray-900">{{ getPagosPct(pagoEfectivo()) }}%</span>
+                <span class="text-xs text-gray-400 ml-1">{{ formatPrice(pagoEfectivo()) }}</span>
+              </div>
+            </div>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <div class="w-2.5 h-2.5 rounded-full bg-blue-500"></div>
+                <lucide-angular [img]="CreditCard" class="w-3.5 h-3.5 text-blue-600"></lucide-angular>
+                <span class="text-xs font-medium text-gray-600">Tarjeta</span>
+              </div>
+              <div class="text-right">
+                <span class="text-xs font-black text-gray-900">{{ getPagosPct(pagoTarjeta()) }}%</span>
+                <span class="text-xs text-gray-400 ml-1">{{ formatPrice(pagoTarjeta()) }}</span>
+              </div>
+            </div>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <div class="w-2.5 h-2.5 rounded-full bg-purple-500"></div>
+                <lucide-angular [img]="Smartphone" class="w-3.5 h-3.5 text-purple-600"></lucide-angular>
+                <span class="text-xs font-medium text-gray-600">App</span>
+              </div>
+              <div class="text-right">
+                <span class="text-xs font-black text-gray-900">{{ getPagosPct(pagoApp()) }}%</span>
+                <span class="text-xs text-gray-400 ml-1">{{ formatPrice(pagoApp()) }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pedidos por estado -->
+      <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="p-4 border-b border-gray-100">
+          <h3 class="font-black text-gray-900">Pedidos por estado</h3>
+          <p class="text-xs text-gray-400">{{ kpiPedidos() }} totales</p>
+        </div>
+        <div class="p-4 space-y-3">
+          @for(estado of estadosPedido(); track estado.estado) {
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <span class="text-xs font-semibold text-gray-600">{{ estado.estado }}</span>
+                <span class="text-xs font-black text-gray-900">{{ estado.count }}</span>
+              </div>
+              <div class="w-full bg-gray-100 rounded-full h-2">
                 <div
-                  class="h-1.5 rounded-full transition-all"
-                  [class.bg-amber-400]="i === 0"
-                  [class.bg-orange-300]="i === 1"
-                  [class.bg-gray-400]="i > 1"
-                  [style.width.%]="prod.porcentaje">
+                  class="h-2 rounded-full transition-all {{ estado.bgColor }}"
+                  [style.width.%]="(estado.count / estadoMaxCount()) * 100">
                 </div>
               </div>
             </div>
-
-            <span class="text-xs font-bold text-gray-500 shrink-0 text-right w-16">
-              {{ formatPrice(prod.total) }}
-            </span>
-          </div>
-        }
-      </div>
-    </div>
-
-    <!-- Medios de pago -->
-    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-      <div class="p-4 border-b border-gray-100">
-        <h3 class="font-black text-gray-900">Medios de pago</h3>
-        <p class="text-xs text-gray-400">Distribución del período</p>
-      </div>
-      <div class="p-4 space-y-4">
-        <!-- Donut visual simple -->
-        <div class="flex justify-center py-2">
-          <div class="relative w-28 h-28">
-            <svg viewBox="0 0 36 36" class="w-full h-full -rotate-90">
-              <!-- Efectivo -->
-              <circle cx="18" cy="18" r="14" fill="none" stroke="#dcfce7" stroke-width="5"/>
-              <circle cx="18" cy="18" r="14" fill="none" stroke="#22c55e" stroke-width="5"
-                [attr.stroke-dasharray]="getPagosPct(pagoEfectivo()) + ' ' + (100 - getPagosPct(pagoEfectivo()))"
-                stroke-dashoffset="0"/>
-              <!-- Tarjeta -->
-              <circle cx="18" cy="18" r="14" fill="none" stroke="#3b82f6" stroke-width="5"
-                [attr.stroke-dasharray]="getPagosPct(pagoTarjeta()) + ' ' + (100 - getPagosPct(pagoTarjeta()))"
-                [attr.stroke-dashoffset]="-(getPagosPct(pagoEfectivo()))"/>
-              <!-- App -->
-              <circle cx="18" cy="18" r="14" fill="none" stroke="#a855f7" stroke-width="5"
-                [attr.stroke-dasharray]="getPagosPct(pagoApp()) + ' ' + (100 - getPagosPct(pagoApp()))"
-                [attr.stroke-dashoffset]="-(getPagosPct(pagoEfectivo()) + getPagosPct(pagoTarjeta()))"/>
-            </svg>
-            <div class="absolute inset-0 flex items-center justify-center">
-              <span class="text-xs font-black text-gray-700">{{ formatPrice(kpiRecaudado()) }}</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="space-y-2">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-2">
-              <div class="w-2.5 h-2.5 rounded-full bg-green-500"></div>
-              <lucide-angular [img]="Banknote" class="w-3.5 h-3.5 text-green-600"></lucide-angular>
-              <span class="text-xs font-medium text-gray-600">Efectivo</span>
-            </div>
-            <div class="text-right">
-              <span class="text-xs font-black text-gray-900">{{ getPagosPct(pagoEfectivo()) }}%</span>
-              <span class="text-xs text-gray-400 ml-1">{{ formatPrice(pagoEfectivo()) }}</span>
-            </div>
-          </div>
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-2">
-              <div class="w-2.5 h-2.5 rounded-full bg-blue-500"></div>
-              <lucide-angular [img]="CreditCard" class="w-3.5 h-3.5 text-blue-600"></lucide-angular>
-              <span class="text-xs font-medium text-gray-600">Tarjeta</span>
-            </div>
-            <div class="text-right">
-              <span class="text-xs font-black text-gray-900">{{ getPagosPct(pagoTarjeta()) }}%</span>
-              <span class="text-xs text-gray-400 ml-1">{{ formatPrice(pagoTarjeta()) }}</span>
-            </div>
-          </div>
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-2">
-              <div class="w-2.5 h-2.5 rounded-full bg-purple-500"></div>
-              <lucide-angular [img]="Smartphone" class="w-3.5 h-3.5 text-purple-600"></lucide-angular>
-              <span class="text-xs font-medium text-gray-600">App</span>
-            </div>
-            <div class="text-right">
-              <span class="text-xs font-black text-gray-900">{{ getPagosPct(pagoApp()) }}%</span>
-              <span class="text-xs text-gray-400 ml-1">{{ formatPrice(pagoApp()) }}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Pedidos por estado -->
-    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-      <div class="p-4 border-b border-gray-100">
-        <h3 class="font-black text-gray-900">Pedidos por estado</h3>
-        <p class="text-xs text-gray-400">{{ kpiPedidos() }} totales</p>
-      </div>
-      <div class="p-4 space-y-3">
-        @for(estado of estadosPedido(); track estado.estado) {
-          <div>
-            <div class="flex items-center justify-between mb-1">
-              <span class="text-xs font-semibold text-gray-600">{{ estado.estado }}</span>
-              <span class="text-xs font-black text-gray-900">{{ estado.count }}</span>
-            </div>
-            <div class="w-full bg-gray-100 rounded-full h-2">
-              <div
-                class="h-2 rounded-full transition-all {{ estado.bgColor }}"
-                [style.width.%]="(estado.count / estadoMaxCount()) * 100">
-              </div>
-            </div>
-          </div>
-        }
-
-        <div class="pt-3 border-t border-gray-100">
-          <div class="flex items-center justify-between">
+          }
+          <div class="pt-3 border-t border-gray-100 flex items-center justify-between">
             <span class="text-xs text-gray-400">Tasa de entrega</span>
-            <span class="text-sm font-black text-green-600">
-              {{ kpiPedidos() > 0 ? ((estadosPedido()[0].count / kpiPedidos()) * 100).toFixed(0) : 0 }}%
-            </span>
+            <span class="text-sm font-black text-green-600">{{ tasaEntrega() }}%</span>
           </div>
         </div>
+      </div>
+
+    </div>
+
+    <!-- ════════════════════════════════════════════════════════════════════ -->
+    <!-- HORAS PICO                                                           -->
+    <!-- ════════════════════════════════════════════════════════════════════ -->
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+      <div class="p-4 border-b border-gray-100">
+        <h3 class="font-black text-gray-900">Horas pico</h3>
+        <p class="text-xs text-gray-400">Distribución de pedidos por hora del día en el período</p>
+      </div>
+      <div class="p-4">
+
+        @if(horasPico().length === 0) {
+          <div class="py-8 text-center text-sm text-gray-400">Sin datos para el período</div>
+        } @else {
+          <div class="flex items-end gap-1.5 h-24">
+            @for(hora of horasPico(); track hora.hora) {
+              <div class="flex-1 flex flex-col items-center gap-1 group">
+                <div
+                  class="w-full rounded-t-lg transition-all group-hover:opacity-80 cursor-default"
+                  [style.height.%]="hora.intensity * 100"
+                  [style.min-height.px]="4"
+                  [class.bg-orange-500]="hora.intensity >= 0.8"
+                  [class.bg-orange-400]="hora.intensity >= 0.6 && hora.intensity < 0.8"
+                  [class.bg-orange-300]="hora.intensity >= 0.4 && hora.intensity < 0.6"
+                  [class.bg-orange-200]="hora.intensity >= 0.2 && hora.intensity < 0.4"
+                  [class.bg-orange-100]="hora.intensity < 0.2"
+                  [title]="hora.hora + 'h: ' + hora.pedidos + ' pedidos'"
+                ></div>
+              </div>
+            }
+          </div>
+
+          <div class="flex gap-1.5 mt-1">
+            @for(hora of horasPico(); track hora.hora) {
+              <div class="flex-1 text-center">
+                <span class="text-[9px] text-gray-400 font-medium">{{ hora.hora }}h</span>
+              </div>
+            }
+          </div>
+
+          <div class="flex items-center gap-4 mt-3 pt-3 border-t border-gray-100">
+            <div class="flex items-center gap-1.5">
+              <div class="w-3 h-3 bg-orange-500 rounded"></div>
+              <span class="text-xs text-gray-500">
+                Hora pico: <span class="font-bold text-gray-700">{{ horaPicoLabel() }}</span>
+              </span>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <lucide-angular [img]="Clock" class="w-3.5 h-3.5 text-gray-400"></lucide-angular>
+              <span class="text-xs text-gray-500">
+                Promedio: <span class="font-bold text-gray-700">{{ horasPicoPromedio() }} pedidos/hora</span>
+              </span>
+            </div>
+          </div>
+        }
+
       </div>
     </div>
 
-  </div>
-
-  <!-- ══════════════════════════════════════════════════════════════════════ -->
-  <!-- HORAS PICO                                                               -->
-  <!-- ══════════════════════════════════════════════════════════════════════ -->
-  <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-    <div class="p-4 border-b border-gray-100">
-      <h3 class="font-black text-gray-900">Horas pico</h3>
-      <p class="text-xs text-gray-400">Distribución promedio de pedidos por hora del día</p>
-    </div>
-    <div class="p-4">
-      <div class="flex items-end gap-1.5 h-24">
-        @for(hora of horasPico; track hora.hora) {
-          <div class="flex-1 flex flex-col items-center gap-1 group">
-            <div
-              class="w-full rounded-t-lg transition-all group-hover:opacity-80 cursor-default"
-              [style.height.%]="hora.intensity * 100"
-              [style.min-height.px]="4"
-              [class.bg-orange-500]="hora.intensity >= 0.8"
-              [class.bg-orange-400]="hora.intensity >= 0.6 && hora.intensity < 0.8"
-              [class.bg-orange-300]="hora.intensity >= 0.4 && hora.intensity < 0.6"
-              [class.bg-orange-200]="hora.intensity >= 0.2 && hora.intensity < 0.4"
-              [class.bg-orange-100]="hora.intensity < 0.2"
-              [title]="hora.hora + ': ' + hora.pedidos + ' pedidos'"
-            ></div>
-          </div>
-        }
-      </div>
-      <div class="flex gap-1.5 mt-1">
-        @for(hora of horasPico; track hora.hora) {
-          <div class="flex-1 text-center">
-            <span class="text-[9px] text-gray-400 font-medium">{{ hora.hora }}</span>
-          </div>
-        }
-      </div>
-      <div class="flex items-center gap-4 mt-3 pt-3 border-t border-gray-100">
-        <div class="flex items-center gap-1.5">
-          <div class="w-3 h-3 bg-orange-500 rounded"></div>
-          <span class="text-xs text-gray-500">Hora pico: <span class="font-bold text-gray-700">9h – 10h</span></span>
-        </div>
-        <div class="flex items-center gap-1.5">
-          <lucide-angular [img]="Clock" class="w-3.5 h-3.5 text-gray-400"></lucide-angular>
-          <span class="text-xs text-gray-500">Promedio: <span class="font-bold text-gray-700">{{ horasPicoPromedio }} pedidos/hora</span></span>
-        </div>
-      </div>
-    </div>
-  </div>
+  } <!-- end @if(rs.resumen()) -->
 
 </div>
