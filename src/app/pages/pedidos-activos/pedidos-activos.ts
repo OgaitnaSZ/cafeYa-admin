@@ -14,11 +14,10 @@ import {
   Receipt,
   AlertCircle
 } from 'lucide-angular';
-import { SocketConnection } from '../../layout/components/socket-connection/socket-connection';
 
 @Component({
   selector: 'app-pedidos-activos',
-  imports: [CommonModule, LucideAngularModule, SocketConnection],
+  imports: [CommonModule, LucideAngularModule],
   templateUrl: './pedidos-activos.html',
   styleUrl: './pedidos-activos.css',
 })

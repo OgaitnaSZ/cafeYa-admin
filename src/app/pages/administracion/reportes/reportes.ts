@@ -3,7 +3,6 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
 import {
   LucideAngularModule,
   TrendingUp, TrendingDown, ShoppingBag, Users, Star,
@@ -89,7 +88,7 @@ function generateHistory(days: number): DayData[] {
 
 @Component({
   selector: 'app-reportes',
-  imports: [CommonModule, FormsModule, RouterLink, LucideAngularModule],
+  imports: [CommonModule, FormsModule, LucideAngularModule],
   templateUrl: './reportes.html',
   styleUrl: './reportes.css',
 })
@@ -351,7 +350,7 @@ export class Reportes {
     };
   }
 
-  setPreset(p: RangoPreset) { this.rangoPreset.set(p); }
+  setPreset(p: string) { this.rangoPreset.set(p as RangoPreset); }
 
   // ── Calendar nav ───────────────────────────────────────────────────────────
   prevMonth() {
@@ -482,6 +481,21 @@ export class Reportes {
   }
 
   readonly DAY_LABELS = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
+
+  // Expose Math to template
+  readonly Math = Math;
+
+  // Typed setters (avoid `as any` casts in templates)
+  setChartMetric(m: string) { this.chartMetric.set(m as ChartMetric); }
+  setCalMetric(m: string)   { this.calMetric.set(m as CalendarMetric); }
+
+  // Label step for X-axis thinning
+  chartLabelStep = computed(() => Math.ceil(this.chartPoints().length / 6));
+
+  // Horas pico average
+  horasPicoPromedio = Math.round(
+    [8,22,48,52,38,44,35,18,12,20,30,25,14,6].reduce((a,b) => a + b, 0) / 14
+  );
 
   getPagosPct(val: number): number {
     const total = this.pagoEfectivo() + this.pagoTarjeta() + this.pagoApp();

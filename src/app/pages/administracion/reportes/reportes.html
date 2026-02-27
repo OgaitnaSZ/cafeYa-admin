@@ -4,16 +4,9 @@
   <!-- HEADER                                                                  -->
   <!-- ══════════════════════════════════════════════════════════════════════ -->
   <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-    <div class="flex items-center gap-3">
-      <a routerLink="/dashboard"
-        class="w-9 h-9 flex items-center justify-center bg-white border-2 border-gray-200 rounded-xl hover:border-orange-400 transition-all cursor-pointer"
-        title="Volver al dashboard">
-        <lucide-angular [img]="ArrowLeft" class="w-4 h-4 text-gray-500"></lucide-angular>
-      </a>
-      <div>
-        <h2 class="text-2xl font-black text-gray-900">Reportes e informes</h2>
-        <p class="text-sm text-gray-500">Análisis del período seleccionado</p>
-      </div>
+    <div>
+      <h2 class="text-2xl font-black text-gray-900">Reportes e informes</h2>
+      <p class="text-sm text-gray-500">Análisis del período seleccionado</p>
     </div>
 
     <!-- ── Filtros de fecha ──────────────────────────────────────────────── -->
@@ -21,7 +14,7 @@
       <!-- Presets -->
       @for(preset of [['7d','7 días'],['30d','30 días'],['90d','90 días']] ; track preset[0]) {
         <button
-          (click)="setPreset(preset[0] as any)"
+          (click)="setPreset(preset[0])"
           class="h-9 px-4 text-sm font-bold rounded-xl border-2 transition-all cursor-pointer"
           [class.bg-orange-500]="rangoPreset() === preset[0]"
           [class.text-white]="rangoPreset() === preset[0]"
@@ -150,7 +143,7 @@
       <div class="flex gap-2 p-1 bg-gray-100 rounded-xl">
         @for(m of [['recaudado','Recaudado'],['pedidos','Pedidos'],['clientes','Clientes']]; track m[0]) {
           <button
-            (click)="chartMetric.set(m[0] as any)"
+            (click)="setChartMetric(m[0])"
             class="px-3 py-1.5 text-xs font-bold rounded-lg transition-all cursor-pointer"
             [class.bg-white]="chartMetric() === m[0]"
             [class.shadow-sm]="chartMetric() === m[0]"
@@ -242,7 +235,7 @@
         <!-- X-axis labels (solo algunos) -->
         <div class="flex justify-between mt-1 px-1">
           @for(pt of chartPoints(); track pt.label; let i = $index) {
-            @if(chartPoints().length <= 10 || i === 0 || i === chartPoints().length - 1 || i % Math.ceil(chartPoints().length / 6) === 0) {
+            @if(chartPoints().length <= 10 || i === 0 || i === chartPoints().length - 1 || i % chartLabelStep() === 0) {
               <span class="text-[10px] text-gray-400">{{ pt.label }}</span>
             }
           }
@@ -267,7 +260,7 @@
         <div class="flex gap-1 p-1 bg-gray-100 rounded-xl">
           @for(m of [['recaudado','$'],['pedidos','🛍'],['clientes','👥']]; track m[0]) {
             <button
-              (click)="calMetric.set(m[0] as any)"
+              (click)="setCalMetric(m[0])"
               class="w-8 h-7 text-xs font-bold rounded-lg transition-all cursor-pointer"
               [class.bg-white]="calMetric() === m[0]"
               [class.shadow-sm]="calMetric() === m[0]"
@@ -546,7 +539,7 @@
         </div>
         <div class="flex items-center gap-1.5">
           <lucide-angular [img]="Clock" class="w-3.5 h-3.5 text-gray-400"></lucide-angular>
-          <span class="text-xs text-gray-500">Promedio: <span class="font-bold text-gray-700">5 pedidos/hora</span></span>
+          <span class="text-xs text-gray-500">Promedio: <span class="font-bold text-gray-700">{{ horasPicoPromedio }} pedidos/hora</span></span>
         </div>
       </div>
     </div>

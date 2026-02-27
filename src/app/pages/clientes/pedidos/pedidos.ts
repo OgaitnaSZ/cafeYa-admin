@@ -26,11 +26,10 @@ import {
   CreditCard,
   Star
 } from 'lucide-angular';
-import { SocketConnection } from "../../../layout/components/socket-connection/socket-connection";
 
 @Component({
   selector: 'app-pedidos',
-  imports: [CommonModule, PedidoDetalleModal, LucideAngularModule, SocketConnection],
+  imports: [CommonModule, PedidoDetalleModal, LucideAngularModule],
   templateUrl: './pedidos.html',
   styleUrl: './pedidos.css',
 })

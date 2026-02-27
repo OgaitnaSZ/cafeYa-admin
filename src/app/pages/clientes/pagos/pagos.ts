@@ -19,11 +19,10 @@ import {
   TrendingUp,
   ReceiptText
 } from 'lucide-angular';
-import { SocketConnection } from '../../../layout/components/socket-connection/socket-connection';
 
 @Component({
   selector: 'app-pagos',
-  imports: [CommonModule, LucideAngularModule, SocketConnection],
+  imports: [CommonModule, LucideAngularModule],
   templateUrl: './pagos.html',
   styleUrl: './pagos.css',
 })
