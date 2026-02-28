@@ -1,8 +1,8 @@
-import { Component, Input, Output, EventEmitter, signal } from '@angular/core';
+import { Component, Input, Output, EventEmitter, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
-import { Bell, LucideAngularModule, Menu } from 'lucide-angular';
+import { Bell, LucideAngularModule, Menu, X } from 'lucide-angular';
 import { SocketConnection } from '../components/socket-connection/socket-connection';
+import { NotificacionService, NOTIF_SERVIDOR_META, NOTIF_ESTADO_META, TipoNotifServidor, TipoNotifEstado } from '../../core/services/notificacion';
 
 export interface Notificacion {
   id: string;
@@ -15,7 +15,7 @@ export interface Notificacion {
 
 @Component({
   selector: 'app-header',
-  imports: [CommonModule, RouterLink, LucideAngularModule, SocketConnection],
+  imports: [CommonModule, LucideAngularModule, SocketConnection],
   templateUrl: './header.html',
   styleUrl: './header.css',
 })
@@ -29,7 +29,8 @@ export class Header {
   @Input() notificaciones: Notificacion[] = [];
   @Output() notificacionClick = new EventEmitter<Notificacion>();
 
-  showNotifications = signal(false);
+  // Servicios
+  readonly ns = inject(NotificacionService);
 
   private timerInterval: any;
   private _hora = signal('');
@@ -38,9 +39,6 @@ export class Header {
   get nombreInicial(): string {
     return this.nombreUsuario?.charAt(0).toUpperCase() || 'U';
   }
-
-  notificacionesNoLeidas = () =>
-    this.notificaciones.filter(n => !n.leida).length;
 
   horaActual = this._hora.asReadonly();
   fechaActual = this._fecha.asReadonly();
@@ -60,6 +58,11 @@ export class Header {
     this._fecha.set(now.toLocaleDateString('es-AR', { weekday: 'short', day: '2-digit', month: 'short' }));
   }
 
+  // Notificaciones
+  tabActivo = signal<'servidor' | 'estado'>('servidor');
+  showNotifications = signal(false);
+  notificacionesNoLeidas = () => this.notificaciones.filter(n => !n.leida).length;
+
   toggleNotifications(): void {
     this.showNotifications.update(v => !v);
   }
@@ -74,7 +77,16 @@ export class Header {
     this.showNotifications.set(false);
   }
 
+  getMetaServidor(tipo: TipoNotifServidor) {
+    return NOTIF_SERVIDOR_META[tipo];
+  }
+
+  getMetaEstado(tipo: TipoNotifEstado) {
+    return NOTIF_ESTADO_META[tipo];
+  }
+
   // Icons
   readonly Menu = Menu;
   readonly Bell = Bell;
+  readonly X = X;
 }
