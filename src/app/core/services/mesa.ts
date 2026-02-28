@@ -41,9 +41,7 @@ export class MesaService {
     this.error.set(null);
     this.success.set(null);
 
-    this.http.get<Mesa[]>(`${this.apiUrl}mesa/mesas`, {
-      headers: this.tokenService.createAuthHeaders(),
-    }).pipe(
+    this.http.get<Mesa[]>(`${this.apiUrl}mesa/mesas`).pipe(
       tap(data => {
         this.mesas.set(data);
       }),
@@ -60,9 +58,7 @@ export class MesaService {
     this.error.set(null);
     this.success.set(null);
 
-    this.http.post<Mesa>(`${this.apiUrl}mesa/crear`, mesa, {
-      headers: this.tokenService.createAuthHeaders(),
-    }).pipe(
+    this.http.post<Mesa>(`${this.apiUrl}mesa/crear`, mesa).pipe(
       tap(data => {
         this.mesa.set(data);
         this.mesas.update(items => [...items, data]);
@@ -81,9 +77,7 @@ export class MesaService {
     this.error.set(null);
     this.success.set(null);
 
-    this.http.put<Mesa>(`${this.apiUrl}mesa`, mesa, {
-      headers: this.tokenService.createAuthHeaders(),
-    }).pipe(
+    this.http.put<Mesa>(`${this.apiUrl}mesa`, mesa).pipe(
       tap(data => {
         this.mesa.set(data);
         this.mesas.update(items =>
@@ -105,7 +99,7 @@ export class MesaService {
       this.loading.set(true);
       this.error.set(null);
 
-      this.http.patch<Mesa>(`${this.apiUrl}mesa/codigo/${mesa_id}`, {}, { headers: this.tokenService.createAuthHeaders() }).pipe(
+      this.http.patch<Mesa>(`${this.apiUrl}mesa/codigo/${mesa_id}`, {}).pipe(
           tap((data) => {
               this.mesa.set(data);
               this.mesas.update(items =>
@@ -126,9 +120,7 @@ export class MesaService {
     this.error.set(null);
     this.success.set(null);
 
-    this.http.delete<Mesa>(`${this.apiUrl}mesa/eliminar/${mesa_id}`, {
-      headers: this.tokenService.createAuthHeaders(),
-    }).pipe(
+    this.http.delete<Mesa>(`${this.apiUrl}mesa/eliminar/${mesa_id}`).pipe(
       tap((data) => {
         this.mesa.set(data);
         this.mesas.update(items =>

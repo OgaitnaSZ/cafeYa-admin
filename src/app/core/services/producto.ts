@@ -64,12 +64,8 @@ export class ProductoService {
     this.error.set(null);
 
     forkJoin({
-      productos: this.http.get<Producto[]>(`${this.apiUrl}producto/productos`, {
-        headers: this.tokenService.createAuthHeaders(),
-      }),
-      categorias: this.http.get<Categoria[]>(`${this.apiUrl}categoria/categorias`, {
-        headers: this.tokenService.createAuthHeaders(),
-      }),
+      productos: this.http.get<Producto[]>(`${this.apiUrl}producto/productos`),
+      categorias: this.http.get<Categoria[]>(`${this.apiUrl}categoria/categorias`),
     }).pipe(
       tap(({ productos, categorias }) => {
         this.productos.set(productos);
@@ -88,7 +84,7 @@ export class ProductoService {
       this.error.set(null);
       this.success.set(null);
 
-      this.http.post<Producto>(`${this.apiUrl}producto/crear`, producto, { headers: this.tokenService.createAuthHeaders() }).pipe(
+      this.http.post<Producto>(`${this.apiUrl}producto/crear`, producto).pipe(
           tap((data) => {
               this.producto.set(data);
               this.productos.update(items => [...items, data]);
@@ -106,7 +102,7 @@ export class ProductoService {
       this.loading.set(true);
       this.error.set(null);
 
-      this.http.put<Producto>(`${this.apiUrl}producto/editar`, producto, { headers: this.tokenService.createAuthHeaders() }).pipe(
+      this.http.put<Producto>(`${this.apiUrl}producto/editar`, producto).pipe(
           tap((data) => {
               this.producto.set(data);
               this.productos.update(items =>
@@ -128,7 +124,7 @@ export class ProductoService {
       this.loading.set(true);
       this.error.set(null);
 
-      this.http.patch<Producto>(`${this.apiUrl}producto/estado/${producto_id}`, {}, { headers: this.tokenService.createAuthHeaders() }).pipe(
+      this.http.patch<Producto>(`${this.apiUrl}producto/estado/${producto_id}`, {}).pipe(
           tap((data) => {
               this.producto.set(data);
               this.productos.update(items =>
@@ -148,7 +144,7 @@ export class ProductoService {
       this.loading.set(true);
       this.error.set(null);
 
-      this.http.patch<Producto>(`${this.apiUrl}producto/destacar/${producto_id}`, {}, { headers: this.tokenService.createAuthHeaders() }).pipe(
+      this.http.patch<Producto>(`${this.apiUrl}producto/destacar/${producto_id}`, {}).pipe(
           tap((data) => {
               this.producto.set(data);
               this.productos.update(items =>
@@ -168,7 +164,7 @@ export class ProductoService {
       this.loading.set(true);
       this.error.set(null);
 
-      this.http.delete<Producto>(`${this.apiUrl}producto/eliminar/${producto_id}`, { headers: this.tokenService.createAuthHeaders() }).pipe(
+      this.http.delete<Producto>(`${this.apiUrl}producto/eliminar/${producto_id}`).pipe(
           tap((data) => {
               this.producto.set(data);
               this.productos.update(items =>
@@ -188,7 +184,7 @@ export class ProductoService {
       this.loading.set(true);
       this.error.set(null);
 
-      this.http.post<Producto>(`${this.apiUrl}producto/foto`, formData, { headers: this.tokenService.createAuthHeaders({ excludeContentType: true }) }).pipe(
+      this.http.post<Producto>(`${this.apiUrl}producto/foto`, formData).pipe(
           tap((data) => {
               this.producto.set(data);
               this.productos.update(items =>
@@ -208,7 +204,7 @@ export class ProductoService {
       this.loading.set(true);
       this.error.set(null);
 
-      this.http.delete(`${this.apiUrl}foto/eliminar/${foto_id}`, { headers: this.tokenService.createAuthHeaders() }).pipe(
+      this.http.delete(`${this.apiUrl}foto/eliminar/${foto_id}`).pipe(
           tap(() => {
               this.ns.success("Foto eliminada con exito")
           }),

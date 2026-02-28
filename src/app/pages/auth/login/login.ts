@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, effect, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -17,6 +17,7 @@ export class Login {
   private fb = inject(FormBuilder);
   private auth = inject(Auth);
   private ns = inject(NotificacionService);
+  private router = inject(Router);
 
   user = this.auth.user;
   loading = this.auth.loading;
@@ -29,6 +30,12 @@ export class Login {
 
   togglePasswordVisibility(): void {
     this.showPassword.update(v => !v);
+  }
+
+  constructor() {
+    effect(() => {
+      if (this.auth.isLoggedIn()) this.router.navigate(['/dashboard']);
+    });
   }
 
   onLogin() {

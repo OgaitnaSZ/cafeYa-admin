@@ -87,10 +87,7 @@ export class PagoService {
       params = params.set('fecha_hasta', filtros.fecha_hasta.toISOString());
     }
 
-    this.http.get<Pago[]>(`${this.apiUrl}pagos`, {
-      headers: this.tokenService.createAuthHeaders(),
-      params
-    }).pipe(
+    this.http.get<Pago[]>(`${this.apiUrl}pagos`).pipe(
       tap(data => {
         this.pagos.set(data);
       }),
@@ -106,9 +103,7 @@ export class PagoService {
     this.loading.set(true);
     this.error.set(null);
 
-    this.http.get<Pago>(`${this.apiUrl}${pagoId}`, {
-      headers: this.tokenService.createAuthHeaders(),
-    }).pipe(
+    this.http.get<Pago>(`${this.apiUrl}${pagoId}`).pipe(
       tap(data => {
         this.pago.set(data);
       }),

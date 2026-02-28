@@ -97,9 +97,7 @@ export class DashboardService {
     this.error.set(null);
 
     this.http
-      .get<DashboardResumen>(this.apiUrl, {
-        headers: this.tokenService.createAuthHeaders(),
-      })
+      .get<DashboardResumen>(this.apiUrl)
       .pipe(
         tap((data) => this.resumen.set(data)),
         catchError((err) => {

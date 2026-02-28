@@ -89,7 +89,6 @@ export class Auth {
       return JSON.parse(stored);
     } catch (e) {
       this.ns.error('Error al parsear usuario almacenado');
-      console.error('Error al parsear usuario almacenado:', e);
       return null;
     }
   }
@@ -104,8 +103,8 @@ export class Auth {
   }
 
   // Accesores públicos (solo lectura)
-  get getToken() {
-    return this.token.asReadonly();
+  getToken(): string | null {
+    return this.token();
   }
 
   get getUser() {

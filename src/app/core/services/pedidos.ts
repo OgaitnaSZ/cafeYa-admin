@@ -97,10 +97,7 @@ export class PedidosServices {
       params = params.set('search', filtros.search);
     }
 
-    this.http.get<Pedido[]>(`${this.apiUrl}pedidos`, {
-      headers: this.tokenService.createAuthHeaders(),
-      params
-    }).pipe(
+    this.http.get<Pedido[]>(`${this.apiUrl}pedidos`).pipe(
       tap(data => {
         const pedidosNormalizados = data.map(p => ({
           ...p,
@@ -121,9 +118,7 @@ export class PedidosServices {
     this.loading.set(true);
     this.error.set(null);
 
-    this.http.get<Pedido>(`${this.apiUrl}pedidos/pedidos/${pedidoId}`, {
-      headers: this.tokenService.createAuthHeaders(),
-    }).pipe(
+    this.http.get<Pedido>(`${this.apiUrl}pedidos/pedidos/${pedidoId}`).pipe(
       tap(data => {
         this.pedido.set(data);
       }),
@@ -139,9 +134,7 @@ export class PedidosServices {
     this.loadingLista.set(true);
     this.error.set(null);
 
-    this.http.get<Pedido[]>(`${this.apiUrl}activos`, {
-      headers: this.tokenService.createAuthHeaders(),
-    }).pipe(
+    this.http.get<Pedido[]>(`${this.apiUrl}activos`).pipe(
       tap(data => {
         this.pedidosActivos.set(data);
       }),
@@ -158,9 +151,7 @@ export class PedidosServices {
     this.error.set(null);
     this.success.set(null);
 
-    this.http.patch<Pedido>(`${this.apiUrl}estado`, { pedido_id: pedidoId ,estado: nuevoEstado }, {
-      headers: this.tokenService.createAuthHeaders()
-    }).pipe(
+    this.http.patch<Pedido>(`${this.apiUrl}estado`, { pedido_id: pedidoId ,estado: nuevoEstado }).pipe(
       tap(data => {
         this.pedido.set(data);
         this.pedidos.update(items =>

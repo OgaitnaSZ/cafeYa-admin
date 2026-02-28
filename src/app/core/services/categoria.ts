@@ -47,9 +47,7 @@ export class CategoriaSevice {
     this.error.set(null);
     this.success.set(null);
 
-    this.http.get<Categoria[]>(`${this.apiUrl}categoria/categorias`, {
-      headers: this.tokenService.createAuthHeaders(),
-    }).pipe(
+    this.http.get<Categoria[]>(`${this.apiUrl}categoria/categorias`).pipe(
       tap(data => {
         this.categoriasRaw.set(data);
       }),
@@ -66,9 +64,7 @@ export class CategoriaSevice {
     this.error.set(null);
     this.success.set(null);
 
-    this.http.post<Categoria>(`${this.apiUrl}categoria/crear`, categoria, {
-      headers: this.tokenService.createAuthHeaders(),
-    }).pipe(
+    this.http.post<Categoria>(`${this.apiUrl}categoria/crear`, categoria).pipe(
       tap(data => {
         this.categoria.set(data);
         this.categoriasRaw.update(items => [...items, data]);
@@ -87,9 +83,7 @@ export class CategoriaSevice {
     this.error.set(null);
     this.success.set(null);
 
-    this.http.put<Categoria>(`${this.apiUrl}categoria/editar`, categoria, {
-      headers: this.tokenService.createAuthHeaders(),
-    }).pipe(
+    this.http.put<Categoria>(`${this.apiUrl}categoria/editar`, categoria).pipe(
       tap(data => {
         this.categoria.set(data);
         this.categoriasRaw.update(items =>
@@ -112,9 +106,7 @@ export class CategoriaSevice {
     this.error.set(null);
     this.success.set(null);
 
-    this.http.delete<Categoria>(`${this.apiUrl}categoria/eliminar/${categoria_id}`, {
-      headers: this.tokenService.createAuthHeaders(),
-    }).pipe(
+    this.http.delete<Categoria>(`${this.apiUrl}categoria/eliminar/${categoria_id}`).pipe(
       tap((data) => {
         this.categoria.set(data);
         this.categoriasRaw.update(items =>

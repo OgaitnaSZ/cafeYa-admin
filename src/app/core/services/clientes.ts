@@ -44,9 +44,7 @@ export class ClientesService {
     this.error.set(null);
     this.success.set(null);
 
-    this.http.get<Cliente[]>(`${this.apiUrl}clientes`, {
-      headers: this.tokenService.createAuthHeaders(),
-    }).pipe(
+    this.http.get<Cliente[]>(`${this.apiUrl}clientes`).pipe(
       tap(data => {
         this.clientes.set(data);
       }),
@@ -62,9 +60,7 @@ export class ClientesService {
     this.loading.set(true);
     this.error.set(null);
 
-    this.http.get<Cliente>(`${this.apiUrl}${clienteId}`, {
-      headers: this.tokenService.createAuthHeaders(),
-    }).pipe(
+    this.http.get<Cliente>(`${this.apiUrl}${clienteId}`).pipe(
       tap(data => {
         this.cliente.set(data);
       }),
@@ -81,9 +77,7 @@ export class ClientesService {
     this.error.set(null);
     this.success.set(null);
 
-    this.http.delete(`${this.apiUrl}eliminar/${clienteId}`, {
-      headers: this.tokenService.createAuthHeaders(),
-    }).pipe(
+    this.http.delete(`${this.apiUrl}eliminar/${clienteId}`).pipe(
       tap(() => {
         this.clientes.update(items =>
           items.filter(c => c.cliente_id !== clienteId)

@@ -74,9 +74,7 @@ export class Pagos {
   }
 
   private cargarNumeroPedido(pedidoId: string) {
-    this.pedidoService.http.get<any>(`${this.pedidoService['apiUrl']}${pedidoId}`, {
-      headers: this.pedidoService.tokenService.createAuthHeaders()
-    }).subscribe({
+    this.pedidoService.http.get<any>(`${this.pedidoService['apiUrl']}${pedidoId}`).subscribe({
       next: (pedido) => {
         this.numeroPedidoFiltrado.set(pedido.numero_pedido);
       },

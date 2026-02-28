@@ -120,9 +120,7 @@ export class Pedidos {
   }
 
   private cargarNombreCliente(clienteId: string) {
-    this.clienteService.http.get<any>(`${this.clienteService['apiUrl']}${clienteId}`, {
-      headers: this.clienteService.tokenService.createAuthHeaders()
-    }).subscribe({
+    this.clienteService.http.get<any>(`${this.clienteService['apiUrl']}${clienteId}`).subscribe({
       next: (cliente) => {
         this.nombreClienteFiltrado.set(cliente.nombre);
       },
@@ -133,9 +131,7 @@ export class Pedidos {
   }
 
   private cargarNumeroMesa(mesaId: string) {
-    this.mesaService.http.get<any>(`${this.mesaService['apiUrl']}mesa/${mesaId}`, {
-      headers: this.mesaService.tokenService.createAuthHeaders()
-    }).subscribe({
+    this.mesaService.http.get<any>(`${this.mesaService['apiUrl']}mesa/${mesaId}`).subscribe({
       next: (mesa) => {
         this.numeroMesaFiltrada.set(mesa.numero);
       },

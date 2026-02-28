@@ -43,9 +43,7 @@ export class Usuario {
     this.error.set(null);
     this.success.set(null);
 
-    this.http.get<User[]>(`${this.apiUrl}usuarios`, {
-      headers: this.tokenService.createAuthHeaders(),
-    }).pipe(
+    this.http.get<User[]>(`${this.apiUrl}usuarios`).pipe(
       tap(data => {
         this.usuarios.set(data);
       }),
@@ -62,9 +60,7 @@ export class Usuario {
     this.error.set(null);
     this.success.set(null);
 
-    this.http.post<User>(`${this.apiUrl}crear`, usuario, {
-      headers: this.tokenService.createAuthHeaders(),
-    }).pipe(
+    this.http.post<User>(`${this.apiUrl}crear`, usuario).pipe(
       tap(data => {
         this.usuario.set(data);
         this.usuarios.update(items => [...items, data]);
@@ -83,9 +79,7 @@ export class Usuario {
     this.error.set(null);
     this.success.set(null);
 
-    this.http.put<User>(`${this.apiUrl}`, usuario, {
-      headers: this.tokenService.createAuthHeaders(),
-    }).pipe(
+    this.http.put<User>(`${this.apiUrl}`, usuario).pipe(
       tap(data => {
         this.usuario.set(data);
         this.usuarios.update(items =>
@@ -106,9 +100,7 @@ export class Usuario {
     this.error.set(null);
     this.success.set(null);
 
-    this.http.delete(`${this.apiUrl}eliminar/${id}`, {
-      headers: this.tokenService.createAuthHeaders(),
-    }).pipe(
+    this.http.delete(`${this.apiUrl}eliminar/${id}`).pipe(
       tap(() => {
         this.usuarios.update(items =>
           items.filter(u => u.id !== id)

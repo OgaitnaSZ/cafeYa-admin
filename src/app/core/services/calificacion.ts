@@ -95,10 +95,7 @@ export class CalificacionService {
       params = params.set('puntuacion', filtros.puntuacion.toString());
     }
 
-    this.http.get<Calificacion[]>(`${this.apiUrl}`, {
-      headers: this.tokenService.createAuthHeaders(),
-      params
-    }).pipe(
+    this.http.get<Calificacion[]>(`${this.apiUrl}`).pipe(
       tap(data => {
         this.calificaciones.set(data);
       }),
@@ -114,9 +111,7 @@ export class CalificacionService {
     this.loading.set(true);
     this.error.set(null);
 
-    this.http.get<Calificacion>(`${this.apiUrl}${calificacionId}`, {
-      headers: this.tokenService.createAuthHeaders(),
-    }).pipe(
+    this.http.get<Calificacion>(`${this.apiUrl}${calificacionId}`).pipe(
       tap(data => {
         this.calificacion.set(data);
       }),
