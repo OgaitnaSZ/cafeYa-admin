@@ -2,6 +2,7 @@ import { Injectable, signal, inject, computed } from '@angular/core';
 import { io, Socket } from 'socket.io-client';
 import { environment } from '../../environments/environment';
 import { Auth } from './auth';
+import { NotificacionService } from './notificacion';
 
 export type ConnectionStatus = 'connecting' | 'connected' | 'disconnected' | 'error';
 
@@ -17,7 +18,9 @@ export interface ClienteConectado {
   providedIn: 'root',
 })
 export class SocketService {
+  // Servicios
   private authService = inject(Auth);
+  private ns = inject(NotificacionService);
   
   private socket: Socket | null = null;
   
@@ -38,8 +41,7 @@ export class SocketService {
 
   connect() {
     if (this.socket?.connected) {
-      console.log('Socket admin ya conectado');
-      return;
+      return console.log('Socket admin ya conectado');
     }
 
     this.connectionStatus.set('connecting');
@@ -83,7 +85,7 @@ export class SocketService {
 
     // Error
     this.socket.on('connect_error', (error) => {
-      console.error('❌ Error de conexión Admin:', error);
+      this.ns.error('Error de conexión de socket Admin', error.message)
       this.connectionStatus.set('error');
     });
 

@@ -1,7 +1,7 @@
-import { Component, signal, inject, computed, effect, OnDestroy } from '@angular/core';
+import { Component, signal, inject, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SocketService } from '../../../core/services/socket';
-import { ToastService } from '../../../core/services/toast';
+import { NotificacionService } from '../../../core/services/notificacion';
 
 @Component({
   selector: 'app-socket-connection',
@@ -11,7 +11,7 @@ import { ToastService } from '../../../core/services/toast';
 })
 export class SocketConnection {
   private socketAdminService = inject(SocketService);
-  private toastService = inject(ToastService);
+  private ns = inject(NotificacionService);
 
   socketConnected = this.socketAdminService.isConnected;
   clientesConectados = this.socketAdminService.clientesConectados;
@@ -41,12 +41,12 @@ export class SocketConnection {
     // Escuchar eventos personalizados del servidor
     this.socketAdminService.on('sesion:iniciada', (data: any) => {
       console.log('🆕 Nueva sesión iniciada:', data);
-      this.toastService.success('Nueva sesión', `Mesa ${data.mesaNumero} iniciada`);
+      this.ns.success('Nueva sesión', `Mesa ${data.mesaNumero} iniciada`);
     });
 
     this.socketAdminService.on('pedido:creado', (data: any) => {
       console.log('🆕 Nuevo pedido:', data);
-      this.toastService.success('Nuevo pedido', `Mesa ${data.mesaNumero}`);
+      this.ns.success('Nuevo pedido', `Mesa ${data.mesaNumero}`);
     });
   }
 

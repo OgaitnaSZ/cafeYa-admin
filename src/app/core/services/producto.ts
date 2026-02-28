@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { TokenService } from './token';
 import { Categoria, Producto } from '../interfaces/producto.model';
 import { catchError, finalize, forkJoin, of, tap } from 'rxjs';
+import { NotificacionService } from './notificacion';
 
 @Injectable({
   providedIn: 'root',
@@ -11,9 +12,10 @@ import { catchError, finalize, forkJoin, of, tap } from 'rxjs';
 export class ProductoService {
   private apiUrl = `${environment.apiUrl}gestion/`;
 
-  // Inject
+  // Servicios
   http = inject(HttpClient);
   tokenService = inject(TokenService)
+  private ns = inject(NotificacionService);
 
   // Signals
   productos = signal<Producto[]>([]);
@@ -74,8 +76,7 @@ export class ProductoService {
         this.todasLasCategorias.set(categorias);
       }),
       catchError(err => {
-        this.error.set('Error al cargar los datos');
-        console.error(err);
+        this.ns.error('Error al cargar los datos', err.error);        
         return of({ productos: [], categorias: [] });
       }),
       finalize(() => this.loadingLista.set(false))
@@ -91,11 +92,10 @@ export class ProductoService {
           tap((data) => {
               this.producto.set(data);
               this.productos.update(items => [...items, data]);
-              this.success.set("Producto creado correctamente");
+              this.ns.success("Producto creado correctamente");
           }),
           catchError(err => {
-              this.error.set('Error al agregar producto');
-              console.error(err);
+              this.ns.error('Error al agregar producto', err.error);              
               return [];
           }),
           finalize(() => this.loading.set(false))
@@ -114,11 +114,10 @@ export class ProductoService {
                   p.producto_id === producto.producto_id ? producto : p
                 )
               );
-              this.success.set("producto modificado con exito")
+              this.ns.success("producto modificado con exito")
           }),
           catchError(err => {
-              this.error.set('Error al modificar producto');
-              console.error(err);
+              this.ns.error('Error al modificar producto', err.error);              
               return [];
           }),
           finalize(() => this.loading.set(false))
@@ -135,11 +134,10 @@ export class ProductoService {
               this.productos.update(items =>
                 items.map(p => p.producto_id === data.producto_id ? data : p)
               );
-              this.success.set("Estado actualizado con exito")
+              this.ns.success("Estado actualizado con exito")
           }),
           catchError(err => {
-              this.error.set('Error al actualizar producto');
-              console.error(err);
+              this.ns.error('Error al actualizar producto', err.error);              
               return [];
           }),
           finalize(() => this.loading.set(false))
@@ -156,11 +154,10 @@ export class ProductoService {
               this.productos.update(items =>
                 items.map(p => p.producto_id === data.producto_id ? data : p)
               );
-              this.success.set("Producto destacado con exito")
+              this.ns.success("Producto destacado con exito")
           }),
           catchError(err => {
-              this.error.set('Error al destacar producto');
-              console.error(err);
+              this.ns.error('Error al destacar producto', err.error);              
               return [];
           }),
           finalize(() => this.loading.set(false))
@@ -177,11 +174,10 @@ export class ProductoService {
               this.productos.update(items =>
                 items.filter(p => p.producto_id !== data.producto_id)
               );
-              this.success.set("Producto eliminado con exito")
+              this.ns.success("Producto eliminado con exito")
           }),
           catchError(err => {
-              this.error.set('Error al eliminar Producto');
-              console.error(err);
+              this.ns.error('Error al eliminar Producto', err.error);              
               return [];
           }),
           finalize(() => this.loading.set(false))
@@ -198,11 +194,10 @@ export class ProductoService {
               this.productos.update(items =>
                 items.map(p => p.producto_id === data.producto_id ? data : p)
               );
-              this.success.set("Foto subida con exito")
+              this.ns.success("Foto subida con exito")
           }),
           catchError(err => {
-              this.error.set('Error al subir foto');
-              console.error(err);
+              this.ns.error('Error al subir foto', err.error);              
               return [];
           }),
           finalize(() => this.loading.set(false))
@@ -215,11 +210,10 @@ export class ProductoService {
 
       this.http.delete(`${this.apiUrl}foto/eliminar/${foto_id}`, { headers: this.tokenService.createAuthHeaders() }).pipe(
           tap(() => {
-              this.success.set("Foto eliminada con exito")
+              this.ns.success("Foto eliminada con exito")
           }),
           catchError(err => {
-              this.error.set('Error al eliminar foto');
-              console.error(err);
+              this.ns.error('Error al eliminar foto', err.error);              
               return [];
           }),
           finalize(() => this.loading.set(false))

@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { TokenService } from './token';
 import { Categoria } from '../interfaces/producto.model';
 import { catchError, finalize, tap } from 'rxjs';
+import { NotificacionService } from './notificacion';
 
 @Injectable({
   providedIn: 'root',
@@ -11,9 +12,11 @@ import { catchError, finalize, tap } from 'rxjs';
 export class CategoriaSevice {
   private apiUrl = `${environment.apiUrl}gestion/`;
 
-  // Inject
+  // Servicios
   http = inject(HttpClient);
   tokenService = inject(TokenService)
+  private ns = inject(NotificacionService);
+  
 
   // Signals
   categoriasRaw = signal<Categoria[]>([]);
@@ -51,8 +54,7 @@ export class CategoriaSevice {
         this.categoriasRaw.set(data);
       }),
       catchError(err => {
-        this.error.set('Error al cargar categorías');
-        console.error(err);
+        this.ns.error('Error al cargar categorias', err.error);
         return [];
       }),
       finalize(() => this.loadingLista.set(false))
@@ -70,11 +72,10 @@ export class CategoriaSevice {
       tap(data => {
         this.categoria.set(data);
         this.categoriasRaw.update(items => [...items, data]);
-        this.success.set('Categoria creada con exito');
+        this.ns.success('Categoria creada con exito');
       }),
       catchError(err => {
-        this.error.set('Error al crear categoría');
-        console.error(err);
+        this.ns.error('Error al crear categoria', err.error);
         return [];
       }),
       finalize(() => this.loading.set(false))
@@ -96,11 +97,10 @@ export class CategoriaSevice {
             p.categoria_id === categoria.categoria_id ? categoria : p
           )
         );
-        this.success.set('Categoria actualizada con exito');
+        this.ns.success('Categoria actualizada con exito');
       }),
       catchError(err => {
-        this.error.set('Error al actualizar categoría');
-        console.error(err);
+        this.ns.error('Error al actualizar categoria', err.error);
         return [];
       }),
       finalize(() => this.loading.set(false))
@@ -120,11 +120,10 @@ export class CategoriaSevice {
         this.categoriasRaw.update(items =>
           items.filter(c => c.categoria_id !== data.categoria_id)
         );
-        this.success.set('Categoria eliminada con exito');
+        this.ns.success('Categoria eliminada con exito');
       }),
       catchError(err => {
-        this.error.set('Error al eliminar categoría');
-        console.error(err);
+        this.ns.error('Error al eliminar categoria', err.error);
         return [];
       }),
       finalize(() => this.loading.set(false))

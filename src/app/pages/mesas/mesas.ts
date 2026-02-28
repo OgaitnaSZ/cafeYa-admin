@@ -2,11 +2,11 @@ import { Component, signal, inject, computed, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MesaFormModal } from './mesa-form-modal/mesa-form-modal';
 import { ConfirmModal } from '../../layout/components/confirm-modal/confirm-modal';
-import { ToastService } from '../../core/services/toast';
 import { Mesa } from '../../core/interfaces/mesa.model';
 import { MesaService } from '../../core/services/mesa';
 import { LucideAngularModule, Pen, Plus, Trash2, RefreshCw, QrCode, ExternalLink, Copy } from 'lucide-angular';
 import { QRCodeComponent } from 'angularx-qrcode';
+import { NotificacionService } from '../../core/services/notificacion';
 
 @Component({
   selector: 'app-mesas',
@@ -16,7 +16,7 @@ import { QRCodeComponent } from 'angularx-qrcode';
 })
 export class Mesas {
   private mesasService = inject(MesaService);
-  private toastService = inject(ToastService);
+  private ns = inject(NotificacionService);
 
   mesas = this.mesasService.mesas;
   loading = this.mesasService.loading;
@@ -44,18 +44,6 @@ export class Mesas {
     if (filtro === 'todas') return this.mesas();
     return this.mesas().filter(m => m.estado === filtro);
   });
-
-  constructor() {
-    effect(() => {
-      if (this.success()) {
-        this.toastService.success(this.success()!);
-      }
-      
-      if (this.error()) {
-        this.toastService.error(this.error()!);
-      }
-    });
-  }
 
   ngOnInit() {
     this.mesasService.cargarMesas();
@@ -89,7 +77,7 @@ export class Mesas {
       m.mesa_id !== mesaData.mesa_id
     );
   
-    if (mesaExistente) return this.toastService.error('Ya existe una mesa con ese numero', 'Por favor, cambia el numero para continuar');
+    if (mesaExistente) return this.ns.error('Ya existe una mesa con ese numero', 'Por favor, cambia el numero para continuar');
 
     if (isEdit) {
       this.mesasService.actualizarMesa(mesaData);
@@ -115,7 +103,7 @@ export class Mesas {
   // Confirmar eliminación
   handleDeleteConfirmed() {
     const mesa = this.selectedMesa();
-    if (!mesa) return this.toastService.error('Mesa inexistente', 'La mesa no existe');
+    if (!mesa) return this.ns.error('Mesa inexistente', 'La mesa no existe');
     this.mesasService.eliminarMesa(mesa.mesa_id);
     this.closeDeleteModal();
   }
@@ -165,7 +153,7 @@ export class Mesas {
   copiarCodigo(codigo: string, event: Event) {
     event.stopPropagation();
     navigator.clipboard.writeText(codigo);
-    this.toastService.success('Código copiado', 'El código fue copiado al portapapeles');
+    this.ns.success('Código copiado', 'El código fue copiado al portapapeles');
   }
 
   // Copiar enlace de verificación
@@ -173,7 +161,7 @@ export class Mesas {
     event.stopPropagation();
     const enlace = mesa.qr_url;
     navigator.clipboard.writeText(enlace);
-    this.toastService.success('Enlace copiado', 'El enlace fue copiado al portapapeles');
+    this.ns.success('Enlace copiado', 'El enlace fue copiado al portapapeles');
   }
 
   // Icons

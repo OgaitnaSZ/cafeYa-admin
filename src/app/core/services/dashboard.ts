@@ -8,6 +8,7 @@ import {
   calcularVariacion,
 } from '../interfaces/dashboard.model';
 import { catchError, finalize, tap } from 'rxjs';
+import { NotificacionService } from './notificacion';
 
 @Injectable({
   providedIn: 'root',
@@ -18,6 +19,7 @@ export class DashboardService {
   // Servicios
   http = inject(HttpClient);
   tokenService = inject(TokenService);
+  private ns = inject(NotificacionService);
 
   // Signals
   resumen = signal<DashboardResumen | null>(null);
@@ -101,8 +103,7 @@ export class DashboardService {
       .pipe(
         tap((data) => this.resumen.set(data)),
         catchError((err) => {
-          this.error.set('Error al cargar el dashboard');
-          console.error(err);
+          this.ns.error('Error al cargar dashboard', err.error);
           return [];
         }),
         finalize(() => this.loading.set(false))

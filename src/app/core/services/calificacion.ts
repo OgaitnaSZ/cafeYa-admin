@@ -4,15 +4,18 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { TokenService } from './token';
 import { Calificacion, FiltrosCalificaciones, StatsCalificaciones } from '../interfaces/calificacion.model';
 import { catchError, finalize, tap } from 'rxjs';
+import { NotificacionService } from './notificacion';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CalificacionService {
-    private apiUrl = `${environment.apiUrl}gestion/calificaciones`;
+  private apiUrl = `${environment.apiUrl}gestion/calificaciones`;
 
+  // Servicios
   http = inject(HttpClient);
   tokenService = inject(TokenService);
+  private ns = inject(NotificacionService);
 
   // Signals
   calificaciones = signal<Calificacion[]>([]);
@@ -100,8 +103,7 @@ export class CalificacionService {
         this.calificaciones.set(data);
       }),
       catchError(err => {
-        this.error.set('Error al cargar calificaciones');
-        console.error(err);
+        this.ns.error('Error al cargar calificaciones', err.error);
         return [];
       }),
       finalize(() => this.loadingLista.set(false))
@@ -119,8 +121,7 @@ export class CalificacionService {
         this.calificacion.set(data);
       }),
       catchError(err => {
-        this.error.set('Error al cargar calificación');
-        console.error(err);
+        this.ns.error('Error al cargar calificacion', err.error);
         return [];
       }),
       finalize(() => this.loading.set(false))

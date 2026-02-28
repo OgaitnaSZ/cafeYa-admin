@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { TokenService } from './token';
 import { Cliente } from '../interfaces/cliente.model';
 import { catchError, finalize, tap } from 'rxjs';
+import { NotificacionService } from './notificacion';
 
 @Injectable({
   providedIn: 'root',
@@ -11,8 +12,10 @@ import { catchError, finalize, tap } from 'rxjs';
 export class ClientesService {
   private apiUrl = `${environment.apiUrl}gestion/cliente/`;
 
+  // Servicios
   http = inject(HttpClient);
   tokenService = inject(TokenService);
+  private ns = inject(NotificacionService);
 
   // Signals
   clientes = signal<Cliente[]>([]);
@@ -46,11 +49,9 @@ export class ClientesService {
     }).pipe(
       tap(data => {
         this.clientes.set(data);
-        console.log(data);
       }),
       catchError(err => {
-        this.error.set('Error al cargar clientes');
-        console.error(err);
+        this.ns.error('Error al cargar clientes', err.error);
         return [];
       }),
       finalize(() => this.loadingLista.set(false))
@@ -68,8 +69,7 @@ export class ClientesService {
         this.cliente.set(data);
       }),
       catchError(err => {
-        this.error.set('Error al cargar cliente');
-        console.error(err);
+        this.ns.error('Error al cargar cliente', err.error);
         return [];
       }),
       finalize(() => this.loading.set(false))
@@ -88,11 +88,10 @@ export class ClientesService {
         this.clientes.update(items =>
           items.filter(c => c.cliente_id !== clienteId)
         );
-        this.success.set('Cliente eliminado con éxito');
+        this.ns.success('Cliente eliminado con exito');
       }),
       catchError(err => {
-        this.error.set(err.error?.message || 'Error al eliminar cliente');
-        console.error(err);
+        this.ns.error('Error al elimnar clientes', err.error);
         return [];
       }),
       finalize(() => this.loading.set(false))

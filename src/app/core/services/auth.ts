@@ -3,8 +3,8 @@ import { User, UserLogin } from '../interfaces/user.model';
 import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { TokenService } from './token';
 import { catchError, finalize, of, tap } from 'rxjs';
+import { NotificacionService } from './notificacion';
 
 interface LoginResponse {
   data: {
@@ -20,9 +20,10 @@ interface LoginResponse {
 export class Auth {
   private authUrl = `${environment.apiUrl}auth/`;
 
-  // Inject
+  // Servicios
   private http = inject(HttpClient);
   private router = inject(Router);
+  private ns = inject(NotificacionService);
 
   // Signals de estado
   user = signal<User | null>(this.getStoredUser());
@@ -58,14 +59,12 @@ export class Auth {
 
     this.http.post<LoginResponse>(`${this.authUrl}login`, user).pipe(
       tap((data) => {
-        console.log('Respuesta de login:', data);
-        this.success.set("Login exitoso");
         this.user.set(data.data.user);
         this.token.set(data.data.token);
+        this.ns.success('Login exitoso');
       }),
       catchError(err => {
-        this.error.set('Error al iniciar session');
-        console.error(err);
+        this.ns.success('Error al iniciar session', err.error);
         return of(null);
       }), 
       finalize(() => this.loading.set(false))
@@ -89,6 +88,7 @@ export class Auth {
     try {
       return JSON.parse(stored);
     } catch (e) {
+      this.ns.error('Error al parsear usuario almacenado');
       console.error('Error al parsear usuario almacenado:', e);
       return null;
     }

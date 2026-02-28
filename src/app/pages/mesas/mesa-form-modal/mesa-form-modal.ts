@@ -1,10 +1,10 @@
-import { Component, Input, Output, EventEmitter, OnInit, signal, computed, inject } from '@angular/core';
+import { Component, Input, Output, EventEmitter, signal, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Mesa } from '../../../core/interfaces/mesa.model';
 import { Check, LucideAngularModule, X, LockKeyhole } from 'lucide-angular';
-import { ToastService } from '../../../core/services/toast';
 import { MesaService } from '../../../core/services/mesa';
+import { NotificacionService } from '../../../core/services/notificacion';
 
 @Component({
   selector: 'app-mesa-form-modal',
@@ -15,7 +15,7 @@ import { MesaService } from '../../../core/services/mesa';
 export class MesaFormModal {
   // Servicios
   private fb = new FormBuilder();
-  private toastService = inject(ToastService);
+  private ns = inject(NotificacionService);
   private mesaService = inject(MesaService);
 
   @Input() mesa: Mesa | null = null;
@@ -26,9 +26,7 @@ export class MesaFormModal {
   error = signal<string | null>(null);
   saving = this.mesaService.loading;
   isEditMode = computed(() => !!this.mesa);
-  modalTitle = computed(() => 
-    this.isEditMode() ? 'Editar Mesa' : 'Nueva Mesa'
-  );
+  modalTitle = computed(() => this.isEditMode() ? 'Editar Mesa' : 'Nueva Mesa');
 
   ngOnInit() {
     this.form = this.fb.group({
@@ -38,9 +36,7 @@ export class MesaFormModal {
   }
 
   onBackdropClick(event: Event) {
-    if (event.target === event.currentTarget) {
-      this.onClose();
-    }
+    if (event.target === event.currentTarget) this.onClose()
   }
 
   onClose() {
@@ -48,12 +44,10 @@ export class MesaFormModal {
   }
 
   onSubmit() {
-    if (this.form.invalid) return this.toastService.error('Faltan datos','Completa los campos requeridos');
+    if (this.form.invalid) return this.ns.error('Faltan datos','Completa los campos requeridos');
 
     // Si está en modo edición y no hubo cambios, cerrar
-    if (this.isEditMode() && !this.form.dirty) {
-      return this.onClose();
-    }
+    if (this.isEditMode() && !this.form.dirty) return this.onClose();
 
     const mesaData: Mesa = {
       ...(this.mesa || {}),

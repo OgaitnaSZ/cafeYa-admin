@@ -4,6 +4,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { TokenService } from './token';
 import { Pedido, FiltrosPedidos, StatsPedidos, PedidoEstado } from '../interfaces/pedido.model';
 import { catchError, finalize, of, tap } from 'rxjs';
+import { NotificacionService } from './notificacion';
 
 @Injectable({
   providedIn: 'root',
@@ -11,8 +12,10 @@ import { catchError, finalize, of, tap } from 'rxjs';
 export class PedidosServices {
   private apiUrl = `${environment.apiUrl}gestion/pedido/`;
 
+  // Servicios
   http = inject(HttpClient);
   tokenService = inject(TokenService);
+  private ns = inject(NotificacionService);
 
   // Signals
   pedidos = signal<Pedido[]>([]);
@@ -107,8 +110,7 @@ export class PedidosServices {
         this.pedidos.set(pedidosNormalizados);
       }),
       catchError(err => {
-        this.error.set('Error al cargar pedidos');
-        console.error(err);
+        this.ns.error('Error al cargar pedidos', err.error);       
         return of([]);
       }),
       finalize(() => this.loadingLista.set(false))
@@ -126,8 +128,7 @@ export class PedidosServices {
         this.pedido.set(data);
       }),
       catchError(err => {
-        this.error.set('Error al cargar pedido');
-        console.error(err);
+        this.ns.error('Error al cargar pedido', err.error);       
         return [];
       }),
       finalize(() => this.loading.set(false))
@@ -143,11 +144,9 @@ export class PedidosServices {
     }).pipe(
       tap(data => {
         this.pedidosActivos.set(data);
-        console.log(data)
       }),
       catchError(err => {
-        this.error.set('Error al cargar pedidos');
-        console.error(err);
+        this.ns.error('Error al cargar pedidos', err.error);       
         return [];
       }),
       finalize(() => this.loadingLista.set(false))
@@ -167,11 +166,10 @@ export class PedidosServices {
         this.pedidos.update(items =>
           items.map(p => p.pedido_id === data.pedido_id ? data : p)
         );
-        this.success.set(`Pedido ${data.numero_pedido} → ${nuevoEstado}`);
+        this.ns.success(`Pedido ${data.numero_pedido} → ${nuevoEstado}`);
       }),
       catchError(err => {
-        this.error.set(err.error?.message || 'Error al actualizar pedido');
-        console.error(err);
+        this.ns.error("Error al actualizar pedido", err.error);       
         return [];
       }),
       finalize(() => this.loading.set(false))

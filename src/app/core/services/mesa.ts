@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { TokenService } from './token';
 import { Mesa } from '../interfaces/mesa.model';
 import { catchError, finalize, tap } from 'rxjs';
+import { NotificacionService } from './notificacion';
 
 @Injectable({
   providedIn: 'root',
@@ -11,9 +12,10 @@ import { catchError, finalize, tap } from 'rxjs';
 export class MesaService {
   private apiUrl = `${environment.apiUrl}gestion/`;
 
-  // Inject
+  // Servicios
   http = inject(HttpClient);
-  tokenService = inject(TokenService)
+  tokenService = inject(TokenService);
+  private ns = inject(NotificacionService);
 
   // Signals
   mesas = signal<Mesa[]>([]);
@@ -46,8 +48,7 @@ export class MesaService {
         this.mesas.set(data);
       }),
       catchError(err => {
-        this.error.set('Error al cargar mesas');
-        console.error(err);
+        this.ns.error('Error al cargar mesas', err.error);
         return [];
       }),
       finalize(() => this.loadingLista.set(false))
@@ -65,11 +66,10 @@ export class MesaService {
       tap(data => {
         this.mesa.set(data);
         this.mesas.update(items => [...items, data]);
-        this.success.set('Mesa creada con exito');
+        this.ns.success('Mesa creada con exito');
       }),
       catchError(err => {
-        this.error.set('Error al crear mesa');
-        console.error(err);
+        this.ns.error('Error al crear mesas', err.error);
         return [];
       }),
       finalize(() => this.loading.set(false))
@@ -91,11 +91,10 @@ export class MesaService {
             p.mesa_id === mesa.mesa_id ? mesa : p
           )
         );
-        this.success.set('Mesa actualizada con exito');
+        this.ns.success('Mesa actualizada con exito');
       }),
       catchError(err => {
-        this.error.set('Error al actualizar mesa');
-        console.error(err);
+        this.ns.error('Error al actualizar mesa', err.error);
         return [];
       }),
       finalize(() => this.loading.set(false))
@@ -112,11 +111,10 @@ export class MesaService {
               this.mesas.update(items =>
                 items.map(p => p.mesa_id === data.mesa_id ? data : p)
               );
-              this.success.set("Codigo actualizado con exito")
+              this.ns.success("Codigo actualizado con exito")
           }),
           catchError(err => {
-              this.error.set('Error al actualizar codigo de mesa');
-              console.error(err);
+              this.ns.error('Error al actualizar codigo de mesa');      
               return [];
           }),
           finalize(() => this.loading.set(false))
@@ -136,11 +134,10 @@ export class MesaService {
         this.mesas.update(items =>
           items.filter(c => c.mesa_id !== data.mesa_id)
         );
-        this.success.set('Mesa eliminada con exito');
+        this.ns.success('Mesa eliminada con exito');
       }),
       catchError(err => {
-        this.error.set('Error al eliminar mesa');
-        console.error(err);
+        this.ns.error('Error al eliminar mesa');
         return [];
       }),
       finalize(() => this.loading.set(false))

@@ -1,9 +1,10 @@
 import { Injectable, signal, inject, computed } from '@angular/core';
-import { environment } from '../../environments/environment';
+import { environment } from '../../environments/environment.prod';
 import { HttpClient } from '@angular/common/http';
 import { TokenService } from './token';
 import { User } from '../interfaces/user.model';
 import { catchError, finalize, tap } from 'rxjs';
+import { NotificacionService } from './notificacion';
 
 @Injectable({
   providedIn: 'root',
@@ -11,8 +12,10 @@ import { catchError, finalize, tap } from 'rxjs';
 export class Usuario {
   private apiUrl = `${environment.apiUrl}gestion/usuario/`;
 
+  // Servicios
   http = inject(HttpClient);
   tokenService = inject(TokenService);
+  private ns = inject(NotificacionService);
 
   // Signals
   usuarios = signal<User[]>([]);
@@ -47,8 +50,7 @@ export class Usuario {
         this.usuarios.set(data);
       }),
       catchError(err => {
-        this.error.set('Error al cargar usuarios');
-        console.error(err);
+        this.ns.error('Error al cargar usuarios', err.error);
         return [];
       }),
       finalize(() => this.loadingLista.set(false))
@@ -66,11 +68,10 @@ export class Usuario {
       tap(data => {
         this.usuario.set(data);
         this.usuarios.update(items => [...items, data]);
-        this.success.set(`Usuario ${data.nombre} creado con éxito`);
+        this.ns.success(`Usuario ${data.nombre} creado con éxito`);
       }),
       catchError(err => {
-        this.error.set(err.error?.message || 'Error al crear usuario');
-        console.error(err);
+        this.ns.error('Error al crear usuario', err.error);
         return [];
       }),
       finalize(() => this.loading.set(false))
@@ -90,11 +91,10 @@ export class Usuario {
         this.usuarios.update(items =>
           items.map(u => u.id === data.id ? data : u)
         );
-        this.success.set(`Usuario ${data.nombre} actualizado con éxito`);
+        this.ns.success(`Usuario ${data.nombre} actualizado con éxito`);
       }),
       catchError(err => {
-        this.error.set(err.error?.message || 'Error al actualizar usuario');
-        console.error(err);
+        this.ns.error('Error al actualizar usuario', err.error);
         return [];
       }),
       finalize(() => this.loading.set(false))
@@ -113,11 +113,10 @@ export class Usuario {
         this.usuarios.update(items =>
           items.filter(u => u.id !== id)
         );
-        this.success.set('Usuario eliminado con éxito');
+        this.ns.success('Usuario eliminado con éxito');
       }),
       catchError(err => {
-        this.error.set(err.error?.message || 'Error al eliminar usuario');
-        console.error(err);
+        this.ns.error('Error al eliminar usuarios', err.error);
         return [];
       }),
       finalize(() => this.loading.set(false))

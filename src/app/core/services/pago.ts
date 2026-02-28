@@ -4,6 +4,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { TokenService } from './token';
 import { Pago, FiltrosPagos, StatsPagos, MedioDePago } from '../interfaces/pago.model';
 import { catchError, finalize, tap } from 'rxjs';
+import { NotificacionService } from './notificacion';
 
 @Injectable({
   providedIn: 'root',
@@ -11,8 +12,10 @@ import { catchError, finalize, tap } from 'rxjs';
 export class PagoService {
   private apiUrl = `${environment.apiUrl}gestion/pago/`;
 
+  // Servicios
   http = inject(HttpClient);
   tokenService = inject(TokenService);
+  private ns = inject(NotificacionService);
 
   // Signals
   pagos = signal<Pago[]>([]);
@@ -92,8 +95,7 @@ export class PagoService {
         this.pagos.set(data);
       }),
       catchError(err => {
-        this.error.set('Error al cargar pagos');
-        console.error(err);
+        this.ns.error('Error al cargar pagos', err.error);
         return [];
       }),
       finalize(() => this.loadingLista.set(false))
@@ -111,8 +113,7 @@ export class PagoService {
         this.pago.set(data);
       }),
       catchError(err => {
-        this.error.set('Error al cargar pago');
-        console.error(err);
+        this.ns.error('Error al cargar pago', err.error);
         return [];
       }),
       finalize(() => this.loading.set(false))
