@@ -2,7 +2,7 @@ import { Component, Input, Output, EventEmitter, signal, computed, inject } from
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Categoria } from '../../../../core/interfaces/producto.model';
-import { ToastService } from '../../../../core/services/toast';
+import { NotificacionService } from '../../../../core/services/notificacion';
 import { CategoriaSevice } from '../../../../core/services/categoria';
 import { LucideAngularModule, X } from 'lucide-angular';
 
@@ -21,7 +21,7 @@ const EMOJI_PRESETS = [
 export class CategoriaFormModal {
   // Servicios
   private categoriaService = inject(CategoriaSevice);
-  private toastService = inject(ToastService);
+  private ns = inject(NotificacionService);
   private fb = new FormBuilder();
 
   @Input() categoria: Categoria | null = null;
@@ -30,7 +30,6 @@ export class CategoriaFormModal {
   
   form!: FormGroup;
   saving = this.categoriaService.loading;
-  error = this.categoriaService.error;
   emojiPresets = EMOJI_PRESETS;
   showEmojiPicker = signal(false);
 
@@ -62,7 +61,7 @@ export class CategoriaFormModal {
   }
 
   onSubmit() {
-    if (this.form.invalid) return this.toastService.error('Faltan datos','Completa los campos requeridos');
+    if (this.form.invalid) return this.ns.error('Faltan datos','Completa los campos requeridos');
 
     const categoriaData: Categoria = {
       ...(this.categoria || {}),

@@ -1,4 +1,4 @@
-import { Component, signal, inject, effect } from '@angular/core';
+import { Component, inject, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SocketService } from '../../../core/services/socket';
 import { NotificacionService } from '../../../core/services/notificacion';

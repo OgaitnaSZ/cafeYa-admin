@@ -1,8 +1,8 @@
-import { Component, signal, inject, computed, effect, OnInit, OnDestroy } from '@angular/core';
+import { Component, signal, inject, computed, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PedidosServices } from '../../core/services/pedidos';
 import { SocketService } from '../../core/services/socket';
-import { ToastService } from '../../core/services/toast';
+import { NotificacionService } from '../../core/services/notificacion';
 import { Pedido, PedidoEstado } from '../../core/interfaces/pedido.model';
 import { 
   LucideAngularModule, 
@@ -22,9 +22,10 @@ import {
   styleUrl: './pedidos-activos.css',
 })
 export class PedidosActivos {
+  // Servicios
   private pedidoService = inject(PedidosServices);
   private socketAdminService = inject(SocketService);
-  private toastService = inject(ToastService);
+  private ns = inject(NotificacionService);
 
   // Data
   pedidosActivos = this.pedidoService.pedidosActivos;
@@ -64,18 +65,6 @@ export class PedidosActivos {
   private refreshInterval: any;
   private readonly REFRESH_INTERVAL = 30000; // 30 segundos
 
-  constructor() {
-    effect(() => {
-      if (this.pedidoService.success()) {
-        this.toastService.success(this.pedidoService.success()!);
-      }
-      
-      if (this.pedidoService.error()) {
-        this.toastService.error(this.pedidoService.error()!);
-      }
-    });
-  }
-
   ngOnInit() {
     // Conectar socket
     if (!this.socketConnected()) {
@@ -97,13 +86,12 @@ export class PedidosActivos {
   private setupSocketListeners() {
     // Nuevo pedido
     this.socketAdminService.on('pedido:nuevo', (data: any) => {
-      console.log('🆕 Nuevo pedido en cocina:', data);
       
       // Sonido de notificación (opcional)
       this.playNotificationSound();
       
       // Toast con animación
-      this.toastService.success(
+      this.ns.success(
         '🔔 Nuevo pedido', 
         `Mesa ${data.mesa_numero} - ${data.items_count} items`
       );
@@ -113,7 +101,6 @@ export class PedidosActivos {
 
     // Pedido actualizado
     this.socketAdminService.on('pedido:cambio-estado', (data: any) => {
-      console.log('📦 Pedido actualizado en cocina:', data);
       this.recargar();
     });
   }

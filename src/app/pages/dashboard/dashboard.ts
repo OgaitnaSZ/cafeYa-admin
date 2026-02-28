@@ -23,39 +23,38 @@ export class Dashboard {
   readonly as = inject(Auth);
 
   // Estados
-  loading      = this.ds.loading;
-  error        = this.ds.error;
+  loading = this.ds.loading;
 
   // Variables
-  recaudadoHoy        = this.ds.recaudadoHoy;
-  recaudadoAyer       = this.ds.recaudadoAyer;
-  totalPedidosHoy     = this.ds.pedidosHoy;
-  pedidosAyer         = this.ds.pedidosAyer;
-  variacionRecaudado  = this.ds.variacionRecaudado;
-  variacionPedidos    = this.ds.variacionPedidos;
+  recaudadoHoy = this.ds.recaudadoHoy;
+  recaudadoAyer = this.ds.recaudadoAyer;
+  totalPedidosHoy = this.ds.pedidosHoy;
+  pedidosAyer = this.ds.pedidosAyer;
+  variacionRecaudado = this.ds.variacionRecaudado;
+  variacionPedidos = this.ds.variacionPedidos;
 
-  mesas            = this.ds.mesas;
-  mesasOcupadas    = this.ds.mesasOcupadas;
+  mesas = this.ds.mesas;
+  mesasOcupadas = this.ds.mesasOcupadas;
   mesasDisponibles = this.ds.mesasDisponibles;
-  totalMesas       = this.ds.totalMesas;
+  totalMesas = this.ds.totalMesas;
 
-  pedidosActivos       = this.ds.pedidosActivos;
-  pedidosPendientes    = this.ds.pedidosPendientes;
+  pedidosActivos = this.ds.pedidosActivos;
+  pedidosPendientes = this.ds.pedidosPendientes;
   pedidosEnPreparacion = this.ds.pedidosEnPreparacion;
-  pedidosListos        = this.ds.pedidosListos;
+  pedidosListos = this.ds.pedidosListos;
 
-  resumenPagos  = this.ds.resumenPagos;
-  totalCobrado  = this.ds.totalCobrado;
-  pctEfectivo   = this.ds.pctEfectivo;
-  pctTarjeta    = this.ds.pctTarjeta;
-  pctApp        = this.ds.pctApp;
+  resumenPagos = this.ds.resumenPagos;
+  totalCobrado = this.ds.totalCobrado;
+  pctEfectivo = this.ds.pctEfectivo;
+  pctTarjeta = this.ds.pctTarjeta;
+  pctApp = this.ds.pctApp;
 
   topProductos = this.ds.topProductos;
 
-  calificacionPromedio    = this.ds.calificacionPromedio;
-  totalCalificaciones     = this.ds.totalCalificaciones;
+  calificacionPromedio = this.ds.calificacionPromedio;
+  totalCalificaciones = this.ds.totalCalificaciones;
   calificacionesRecientes = this.ds.calificacionesRecientes;
-  generadoEn              = this.ds.generadoEn;
+  generadoEn = this.ds.generadoEn;
 
   private refreshInterval?: ReturnType<typeof setInterval>;
 
@@ -105,11 +104,11 @@ export class Dashboard {
     bg: string; text: string; dot: string; label: string;
   } {
     const map: Record<PedidoEstado, { bg: string; text: string; dot: string; label: string }> = {
-      Pendiente:       { bg: 'bg-amber-50 border-amber-200', text: 'text-amber-700', dot: 'bg-amber-400',  label: 'Pendiente'       },
-      En_preparacion:  { bg: 'bg-blue-50 border-blue-200',   text: 'text-blue-700',  dot: 'bg-blue-400',   label: 'En preparación'  },
-      Listo:           { bg: 'bg-green-50 border-green-200', text: 'text-green-700', dot: 'bg-green-400',  label: 'Listo ✓'         },
-      Entregado:       { bg: 'bg-gray-50 border-gray-200',   text: 'text-gray-600',  dot: 'bg-gray-400',   label: 'Entregado'       },
-      Cancelado:       { bg: 'bg-red-50 border-red-200',     text: 'text-red-600',   dot: 'bg-red-400',    label: 'Cancelado'       },
+      Pendiente: { bg: 'bg-amber-50 border-amber-200', text: 'text-amber-700', dot: 'bg-amber-400',  label: 'Pendiente'       },
+      En_preparacion: { bg: 'bg-blue-50 border-blue-200',   text: 'text-blue-700',  dot: 'bg-blue-400',   label: 'En preparación'  },
+      Listo: { bg: 'bg-green-50 border-green-200', text: 'text-green-700', dot: 'bg-green-400',  label: 'Listo ✓'         },
+      Entregado: { bg: 'bg-gray-50 border-gray-200',   text: 'text-gray-600',  dot: 'bg-gray-400',   label: 'Entregado'       },
+      Cancelado: { bg: 'bg-red-50 border-red-200',     text: 'text-red-600',   dot: 'bg-red-400',    label: 'Cancelado'       },
     };
     return map[estado] ?? map['Pendiente'];
   }
@@ -138,18 +137,18 @@ export class Dashboard {
   }
 
   // Icons
-  readonly TrendingUp   = TrendingUp;
-  readonly Users        = Users;
-  readonly ShoppingBag  = ShoppingBag;
-  readonly Star         = Star;
-  readonly Clock        = Clock;
-  readonly CheckCircle  = CheckCircle;
-  readonly ChefHat      = ChefHat;
-  readonly CreditCard   = CreditCard;
-  readonly Banknote     = Banknote;
-  readonly Smartphone   = Smartphone;
-  readonly ArrowRight   = ArrowRight;
-  readonly RefreshCw    = RefreshCw;
-  readonly Utensils     = Utensils;
-  readonly AlertCircle  = AlertCircle;
+  readonly TrendingUp = TrendingUp;
+  readonly Users = Users;
+  readonly ShoppingBag = ShoppingBag;
+  readonly Star = Star;
+  readonly Clock = Clock;
+  readonly CheckCircle = CheckCircle;
+  readonly ChefHat = ChefHat;
+  readonly CreditCard = CreditCard;
+  readonly Banknote = Banknote;
+  readonly Smartphone = Smartphone;
+  readonly ArrowRight = ArrowRight;
+  readonly RefreshCw = RefreshCw;
+  readonly Utensils = Utensils;
+  readonly AlertCircle = AlertCircle;
 }

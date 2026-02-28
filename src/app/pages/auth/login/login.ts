@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { Auth } from '../../../core/services/auth';
 import { UserLogin } from '../../../core/interfaces/user.model';
 import { LucideAngularModule, AtSign, LockKeyhole, Eye, EyeOff, CircleAlert } from 'lucide-angular';
-import { ToastService } from '../../../core/services/toast';
+import { NotificacionService } from '../../../core/services/notificacion';
 
 @Component({
   selector: 'app-login',
@@ -17,7 +17,7 @@ export class Login {
   private fb = inject(FormBuilder);
   private router = inject(Router);
   private auth = inject(Auth);
-  private toastService = inject(ToastService);
+  private ns = inject(NotificacionService);
 
   user = this.auth.user;
   loading = this.auth.loading;
@@ -34,21 +34,8 @@ export class Login {
     this.showPassword.update(v => !v);
   }
 
-  constructor() {
-    effect(() => {
-      if (this.success()) {
-        this.router.navigate(['dashboard']);
-        this.success.set(null);
-      }
-      
-      if(this.error()){
-        this.toastService.error('Datos incorrectos');
-      }
-    });
-  }
-
   onLogin() {
-    if (this.formLogin.invalid) return this.toastService.error('Faltan datos','Completa los campos requeridos');
+    if (this.formLogin.invalid) return this.ns.error('Faltan datos','Completa los campos requeridos');
 
     const { email, password } = this.formLogin.getRawValue(); 
     const user: UserLogin = {

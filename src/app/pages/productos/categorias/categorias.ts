@@ -1,8 +1,8 @@
-import { Component, signal, inject, computed, effect } from '@angular/core';
+import { Component, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CategoriaFormModal } from './categoria-form-modal/categoria-form-modal';
 import { ConfirmModal } from '../../../layout/components/confirm-modal/confirm-modal';
-import { ToastService } from '../../../core/services/toast';
+import { NotificacionService } from '../../../core/services/notificacion';
 import { Categoria } from '../../../core/interfaces/producto.model';
 import { CategoriaSevice } from '../../../core/services/categoria';
 import { LucideAngularModule, Pen, Plus, Trash2 } from 'lucide-angular';
@@ -15,7 +15,7 @@ import { LucideAngularModule, Pen, Plus, Trash2 } from 'lucide-angular';
 })
 export class Categorias {
   private categoriasService = inject(CategoriaSevice);
-  private toastService = inject(ToastService);
+  private ns = inject(NotificacionService);
 
   categorias = this.categoriasService.categorias;
   loading = this.categoriasService.loading;
@@ -32,18 +32,6 @@ export class Categorias {
   totalCategorias = this.categoriasService.totalCategorias;
   totalProductos = this.categoriasService.totalProductos;
   totalProductosSinCategoria = this.categoriasService.totalProductosSinCategoria;
-
-  constructor() {
-    effect(() => {
-      if (this.success()) {
-        this.toastService.success(this.success()!);
-      }
-      
-      if(this.error()){
-        this.toastService.error(this.error()!);
-      }
-    });
-  }
 
   ngOnInit() {
     this.categoriasService.cargarCategorias();
@@ -97,7 +85,7 @@ export class Categorias {
   // Confirmar eliminación
   handleDeleteConfirmed() {
     const categoria = this.selectedCategoria();
-    if (!categoria) return this.toastService.error('Categoría inexistente.','La categoría no existe.');
+    if (!categoria) return this.ns.error('Categoría inexistente.','La categoría no existe.');
     this.categoriasService.eliminarCategoria(categoria.categoria_id);
     this.closeDeleteModal();
   }

@@ -1,8 +1,7 @@
-import { Component, signal, inject, computed, effect, OnInit, OnDestroy } from '@angular/core';
+import { Component, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PedidoDetalleModal } from './pedido-detalle-modal/pedido-detalle-modal';
-import { ToastService } from '../../../core/services/toast';
 import { ClientesService } from '../../../core/services/clientes';
 import { MesaService } from '../../../core/services/mesa';
 import { Pedido, FiltrosPedidos, PedidoEstado } from '../../../core/interfaces/pedido.model';
@@ -38,7 +37,6 @@ export class Pedidos {
   private clienteService = inject(ClientesService);
   private mesaService = inject(MesaService);
   private socketAdminService = inject(SocketService);
-  private toastService = inject(ToastService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
 
@@ -46,8 +44,6 @@ export class Pedidos {
   pedidos = this.pedidoService.pedidos;
   loading = this.pedidoService.loading;
   loadingLista = this.pedidoService.loadingLista;
-  error = this.pedidoService.error;
-  success = this.pedidoService.success;
 
   // Stats
   totalPedidos = this.pedidoService.totalPedidos;
@@ -73,18 +69,6 @@ export class Pedidos {
 
   // Socket
   socketConnected = this.socketAdminService.isConnected;
-
-  constructor() {
-    effect(() => {
-      if (this.success()) {
-        this.toastService.success(this.success()!);
-      }
-      
-      if (this.error()) {
-        this.toastService.error(this.error()!);
-      }
-    });
-  }
 
   ngOnInit() {
     // Leer queryParams y aplicar filtros
@@ -122,13 +106,10 @@ export class Pedidos {
 
   private setupSocketListeners() {
     this.socketAdminService.on('pedido:nuevo', (data: any) => {
-      console.log('🆕 Nuevo pedido via socket:', data);
-      this.toastService.success('Nuevo pedido', `#${data.numero_pedido} - Mesa ${data.mesa_numero}`);
       this.recargarPedidos();
     });
 
     this.socketAdminService.on('pedido:cambio-estado', (data: any) => {
-      console.log('📦 Pedido actualizado via socket:', data);
       this.recargarPedidos();
     });
   }

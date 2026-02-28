@@ -23,7 +23,6 @@ export class MesaFormModal {
   @Output() save = new EventEmitter<Mesa>();
   
   form!: FormGroup;
-  error = signal<string | null>(null);
   saving = this.mesaService.loading;
   isEditMode = computed(() => !!this.mesa);
   modalTitle = computed(() => this.isEditMode() ? 'Editar Mesa' : 'Nueva Mesa');

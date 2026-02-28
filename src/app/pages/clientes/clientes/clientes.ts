@@ -2,7 +2,7 @@ import { Component, signal, inject, computed, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ConfirmModal } from '../../../layout/components/confirm-modal/confirm-modal';
-import { ToastService } from '../../../core/services/toast';
+import { NotificacionService } from '../../../core/services/notificacion';
 import { Cliente } from '../../../core/interfaces/cliente.model';
 import { ClientesService } from '../../../core/services/clientes';
 import { 
@@ -28,7 +28,7 @@ import {
 })
 export class Clientes {
   private clienteService = inject(ClientesService);
-  private toastService = inject(ToastService);
+  private ns = inject(NotificacionService);
   private router = inject(Router);
 
   clientes = this.clienteService.clientes;
@@ -62,18 +62,6 @@ export class Clientes {
     );
   });
 
-  constructor() {
-    effect(() => {
-      if (this.success()) {
-        this.toastService.success(this.success()!);
-      }
-      
-      if (this.error()) {
-        this.toastService.error(this.error()!);
-      }
-    });
-  }
-
   ngOnInit() {
     this.clienteService.cargarClientes();
   }
@@ -102,11 +90,11 @@ export class Clientes {
   handleDeleteConfirmed() {
     const cliente = this.selectedCliente();
     if (!cliente) {
-      return this.toastService.error('Cliente inexistente', 'El cliente no existe');
+      return this.ns.error('Cliente inexistente', 'El cliente no existe');
     }
     
     if ((cliente._count?.pedidos || 0) > 0) {
-      this.toastService.error(
+      this.ns.error(
         'No se puede eliminar', 
         'El cliente tiene pedidos asociados'
       );

@@ -21,8 +21,6 @@ export class Mesas {
   mesas = this.mesasService.mesas;
   loading = this.mesasService.loading;
   loadingLista = this.mesasService.loadingLista;
-  error = this.mesasService.error;
-  success = this.mesasService.success;
 
   // Modales
   showFormModal = signal(false);

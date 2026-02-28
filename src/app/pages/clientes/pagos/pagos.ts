@@ -1,7 +1,6 @@
-import { Component, signal, inject, computed, effect, OnInit } from '@angular/core';
+import { Component, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ToastService } from '../../../core/services/toast';
 import { PedidosServices } from '../../../core/services/pedidos';
 import { Pago, FiltrosPagos, MedioDePago } from '../../../core/interfaces/pago.model';
 import { PagoService } from '../../../core/services/pago';
@@ -29,7 +28,6 @@ import {
 export class Pagos {
   private pagoService = inject(PagoService);
   private pedidoService = inject(PedidosServices);
-  private toastService = inject(ToastService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
 
@@ -55,18 +53,6 @@ export class Pagos {
 
   // Info adicional para breadcrumbs
   numeroPedidoFiltrado = signal<string>('');
-
-  constructor() {
-    effect(() => {
-      if (this.success()) {
-        this.toastService.success(this.success()!);
-      }
-      
-      if (this.error()) {
-        this.toastService.error(this.error()!);
-      }
-    });
-  }
 
   ngOnInit() {
     // Leer queryParams y aplicar filtros

@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Pedido, PedidoEstado } from '../../../../core/interfaces/pedido.model';
 import { LucideAngularModule, X, User, Table2, Clock, CreditCard } from 'lucide-angular';

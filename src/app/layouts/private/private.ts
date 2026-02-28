@@ -101,14 +101,6 @@ export class Private {
   pageTitle = 'Dashboard';
   pageSubtitle = '';
 
-  // Notificaciones de prueba
-  // TODO: Conectar con un servicio
-  notificaciones: Notificacion[] = [
-    { id: '1', titulo: 'Nuevo pedido', mensaje: 'Mesa 5 realizó un pedido de $4.800', tipo: 'pedido', leida: false, tiempo: 'Hace 2 min' },
-    { id: '2', titulo: 'Stock bajo', mensaje: 'Medialuna: quedan solo 3 unidades', tipo: 'stock', leida: false, tiempo: 'Hace 15 min' },
-    { id: '3', titulo: 'Mesa ocupada', mensaje: 'Mesa 7 inició una nueva sesión', tipo: 'mesa', leida: true, tiempo: 'Hace 30 min' },
-  ];
-
   constructor() {
     // Actualizar título según la ruta activa
     this.router.events.pipe(
@@ -126,9 +118,5 @@ export class Private {
 
   onLogout(): void {
     this.auth.logout();
-  }
-
-  onNotificacionClick(notif: Notificacion): void {
-    console.log('Notificación clickeada:', notif);
   }
 }

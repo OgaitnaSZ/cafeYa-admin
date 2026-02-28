@@ -1,4 +1,4 @@
-import { Component, signal, computed, inject, effect, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
+import { Component, signal, computed, inject, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ConfirmModal } from '../../../layout/components/confirm-modal/confirm-modal';
@@ -6,7 +6,7 @@ import { Producto } from '../../../core/interfaces/producto.model';
 import { ProductoFormModal } from './producto-form-modal/producto-form-modal';
 import { ProductoService } from '../../../core/services/producto';
 import { Box, LucideAngularModule, Pen, Plus, Search, Trash, Trash2 } from 'lucide-angular';
-import { ToastService } from '../../../core/services/toast';
+import { NotificacionService } from '../../../core/services/notificacion';
 
 @Component({
   selector: 'app-productos',
@@ -25,7 +25,7 @@ export class Productos {
   // Services
   productoService = inject(ProductoService);
   cdr = inject(ChangeDetectorRef);
-  toastService = inject(ToastService);
+  ns = inject(NotificacionService);
 
   // Signals
   productos = this.productoService.productos;
@@ -72,18 +72,6 @@ export class Productos {
     return items;
   });
 
-  constructor() {
-    effect(() => {
-      if (this.success()) {
-        this.toastService.success(this.success()!);
-      }
-      
-      if(this.error()){
-        this.toastService.error(this.error()!);
-      }
-    });
-  }
-
   ngOnInit() {
     this.productoService.cargarDatos();
   }
@@ -99,8 +87,8 @@ export class Productos {
   toggleDestacado(producto: Producto, event: Event) {
     event.preventDefault();
     event.stopPropagation();
-    if(this.productosDestacados() >= 4) return this.toastService.error("Límite alcanzado", "Desmarque un producto destacado para poder seleccionar uno nuevo."); 
-    if(producto.estado === "Inactivo") return this.toastService.error("Producto inactivo", "Habilite el producto para poder destacarlo."); 
+    if(this.productosDestacados() >= 4) return this.ns.error("Límite alcanzado", "Desmarque un producto destacado para poder seleccionar uno nuevo."); 
+    if(producto.estado === "Inactivo") return this.ns.error("Producto inactivo", "Habilite el producto para poder destacarlo."); 
     this.productoService.destacarProducto(producto.producto_id!);
   }
 
@@ -153,7 +141,7 @@ export class Productos {
   // Confirmar eliminación
   handleDeleteConfirmed() {
     const producto = this.selectedProducto();
-    if (!producto) return this.toastService.error('Producto inexistente.','El producto no existe.');
+    if (!producto) return this.ns.error('Producto inexistente.','El producto no existe.');
     this.productoService.eliminarProducto(producto.producto_id!);
     this.closeDeleteModal();
   }

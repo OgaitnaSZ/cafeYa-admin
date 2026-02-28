@@ -78,37 +78,7 @@ export class NotificacionService {
   ]);
 
   /** Historial de notificaciones de estado (operaciones del admin). Máximo 20. */
-  readonly notificacionesEstado = signal<NotificacionEstado[]>([
-    // Mock para probar el panel
-    {
-      id: 'e-1',
-      tipo: 'success',
-      titulo: 'Pedido actualizado',
-      mensaje: 'El pedido #0224-12 fue marcado como Listo.',
-      created_at: new Date(Date.now() - 2 * 60_000),
-    },
-    {
-      id: 'e-2',
-      tipo: 'success',
-      titulo: 'Pago registrado',
-      mensaje: 'Se registró un pago de $3.200 con tarjeta.',
-      created_at: new Date(Date.now() - 18 * 60_000),
-    },
-    {
-      id: 'e-3',
-      tipo: 'error',
-      titulo: 'Error al cargar',
-      mensaje: 'No se pudo conectar con el servidor. Reintentando...',
-      created_at: new Date(Date.now() - 45 * 60_000),
-    },
-    {
-      id: 'e-4',
-      tipo: 'warning',
-      titulo: 'Stock bajo',
-      mensaje: 'Medialunas x3 tiene menos de 5 unidades.',
-      created_at: new Date(Date.now() - 2 * 3_600_000),
-    },
-  ]);
+  readonly notificacionesEstado = signal<NotificacionEstado[]>([]);
 
   // Computed
   readonly servidorNoLeidas = computed(() =>

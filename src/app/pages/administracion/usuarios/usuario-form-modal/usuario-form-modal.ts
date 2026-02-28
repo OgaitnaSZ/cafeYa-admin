@@ -3,8 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { User } from '../../../../core/interfaces/user.model';
 import { LucideAngularModule, Shield, Users, ChefHat, Eye, EyeOff, X } from 'lucide-angular';
-import { ToastService } from '../../../../core/services/toast';
 import { Usuario } from '../../../../core/services/usuario';
+import { NotificacionService } from '../../../../core/services/notificacion';
 
 @Component({
   selector: 'app-usuario-form-modal',
@@ -15,7 +15,7 @@ import { Usuario } from '../../../../core/services/usuario';
 export class UsuarioFormModal {
   // Servicios
   private fb = new FormBuilder();
-  private toastService = inject(ToastService);
+  private ns = inject(NotificacionService);
   private userService = inject(Usuario);
 
   @Input() usuario: User | null = null;
@@ -64,7 +64,7 @@ export class UsuarioFormModal {
   }
 
   onSubmit() {
-    if (this.form.invalid) return this.toastService.error('Faltan datos','Completa los campos requeridos');
+    if (this.form.invalid) return this.ns.error('Faltan datos','Completa los campos requeridos');
 
     const formData = this.form.value;
 

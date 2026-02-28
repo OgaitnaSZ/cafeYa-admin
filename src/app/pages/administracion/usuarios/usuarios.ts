@@ -2,10 +2,10 @@ import { Component, signal, inject, computed, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { UsuarioFormModal } from './usuario-form-modal/usuario-form-modal';
 import { ConfirmModal } from '../../../layout/components/confirm-modal/confirm-modal';
-import { ToastService } from '../../../core/services/toast';
 import { User } from '../../../core/interfaces/user.model';
 import { Usuario } from '../../../core/services/usuario';
 import { LucideAngularModule, UserPlus, Pen, Trash2, Shield, ChefHat, Users } from 'lucide-angular';
+import { NotificacionService } from '../../../core/services/notificacion';
 
 @Component({
   selector: 'app-usuarios',
@@ -15,7 +15,7 @@ import { LucideAngularModule, UserPlus, Pen, Trash2, Shield, ChefHat, Users } fr
 })
 export class Usuarios {
   private usuarioService = inject(Usuario);
-  private toastService = inject(ToastService);
+  private ns = inject(NotificacionService);
 
   usuarios = this.usuarioService.usuarios;
   loading = this.usuarioService.loading;
@@ -41,18 +41,6 @@ export class Usuarios {
     if (filtro === 'todos') return this.usuarios();
     return this.usuarios().filter(u => u.rol === filtro);
   });
-
-  constructor() {
-    effect(() => {
-      if (this.success()) {
-        this.toastService.success(this.success()!);
-      }
-      
-      if (this.error()) {
-        this.toastService.error(this.error()!);
-      }
-    });
-  }
 
   ngOnInit() {
     this.usuarioService.cargarUsuarios();
@@ -86,7 +74,7 @@ export class Usuarios {
       u.id !== usuarioData.id
     );
   
-    if (usuarioExistente) return this.toastService.error('Ya existe un usuario con ese email', 'Por favor, cambia el email para continuar');
+    if (usuarioExistente) return this.ns.error('Ya existe un usuario con ese email', 'Por favor, cambia el email para continuar');
 
     if (isEdit) {
       this.usuarioService.actualizarUsuario(usuarioData);
@@ -112,11 +100,11 @@ export class Usuarios {
   // Confirmar eliminación
   handleDeleteConfirmed() {
     const usuario = this.selectedUsuario();
-    if (!usuario) return this.toastService.error('Usuario inexistente', 'El usuario no existe');
+    if (!usuario) return this.ns.error('Usuario inexistente', 'El usuario no existe');
 
     if(usuario.rol === 'admin'){
       const totalAdmins = this.usuarios().filter(u => u.rol === 'admin').length;
-      if(totalAdmins === 1) return this.toastService.error('Error al eliminar','No se puede eliminar al único administrador');
+      if(totalAdmins === 1) return this.ns.error('Error al eliminar','No se puede eliminar al único administrador');
     }
 
     this.usuarioService.eliminarUsuario(usuario.id);

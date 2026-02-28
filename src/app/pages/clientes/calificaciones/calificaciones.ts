@@ -1,7 +1,6 @@
 import { Component, signal, inject, computed, effect, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ToastService } from '../../../core/services/toast';
 import { Calificacion, FiltrosCalificaciones } from '../../../core/interfaces/calificacion.model';
 import { CalificacionService } from '../../../core/services/calificacion';
 import { 
@@ -26,7 +25,6 @@ import {
 })
 export class Calificaciones {
   private calificacionService = inject(CalificacionService);
-  private toastService = inject(ToastService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
 
@@ -53,18 +51,6 @@ export class Calificaciones {
 
   // Info adicional para breadcrumbs
   numeroPedidoFiltrado = signal<string>('');
-
-  constructor() {
-    effect(() => {
-      if (this.success()) {
-        this.toastService.success(this.success()!);
-      }
-      
-      if (this.error()) {
-        this.toastService.error(this.error()!);
-      }
-    });
-  }
 
   ngOnInit() {
     // Leer queryParams y aplicar filtros
