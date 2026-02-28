@@ -1,10 +1,11 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
 import { filter, map } from 'rxjs';
 import { Sidebar } from '../../layout/sidebar/sidebar';
 import { Header, Notificacion } from '../../layout/header/header';
 import { Auth } from '../../core/services/auth';
+import { PedidosServices } from '../../core/services/pedidos';
 
 // Mapa de títulos por ruta
 const PAGE_TITLES: Record<string, { title: string, subtitle: string }> = {
@@ -69,7 +70,6 @@ const PAGE_TITLES: Record<string, { title: string, subtitle: string }> = {
   }
 };
 
-
 @Component({
   selector: 'app-private',
   imports: [CommonModule, RouterOutlet, Sidebar, Header],
@@ -80,10 +80,13 @@ export class Private {
   // Servicios
   private router = inject(Router);
   public auth = inject(Auth);
+  public pedidos = inject(PedidosServices);
 
   // Datos del usuario
   usuario = this.auth.user;
-  pedidosActivos: number = 3;
+   pedidosActivos = computed(() => 
+    this.pedidos.pedidosActivos().length
+  );
 
   // Sidebar
   isSidebarOpen = signal(false);
@@ -115,6 +118,10 @@ export class Private {
       this.pageTitle = title;
       this.pageSubtitle = subtitle;
     });
+  }
+
+  ngOnInit(){
+    this.pedidos.cargarPedidosActivos();
   }
 
   onLogout(): void {

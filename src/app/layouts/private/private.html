@@ -16,7 +16,7 @@
     <app-header
       [pageTitle]="pageTitle"
       [pageSubtitle]="pageSubtitle"
-      [pedidosActivos]="pedidosActivos"
+      [pedidosActivos]="pedidosActivos()"
       [nombreUsuario]="usuario()?.nombre"
       [notificaciones]="notificaciones"
       (notificacionClick)="onNotificacionClick($event)"

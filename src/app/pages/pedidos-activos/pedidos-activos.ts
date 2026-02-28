@@ -27,7 +27,7 @@ export class PedidosActivos {
   private toastService = inject(ToastService);
 
   // Data
-  pedidosActivos = this.pedidoService.pedidos;
+  pedidosActivos = this.pedidoService.pedidosActivos;
   loadingLista = this.pedidoService.loadingLista;
   actualizando = signal(false);
 
@@ -81,9 +81,6 @@ export class PedidosActivos {
     if (!this.socketConnected()) {
       this.socketAdminService.connect();
     }
-
-    // Cargar pedidos activos
-    this.cargarPedidosActivos();
     
     // Setup socket listeners
     this.setupSocketListeners();
@@ -95,10 +92,6 @@ export class PedidosActivos {
   ngOnDestroy() {
     this.stopAutoRefresh();
     this.cleanupSocketListeners();
-  }
-
-  cargarPedidosActivos() {
-    this.pedidoService.cargarPedidosActivos();
   }
 
   private setupSocketListeners() {

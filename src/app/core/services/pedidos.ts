@@ -16,6 +16,7 @@ export class PedidosServices {
 
   // Signals
   pedidos = signal<Pedido[]>([]);
+  pedidosActivos = signal<Pedido[]>([]);
   pedido = signal<Pedido | null>(null);
   stats = signal<StatsPedidos | null>(null);
 
@@ -141,7 +142,8 @@ export class PedidosServices {
       headers: this.tokenService.createAuthHeaders(),
     }).pipe(
       tap(data => {
-        this.pedidos.set(data);
+        this.pedidosActivos.set(data);
+        console.log(data)
       }),
       catchError(err => {
         this.error.set('Error al cargar pedidos');
