@@ -3,7 +3,7 @@ import { environment } from '../../environments/environment.prod';
 import { HttpClient } from '@angular/common/http';
 import { TokenService } from './token';
 import { User } from '../interfaces/user.model';
-import { catchError, finalize, tap } from 'rxjs';
+import { catchError, finalize, of, tap } from 'rxjs';
 import { NotificacionService } from './notificacion';
 
 @Injectable({
@@ -50,8 +50,8 @@ export class Usuario {
         this.usuarios.set(data);
       }),
       catchError(err => {
-        this.ns.error('Error al cargar usuarios', err.error);
-        return [];
+        this.ns.error('Error al cargar usuarios', err.error.message);
+        return of([]);
       }),
       finalize(() => this.loadingLista.set(false))
     ).subscribe();
@@ -71,8 +71,8 @@ export class Usuario {
         this.ns.success(`Usuario ${data.nombre} creado con éxito`);
       }),
       catchError(err => {
-        this.ns.error('Error al crear usuario', err.error);
-        return [];
+        this.ns.error('Error al crear usuario', err.error.message);
+        return of([]);
       }),
       finalize(() => this.loading.set(false))
     ).subscribe();
@@ -94,8 +94,8 @@ export class Usuario {
         this.ns.success(`Usuario ${data.nombre} actualizado con éxito`);
       }),
       catchError(err => {
-        this.ns.error('Error al actualizar usuario', err.error);
-        return [];
+        this.ns.error('Error al actualizar usuario', err.error.message);
+        return of([]);
       }),
       finalize(() => this.loading.set(false))
     ).subscribe();
@@ -116,8 +116,8 @@ export class Usuario {
         this.ns.success('Usuario eliminado con éxito');
       }),
       catchError(err => {
-        this.ns.error('Error al eliminar usuarios', err.error);
-        return [];
+        this.ns.error('Error al eliminar usuarios', err.error.message);
+        return of([]);
       }),
       finalize(() => this.loading.set(false))
     ).subscribe();

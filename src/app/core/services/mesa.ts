@@ -3,7 +3,7 @@ import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { TokenService } from './token';
 import { Mesa } from '../interfaces/mesa.model';
-import { catchError, finalize, tap } from 'rxjs';
+import { catchError, finalize, of, tap } from 'rxjs';
 import { NotificacionService } from './notificacion';
 
 @Injectable({
@@ -48,8 +48,8 @@ export class MesaService {
         this.mesas.set(data);
       }),
       catchError(err => {
-        this.ns.error('Error al cargar mesas', err.error);
-        return [];
+        this.ns.error('Error al cargar mesas', err.error.message);
+        return of([]);
       }),
       finalize(() => this.loadingLista.set(false))
     ).subscribe();
@@ -69,8 +69,8 @@ export class MesaService {
         this.ns.success('Mesa creada con exito');
       }),
       catchError(err => {
-        this.ns.error('Error al crear mesas', err.error);
-        return [];
+        this.ns.error('Error al crear mesas', err.error.message);
+        return of([]);
       }),
       finalize(() => this.loading.set(false))
     ).subscribe();
@@ -94,8 +94,8 @@ export class MesaService {
         this.ns.success('Mesa actualizada con exito');
       }),
       catchError(err => {
-        this.ns.error('Error al actualizar mesa', err.error);
-        return [];
+        this.ns.error('Error al actualizar mesa', err.error.message);
+        return of([]);
       }),
       finalize(() => this.loading.set(false))
     ).subscribe();
@@ -115,7 +115,7 @@ export class MesaService {
           }),
           catchError(err => {
               this.ns.error('Error al actualizar codigo de mesa');      
-              return [];
+              return of([]);
           }),
           finalize(() => this.loading.set(false))
       ).subscribe();
@@ -138,7 +138,7 @@ export class MesaService {
       }),
       catchError(err => {
         this.ns.error('Error al eliminar mesa');
-        return [];
+        return of([]);
       }),
       finalize(() => this.loading.set(false))
     ).subscribe();

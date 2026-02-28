@@ -110,7 +110,7 @@ export class PedidosServices {
         this.pedidos.set(pedidosNormalizados);
       }),
       catchError(err => {
-        this.ns.error('Error al cargar pedidos', err.error);       
+        this.ns.error('Error al cargar pedidos', err.error.message.message);
         return of([]);
       }),
       finalize(() => this.loadingLista.set(false))
@@ -128,8 +128,8 @@ export class PedidosServices {
         this.pedido.set(data);
       }),
       catchError(err => {
-        this.ns.error('Error al cargar pedido', err.error);       
-        return [];
+        this.ns.error('Error al cargar pedido', err.error.message);       
+        return of([]);
       }),
       finalize(() => this.loading.set(false))
     ).subscribe();
@@ -146,8 +146,8 @@ export class PedidosServices {
         this.pedidosActivos.set(data);
       }),
       catchError(err => {
-        this.ns.error('Error al cargar pedidos', err.error);       
-        return [];
+        this.ns.error('Error al cargar pedidos', err.error.message);       
+        return of([]);
       }),
       finalize(() => this.loadingLista.set(false))
     ).subscribe();
@@ -169,8 +169,8 @@ export class PedidosServices {
         this.ns.success(`Pedido ${data.numero_pedido} → ${nuevoEstado}`);
       }),
       catchError(err => {
-        this.ns.error("Error al actualizar pedido", err.error);       
-        return [];
+        this.ns.error("Error al actualizar pedido", err.error.message);       
+        return of([]);
       }),
       finalize(() => this.loading.set(false))
     ).subscribe();

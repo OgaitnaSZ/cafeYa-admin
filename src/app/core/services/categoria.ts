@@ -3,7 +3,7 @@ import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { TokenService } from './token';
 import { Categoria } from '../interfaces/producto.model';
-import { catchError, finalize, tap } from 'rxjs';
+import { catchError, finalize, of, tap } from 'rxjs';
 import { NotificacionService } from './notificacion';
 
 @Injectable({
@@ -54,8 +54,8 @@ export class CategoriaSevice {
         this.categoriasRaw.set(data);
       }),
       catchError(err => {
-        this.ns.error('Error al cargar categorias', err.error);
-        return [];
+        this.ns.error('Error al cargar categorias', err.error.message);
+        return of([]);
       }),
       finalize(() => this.loadingLista.set(false))
     ).subscribe();
@@ -75,8 +75,8 @@ export class CategoriaSevice {
         this.ns.success('Categoria creada con exito');
       }),
       catchError(err => {
-        this.ns.error('Error al crear categoria', err.error);
-        return [];
+        this.ns.error('Error al crear categoria', err.error.message);
+        return of([]);
       }),
       finalize(() => this.loading.set(false))
     ).subscribe();
@@ -100,8 +100,8 @@ export class CategoriaSevice {
         this.ns.success('Categoria actualizada con exito');
       }),
       catchError(err => {
-        this.ns.error('Error al actualizar categoria', err.error);
-        return [];
+        this.ns.error('Error al actualizar categoria', err.error.message);
+        return of([]);
       }),
       finalize(() => this.loading.set(false))
     ).subscribe();
@@ -123,8 +123,8 @@ export class CategoriaSevice {
         this.ns.success('Categoria eliminada con exito');
       }),
       catchError(err => {
-        this.ns.error('Error al eliminar categoria', err.error);
-        return [];
+        this.ns.error('Error al eliminar categoria', err.error.message);
+        return of([]);
       }),
       finalize(() => this.loading.set(false))
     ).subscribe();

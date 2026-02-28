@@ -3,7 +3,7 @@ import { environment } from '../../environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { TokenService } from './token';
 import { Calificacion, FiltrosCalificaciones, StatsCalificaciones } from '../interfaces/calificacion.model';
-import { catchError, finalize, tap } from 'rxjs';
+import { catchError, finalize, of, tap } from 'rxjs';
 import { NotificacionService } from './notificacion';
 
 @Injectable({
@@ -103,8 +103,8 @@ export class CalificacionService {
         this.calificaciones.set(data);
       }),
       catchError(err => {
-        this.ns.error('Error al cargar calificaciones', err.error);
-        return [];
+        this.ns.error('Error al cargar calificaciones', err.error.message);
+        return of([]);
       }),
       finalize(() => this.loadingLista.set(false))
     ).subscribe();
@@ -121,8 +121,8 @@ export class CalificacionService {
         this.calificacion.set(data);
       }),
       catchError(err => {
-        this.ns.error('Error al cargar calificacion', err.error);
-        return [];
+        this.ns.error('Error al cargar calificacion', err.error.message);
+        return of([]);
       }),
       finalize(() => this.loading.set(false))
     ).subscribe();

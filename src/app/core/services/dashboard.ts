@@ -7,7 +7,7 @@ import {
   PedidoActivoDashboard,
   calcularVariacion,
 } from '../interfaces/dashboard.model';
-import { catchError, finalize, tap } from 'rxjs';
+import { catchError, finalize, of, tap } from 'rxjs';
 import { NotificacionService } from './notificacion';
 
 @Injectable({
@@ -103,8 +103,8 @@ export class DashboardService {
       .pipe(
         tap((data) => this.resumen.set(data)),
         catchError((err) => {
-          this.ns.error('Error al cargar dashboard', err.error);
-          return [];
+          this.ns.error('Error al cargar dashboard', err.error.message);
+          return of([]);
         }),
         finalize(() => this.loading.set(false))
       )

@@ -3,7 +3,7 @@ import { environment } from '../../environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { TokenService } from './token';
 import { Pago, FiltrosPagos, StatsPagos, MedioDePago } from '../interfaces/pago.model';
-import { catchError, finalize, tap } from 'rxjs';
+import { catchError, finalize, of, tap } from 'rxjs';
 import { NotificacionService } from './notificacion';
 
 @Injectable({
@@ -95,8 +95,8 @@ export class PagoService {
         this.pagos.set(data);
       }),
       catchError(err => {
-        this.ns.error('Error al cargar pagos', err.error);
-        return [];
+        this.ns.error('Error al cargar pagos', err.error.message);
+        return of([]);
       }),
       finalize(() => this.loadingLista.set(false))
     ).subscribe();
@@ -113,8 +113,8 @@ export class PagoService {
         this.pago.set(data);
       }),
       catchError(err => {
-        this.ns.error('Error al cargar pago', err.error);
-        return [];
+        this.ns.error('Error al cargar pago', err.error.message);
+        return of([]);
       }),
       finalize(() => this.loading.set(false))
     ).subscribe();

@@ -64,7 +64,7 @@ export class Auth {
         this.ns.success('Login exitoso');
       }),
       catchError(err => {
-        this.ns.success('Error al iniciar session', err.error);
+        this.ns.success('Error al iniciar session', err.error.message);
         return of(null);
       }), 
       finalize(() => this.loading.set(false))

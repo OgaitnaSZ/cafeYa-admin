@@ -3,7 +3,7 @@ import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { TokenService } from './token';
 import { Cliente } from '../interfaces/cliente.model';
-import { catchError, finalize, tap } from 'rxjs';
+import { catchError, finalize, of, tap } from 'rxjs';
 import { NotificacionService } from './notificacion';
 
 @Injectable({
@@ -51,8 +51,8 @@ export class ClientesService {
         this.clientes.set(data);
       }),
       catchError(err => {
-        this.ns.error('Error al cargar clientes', err.error);
-        return [];
+        this.ns.error('Error al cargar clientes', err.error.message);
+        return of([]);
       }),
       finalize(() => this.loadingLista.set(false))
     ).subscribe();
@@ -69,8 +69,8 @@ export class ClientesService {
         this.cliente.set(data);
       }),
       catchError(err => {
-        this.ns.error('Error al cargar cliente', err.error);
-        return [];
+        this.ns.error('Error al cargar cliente', err.error.message);
+        return of([]);
       }),
       finalize(() => this.loading.set(false))
     ).subscribe();
@@ -91,8 +91,8 @@ export class ClientesService {
         this.ns.success('Cliente eliminado con exito');
       }),
       catchError(err => {
-        this.ns.error('Error al elimnar clientes', err.error);
-        return [];
+        this.ns.error('Error al elimnar clientes', err.error.message);
+        return of([]);
       }),
       finalize(() => this.loading.set(false))
     ).subscribe();

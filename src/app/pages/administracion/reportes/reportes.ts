@@ -12,6 +12,7 @@ import {
 } from 'lucide-angular';
 import { ReportesService } from '../../../core/services/reportes';
 import { TopProductoReporte, HoraPicoReporte } from '../../../core/interfaces/reportes.model';
+import { of } from 'rxjs';
 
 // Tipos internos
 type RangoPreset    = '7d' | '30d' | '90d' | 'custom';

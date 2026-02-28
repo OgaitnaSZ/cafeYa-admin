@@ -76,7 +76,7 @@ export class ProductoService {
         this.todasLasCategorias.set(categorias);
       }),
       catchError(err => {
-        this.ns.error('Error al cargar los datos', err.error);        
+        this.ns.error('Error al cargar los datos', err.error.message);        
         return of({ productos: [], categorias: [] });
       }),
       finalize(() => this.loadingLista.set(false))
@@ -95,8 +95,8 @@ export class ProductoService {
               this.ns.success("Producto creado correctamente");
           }),
           catchError(err => {
-              this.ns.error('Error al agregar producto', err.error);              
-              return [];
+              this.ns.error('Error al agregar producto', err.error.message);              
+              return of([]);
           }),
           finalize(() => this.loading.set(false))
       ).subscribe();
@@ -117,8 +117,8 @@ export class ProductoService {
               this.ns.success("producto modificado con exito")
           }),
           catchError(err => {
-              this.ns.error('Error al modificar producto', err.error);              
-              return [];
+              this.ns.error('Error al modificar producto', err.error.message);              
+              return of([]);
           }),
           finalize(() => this.loading.set(false))
       ).subscribe();
@@ -137,8 +137,8 @@ export class ProductoService {
               this.ns.success("Estado actualizado con exito")
           }),
           catchError(err => {
-              this.ns.error('Error al actualizar producto', err.error);              
-              return [];
+              this.ns.error('Error al actualizar producto', err.error.message);              
+              return of([]);
           }),
           finalize(() => this.loading.set(false))
       ).subscribe();
@@ -157,8 +157,8 @@ export class ProductoService {
               this.ns.success("Producto destacado con exito")
           }),
           catchError(err => {
-              this.ns.error('Error al destacar producto', err.error);              
-              return [];
+              this.ns.error('Error al destacar producto', err.error.message);              
+              return of([]);
           }),
           finalize(() => this.loading.set(false))
       ).subscribe();
@@ -177,8 +177,8 @@ export class ProductoService {
               this.ns.success("Producto eliminado con exito")
           }),
           catchError(err => {
-              this.ns.error('Error al eliminar Producto', err.error);              
-              return [];
+              this.ns.error('Error al eliminar Producto', err.error.message);              
+              return of([]);
           }),
           finalize(() => this.loading.set(false))
       ).subscribe();
@@ -197,8 +197,8 @@ export class ProductoService {
               this.ns.success("Foto subida con exito")
           }),
           catchError(err => {
-              this.ns.error('Error al subir foto', err.error);              
-              return [];
+              this.ns.error('Error al subir foto', err.error.message);              
+              return of([]);
           }),
           finalize(() => this.loading.set(false))
       ).subscribe();
@@ -213,8 +213,8 @@ export class ProductoService {
               this.ns.success("Foto eliminada con exito")
           }),
           catchError(err => {
-              this.ns.error('Error al eliminar foto', err.error);              
-              return [];
+              this.ns.error('Error al eliminar foto', err.error.message);              
+              return of([]);
           }),
           finalize(() => this.loading.set(false))
       ).subscribe();
