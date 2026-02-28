@@ -19,21 +19,21 @@ export type TipoNotifEstado =
 
 /** Notificación de evento del servidor (websocket) — se muestra en el panel del header */
 export interface NotificacionServidor {
-  id:         string;
-  tipo:       TipoNotifServidor;
-  titulo:     string;
-  mensaje:    string;
+  id: string;
+  tipo: TipoNotifServidor;
+  titulo: string;
+  mensaje: string;
   /** Ruta a la que navega al hacer click */
-  url:        string;
-  leida:      boolean;
+  url: string;
+  leida: boolean;
   created_at: Date;
 }
 
 /** Notificación de estado de una operación — se muestra en el header como historial */
 export interface NotificacionEstado {
-  id:      string;
-  tipo:    TipoNotifEstado;
-  titulo:  string;
+  id: string;
+  tipo: TipoNotifEstado;
+  titulo: string;
   mensaje: string;
   created_at: Date;
 }
@@ -42,17 +42,17 @@ export interface NotificacionEstado {
 
 export const NOTIF_SERVIDOR_META: Record<TipoNotifServidor, { emoji: string; bg: string }> = {
   pedido: { emoji: '📋', bg: 'bg-orange-100' },
-  mesa:   { emoji: '🪑', bg: 'bg-blue-100'   },
+  mesa: { emoji: '🪑', bg: 'bg-blue-100'   },
   resena: { emoji: '⭐', bg: 'bg-amber-100'  },
-  pago:   { emoji: '💳', bg: 'bg-green-100'  },
-  mozo:   { emoji: '🔔', bg: 'bg-red-100'    },
+  pago: { emoji: '💳', bg: 'bg-green-100'  },
+  mozo: { emoji: '🔔', bg: 'bg-red-100'    },
 };
 
 export const NOTIF_ESTADO_META: Record<TipoNotifEstado, { emoji: string; bg: string; text: string }> = {
   success: { emoji: '✅', bg: 'bg-green-100', text: 'text-green-700' },
-  error:   { emoji: '❌', bg: 'bg-red-100',   text: 'text-red-700'   },
+  error: { emoji: '❌', bg: 'bg-red-100',   text: 'text-red-700'   },
   warning: { emoji: '⚠️', bg: 'bg-amber-100', text: 'text-amber-700' },
-  info:    { emoji: 'ℹ️', bg: 'bg-blue-100',  text: 'text-blue-700'  },
+  info: { emoji: 'ℹ️', bg: 'bg-blue-100',  text: 'text-blue-700'  },
 };
 
 function formatTiempo(date: Date): string {
@@ -67,7 +67,7 @@ function formatTiempo(date: Date): string {
 
 @Injectable({ providedIn: 'root' })
 export class NotificacionService {
-  private router      = inject(Router);
+  private router = inject(Router);
   private toastService = inject(ToastService);
 
   // Signals 
@@ -96,8 +96,8 @@ export class NotificacionService {
   agregarServidor(notif: Omit<NotificacionServidor, 'id' | 'leida' | 'created_at'>) {
     const nueva: NotificacionServidor = {
       ...notif,
-      id:         `srv-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
-      leida:      false,
+      id: `srv-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+      leida: false,
       created_at: new Date(),
     };
 
@@ -131,29 +131,42 @@ export class NotificacionService {
   }
 
   // API: notificaciones de estado
-
-  /**
-   * Registra una notificación de estado Y dispara el toast correspondiente.
-   * Usá este método en lugar de llamar a ToastService directamente.
-   */
+  private _toastActivo = new Map<string, ReturnType<typeof setTimeout>>();
   estado(tipo: TipoNotifEstado, titulo: string, mensaje?: string, duration?: number) {
     const nueva: NotificacionEstado = {
-      id:         `est-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+      id: `est-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
       tipo,
       titulo,
-      mensaje:    mensaje ?? '',
+      mensaje: mensaje ?? '',
       created_at: new Date(),
     };
 
-    this.notificacionesEstado.update(list => [nueva, ...list].slice(0, 20));
-    this.toastService[tipo](titulo, mensaje, duration);
+    this.notificacionesEstado.update(list => {
+      const sinDuplicado = list.filter(
+        n => !(n.tipo === tipo && n.titulo === titulo && n.mensaje === (mensaje ?? ''))
+      );
+      return [nueva, ...sinDuplicado].slice(0, 20);
+    });
+
+    // Solo dispara el toast si no hay uno activo con la misma clave
+    const clave = `${tipo}|${titulo}|${mensaje ?? ''}`;
+    if (!this._toastActivo.has(clave)) {
+      this.toastService[tipo](titulo, mensaje, duration);
+
+      // Bloquea nuevos toasts con esta clave hasta que expire el tiempo del toast
+      const timer = setTimeout(() => {
+        this._toastActivo.delete(clave);
+      }, duration ?? 4000); // usa el mismo duration que el toast
+
+      this._toastActivo.set(clave, timer);
+    }
   }
 
   // Shortcuts
   success(titulo: string, mensaje?: string) { this.estado('success', titulo, mensaje); }
-  error  (titulo: string, mensaje?: string) { this.estado('error',   titulo, mensaje); }
+  error (titulo: string, mensaje?: string) { this.estado('error',   titulo, mensaje); }
   warning(titulo: string, mensaje?: string) { this.estado('warning', titulo, mensaje); }
-  info   (titulo: string, mensaje?: string) { this.estado('info',    titulo, mensaje); }
+  info (titulo: string, mensaje?: string) { this.estado('info',    titulo, mensaje); }
 
   eliminarEstado(id: string) {
     this.notificacionesEstado.update(list => list.filter(n => n.id !== id));
