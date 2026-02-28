@@ -1,4 +1,4 @@
-import { Component, signal, inject, computed, effect } from '@angular/core';
+import { Component, signal, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ConfirmModal } from '../../../layout/components/confirm-modal/confirm-modal';
@@ -34,8 +34,6 @@ export class Clientes {
   clientes = this.clienteService.clientes;
   loading = this.clienteService.loading;
   loadingLista = this.clienteService.loadingLista;
-  error = this.clienteService.error;
-  success = this.clienteService.success;
 
   // Modales
   showDeleteModal = signal(false);

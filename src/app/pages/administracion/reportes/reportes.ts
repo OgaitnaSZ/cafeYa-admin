@@ -49,9 +49,8 @@ export class Reportes {
   readonly rs = inject(ReportesService);
 
   // Alias directo para el template
-  loading           = this.rs.loading;
+  loading = this.rs.loading;
   loadingCalendario = this.rs.loadingCalendario;
-  error             = this.rs.error;
 
   // Filtros
   rangoPreset = signal<RangoPreset>('7d');
@@ -66,8 +65,8 @@ export class Reportes {
 
   // Chart / Calendar UI state
   chartMetric = signal<ChartMetric>('recaudado');
-  calMetric   = signal<CalendarMetric>('recaudado');
-  calMonth    = signal<Date>(new Date(new Date().getFullYear(), new Date().getMonth(), 1));
+  calMetric = signal<CalendarMetric>('recaudado');
+  calMonth = signal<Date>(new Date(new Date().getFullYear(), new Date().getMonth(), 1));
 
   hoveredPoint = signal<ChartPoint | null>(null);
   hoveredIndex = signal<number>(-1);
@@ -84,17 +83,17 @@ export class Reportes {
   // AllData: serie del período convertida a DayData
   private readonly allData = computed<DayData[]>(() =>
     (this.rs.resumen()?.serie ?? []).map(d => ({
-      date:      this.parseFecha(d.fecha),
-      pedidos:   d.pedidos,
-      clientes:  d.clientes,
+      date: this.parseFecha(d.fecha),
+      pedidos: d.pedidos,
+      clientes: d.clientes,
       recaudado: d.recaudado,
     }))
   );
 
   // CalendarMonthData: datos del mes visible en el calendario
   private calendarMonthData = computed<DayData[]>(() => {
-    const m  = this.calMonth();
-    const y  = m.getFullYear();
+    const m = this.calMonth();
+    const y = m.getFullYear();
     const mo = m.getMonth();
 
     const fromAllData = this.allData().filter(
@@ -105,9 +104,9 @@ export class Reportes {
     const cal = this.rs.calendario();
     if (cal && cal.year === y && cal.month === mo + 1) {
       return cal.dias.map(d => ({
-        date:      this.parseFecha(d.fecha),
-        pedidos:   d.pedidos,
-        clientes:  d.clientes,
+        date: this.parseFecha(d.fecha),
+        pedidos: d.pedidos,
+        clientes: d.clientes,
         recaudado: d.recaudado,
       }));
     }
@@ -121,17 +120,17 @@ export class Reportes {
   });
 
   // KPIs (del backend)
-  kpiRecaudado = computed(() => this.rs.resumen()?.kpis.recaudado    ?? 0);
-  kpiPedidos   = computed(() => this.rs.resumen()?.kpis.pedidos      ?? 0);
-  kpiClientes  = computed(() => this.rs.resumen()?.kpis.clientes     ?? 0);
-  kpiTicket    = computed(() => this.rs.resumen()?.kpis.ticket       ?? 0);
-  kpiCalif     = computed(() => this.rs.resumen()?.kpis.calificacion ?? null);
+  kpiRecaudado = computed(() => this.rs.resumen()?.kpis.recaudado ?? 0);
+  kpiPedidos = computed(() => this.rs.resumen()?.kpis.pedidos ?? 0);
+  kpiClientes = computed(() => this.rs.resumen()?.kpis.clientes ?? 0);
+  kpiTicket = computed(() => this.rs.resumen()?.kpis.ticket ?? 0);
+  kpiCalif = computed(() => this.rs.resumen()?.kpis.calificacion ?? null);
 
   // Variaciones (del backend, null = sin datos previos)
   kpiRecaudadoVar = computed(() => this.rs.resumen()?.variaciones.recaudado ?? null);
-  kpiPedidosVar   = computed(() => this.rs.resumen()?.variaciones.pedidos   ?? null);
-  kpiClientesVar  = computed(() => this.rs.resumen()?.variaciones.clientes  ?? null);
-  kpiTicketVar    = computed(() => this.rs.resumen()?.variaciones.ticket    ?? null);
+  kpiPedidosVar = computed(() => this.rs.resumen()?.variaciones.pedidos ?? null);
+  kpiClientesVar = computed(() => this.rs.resumen()?.variaciones.clientes ?? null);
+  kpiTicketVar = computed(() => this.rs.resumen()?.variaciones.ticket ?? null);
 
   // Chart SVG
   chartPoints = computed<ChartPoint[]>(() => {
@@ -177,10 +176,10 @@ export class Reportes {
 
   // Calendario heatmap
   calendarWeeks = computed(() => {
-    const month  = this.calMonth();
+    const month = this.calMonth();
     const metric = this.calMetric();
-    const y      = month.getFullYear();
-    const mo     = month.getMonth();
+    const y = month.getFullYear();
+    const mo = month.getMonth();
 
     const firstDay = new Date(y, mo, 1);
     const lastDay  = new Date(y, mo + 1, 0);
@@ -188,7 +187,7 @@ export class Reportes {
     const maxVal = Math.max(...monthData.map(d => d[metric]), 1);
 
     const weeks: ({ date: Date; value: number; intensity: number } | null)[][] = [];
-    let week:    ({ date: Date; value: number; intensity: number } | null)[] = [];
+    let week: ({ date: Date; value: number; intensity: number } | null)[] = [];
 
     const startDow = (firstDay.getDay() + 6) % 7; // lunes = 0
     for (let i = 0; i < startDow; i++) week.push(null);
@@ -227,18 +226,18 @@ export class Reportes {
 
   // Pagos 
   pagoEfectivo = computed(() => this.rs.resumen()?.pagos.efectivo ?? 0);
-  pagoTarjeta  = computed(() => this.rs.resumen()?.pagos.tarjeta  ?? 0);
-  pagoApp      = computed(() => this.rs.resumen()?.pagos.app      ?? 0);
+  pagoTarjeta = computed(() => this.rs.resumen()?.pagos.tarjeta ?? 0);
+  pagoApp = computed(() => this.rs.resumen()?.pagos.app ?? 0);
 
   // Pedidos por estado
   estadosPedido = computed<EstadoCount[]>(() => {
     const e = this.rs.resumen()?.estados;
     if (!e) return [];
     return [
-      { estado: 'Entregados',     count: e.Entregado,      bgColor: 'bg-green-500' },
-      { estado: 'En preparación', count: e.En_preparacion,  bgColor: 'bg-blue-500'  },
-      { estado: 'Pendientes',     count: e.Pendiente,       bgColor: 'bg-amber-500' },
-      { estado: 'Cancelados',     count: e.Cancelado,       bgColor: 'bg-red-400'   },
+      { estado: 'Entregados', count: e.Entregado, bgColor: 'bg-green-500' },
+      { estado: 'En preparación', count: e.En_preparacion, bgColor: 'bg-blue-500' },
+      { estado: 'Pendientes', count: e.Pendiente, bgColor: 'bg-amber-500' },
+      { estado: 'Cancelados', count: e.Cancelado, bgColor: 'bg-red-400' },
     ];
   });
 
@@ -283,12 +282,12 @@ export class Reportes {
       return { from: this.customFrom(), to: this.customTo() };
     }
     const days = preset === '7d' ? 6 : preset === '30d' ? 29 : 89;
-    const to   = new Date();
+    const to = new Date();
     const from = new Date();
     from.setDate(from.getDate() - days);
     return {
       from: from.toISOString().slice(0, 10),
-      to:   to.toISOString().slice(0, 10),
+      to: to.toISOString().slice(0, 10),
     };
   }
 
@@ -297,7 +296,7 @@ export class Reportes {
     const { from, to } = this.getFromTo();
     return {
       from: new Date(from + 'T00:00:00'),
-      to:   new Date(to   + 'T23:59:59'),
+      to: new Date(to + 'T23:59:59'),
     };
   }
 
@@ -314,14 +313,14 @@ export class Reportes {
   }
 
   prevMonth() {
-    const m    = this.calMonth();
+    const m = this.calMonth();
     const prev = new Date(m.getFullYear(), m.getMonth() - 1, 1);
     this.calMonth.set(prev);
     this.loadCalendarIfNeeded(prev);
   }
 
   nextMonth() {
-    const m    = this.calMonth();
+    const m = this.calMonth();
     const next = new Date(m.getFullYear(), m.getMonth() + 1, 1);
     if (next <= new Date()) {
       this.calMonth.set(next);
@@ -335,7 +334,7 @@ export class Reportes {
   }
 
   private loadCalendarIfNeeded(month: Date) {
-    const y  = month.getFullYear();
+    const y = month.getFullYear();
     const mo = month.getMonth();
     const hasData = this.allData().some(
       d => d.date.getFullYear() === y && d.date.getMonth() === mo
@@ -349,9 +348,9 @@ export class Reportes {
   onChartHover(event: MouseEvent, container: HTMLElement) {
     const pts = this.chartPoints();
     if (!pts.length) return;
-    const rect   = container.getBoundingClientRect();
+    const rect = container.getBoundingClientRect();
     const xRatio = (event.clientX - rect.left) / rect.width;
-    const idx    = Math.min(Math.round(xRatio * (pts.length - 1)), pts.length - 1);
+    const idx = Math.min(Math.round(xRatio * (pts.length - 1)), pts.length - 1);
     this.hoveredIndex.set(idx);
     this.hoveredPoint.set(pts[Math.max(0, idx)]);
   }
@@ -378,7 +377,7 @@ export class Reportes {
 
   // Typed setters
   setChartMetric(m: string) { this.chartMetric.set(m as ChartMetric); }
-  setCalMetric(m: string)   { this.calMetric.set(m as CalendarMetric); }
+  setCalMetric(m: string) { this.calMetric.set(m as CalendarMetric); }
 
   // Formatters
   formatPrice(v: number): string {
@@ -407,7 +406,7 @@ export class Reportes {
   isToday(date: Date): boolean {
     const t = new Date();
     return date.getDate() === t.getDate()
-      && date.getMonth()   === t.getMonth()
+      && date.getMonth() === t.getMonth()
       && date.getFullYear() === t.getFullYear();
   }
 
@@ -419,10 +418,10 @@ export class Reportes {
   getIntensityClass(intensity: number): string {
     const palettes: Record<CalendarMetric, string[]> = {
       recaudado: ['bg-orange-50','bg-orange-100','bg-orange-200','bg-orange-300','bg-orange-400','bg-orange-500','bg-orange-600'],
-      pedidos:   ['bg-blue-50',  'bg-blue-100',  'bg-blue-200',  'bg-blue-300',  'bg-blue-400',  'bg-blue-500',  'bg-blue-600'  ],
-      clientes:  ['bg-green-50', 'bg-green-100', 'bg-green-200', 'bg-green-300', 'bg-green-400', 'bg-green-500', 'bg-green-600' ],
+      pedidos: ['bg-blue-50',  'bg-blue-100',  'bg-blue-200',  'bg-blue-300',  'bg-blue-400',  'bg-blue-500',  'bg-blue-600'],
+      clientes: ['bg-green-50', 'bg-green-100', 'bg-green-200', 'bg-green-300', 'bg-green-400', 'bg-green-500', 'bg-green-600'],
     };
-    const p   = palettes[this.calMetric()];
+    const p = palettes[this.calMetric()];
     const idx = Math.min(Math.floor(intensity * (p.length - 1)), p.length - 1);
     return p[intensity === 0 ? 0 : idx];
   }
@@ -431,7 +430,7 @@ export class Reportes {
     return { recaudado: 'Recaudado', pedidos: 'Pedidos', clientes: 'Clientes' }[this.calMetric()];
   }
 
-  chartColor():      string { return { recaudado: '#f97316', pedidos: '#3b82f6', clientes: '#22c55e' }[this.chartMetric()]; }
+  chartColor(): string { return { recaudado: '#f97316', pedidos: '#3b82f6', clientes: '#22c55e' }[this.chartMetric()]; }
   chartColorLight(): string { return { recaudado: '#fff7ed', pedidos: '#eff6ff', clientes: '#f0fdf4' }[this.chartMetric()]; }
 
   varPositiva(v: number | null): boolean { return v !== null && v >= 0; }
@@ -448,22 +447,22 @@ export class Reportes {
     return d.toISOString().slice(0, 10);
   }
 
-  readonly TrendingUp   = TrendingUp;
+  readonly TrendingUp = TrendingUp;
   readonly TrendingDown = TrendingDown;
-  readonly ShoppingBag  = ShoppingBag;
-  readonly Users        = Users;
-  readonly Star         = Star;
+  readonly ShoppingBag = ShoppingBag;
+  readonly Users = Users;
+  readonly Star = Star;
   readonly CreditCard   = CreditCard;
-  readonly Banknote     = Banknote;
-  readonly Smartphone   = Smartphone;
-  readonly ArrowLeft    = ArrowLeft;
-  readonly BarChart2    = BarChart2;
-  readonly Calendar     = Calendar;
-  readonly Package      = Package;
-  readonly Clock        = Clock;
-  readonly ChevronLeft  = ChevronLeft;
+  readonly Banknote = Banknote;
+  readonly Smartphone = Smartphone;
+  readonly ArrowLeft = ArrowLeft;
+  readonly BarChart2 = BarChart2;
+  readonly Calendar = Calendar;
+  readonly Package = Package;
+  readonly Clock = Clock;
+  readonly ChevronLeft = ChevronLeft;
   readonly ChevronRight = ChevronRight;
-  readonly Activity     = Activity;
-  readonly AlertCircle  = AlertCircle;
-  readonly RefreshCw    = RefreshCw;
+  readonly Activity = Activity;
+  readonly AlertCircle = AlertCircle;
+  readonly RefreshCw = RefreshCw;
 }

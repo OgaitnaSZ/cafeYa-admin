@@ -1,4 +1,4 @@
-import { Component, effect, inject, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -15,14 +15,11 @@ import { NotificacionService } from '../../../core/services/notificacion';
 })
 export class Login {
   private fb = inject(FormBuilder);
-  private router = inject(Router);
   private auth = inject(Auth);
   private ns = inject(NotificacionService);
 
   user = this.auth.user;
   loading = this.auth.loading;
-  error = this.auth.error;
-  success = this.auth.success;
   showPassword = signal(false);
 
   formLogin: FormGroup = this.fb.group({

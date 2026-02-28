@@ -1,4 +1,4 @@
-import { Component, signal, inject, computed, effect } from '@angular/core';
+import { Component, signal, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MesaFormModal } from './mesa-form-modal/mesa-form-modal';
 import { ConfirmModal } from '../../layout/components/confirm-modal/confirm-modal';

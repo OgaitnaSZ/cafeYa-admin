@@ -1,4 +1,4 @@
-import { Component, signal, inject, computed, effect } from '@angular/core';
+import { Component, signal, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { UsuarioFormModal } from './usuario-form-modal/usuario-form-modal';
 import { ConfirmModal } from '../../../layout/components/confirm-modal/confirm-modal';
@@ -20,8 +20,6 @@ export class Usuarios {
   usuarios = this.usuarioService.usuarios;
   loading = this.usuarioService.loading;
   loadingLista = this.usuarioService.loadingLista;
-  error = this.usuarioService.error;
-  success = this.usuarioService.success;
 
   // Modales
   showFormModal = signal(false);

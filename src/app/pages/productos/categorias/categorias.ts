@@ -20,8 +20,6 @@ export class Categorias {
   categorias = this.categoriasService.categorias;
   loading = this.categoriasService.loading;
   loadingLista = this.categoriasService.loadingLista;
-  error = this.categoriasService.error;
-  success = this.categoriasService.success;
 
   // Modales
   showFormModal = signal(false);

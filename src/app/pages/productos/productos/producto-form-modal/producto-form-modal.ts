@@ -26,7 +26,6 @@ export class ProductoFormModal {
   
   form!: FormGroup;
   saving = this.productosService.loading;
-  error = this.productosService.error;
   imagePreview = signal<string | null>(null);
   selectedFile = signal<File | null>(null);
   uploadingImage = signal(false);
@@ -95,7 +94,6 @@ export class ProductoFormModal {
     // Verificar que el producto exista (para editar)
     if (!this.producto?.producto_id) return this.ns.error('La imagen no tiene producto','Primero debés crear el producto antes de subir la imagen');
 
-    this.error.set(null);
     this.uploadingImage.set(true);
 
     // Crear preview local mientras sube
@@ -145,7 +143,6 @@ export class ProductoFormModal {
     }
 
     this.saving.set(true);
-    this.error.set(null);
 
     // Modo EDITAR: Actualizar producto existente
     if (this.isEditMode()) {

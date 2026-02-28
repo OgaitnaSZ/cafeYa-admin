@@ -5,7 +5,7 @@ import { ConfirmModal } from '../../../layout/components/confirm-modal/confirm-m
 import { Producto } from '../../../core/interfaces/producto.model';
 import { ProductoFormModal } from './producto-form-modal/producto-form-modal';
 import { ProductoService } from '../../../core/services/producto';
-import { Box, LucideAngularModule, Pen, Plus, Search, Trash, Trash2 } from 'lucide-angular';
+import { Box, LucideAngularModule, Pen, Plus, Search, Trash2 } from 'lucide-angular';
 import { NotificacionService } from '../../../core/services/notificacion';
 
 @Component({
@@ -32,8 +32,6 @@ export class Productos {
   producto = this.productoService.producto;
   loadingLista = this.productoService.loadingLista;
   loading = this.productoService.loading;
-  error = this.productoService.error;
-  success = this.productoService.success;
   categoriasEnUso = this.productoService.categoriasEnUso;
   todasLasCategorias = this.productoService.todasLasCategorias;
 

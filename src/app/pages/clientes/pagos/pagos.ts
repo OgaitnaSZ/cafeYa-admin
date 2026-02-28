@@ -35,8 +35,6 @@ export class Pagos {
   pagos = this.pagoService.pagos;
   loading = this.pagoService.loading;
   loadingLista = this.pagoService.loadingLista;
-  error = this.pagoService.error;
-  success = this.pagoService.success;
 
   // Stats
   totalPagos = this.pagoService.totalPagos;

@@ -1,4 +1,4 @@
-import { Component, signal, inject, computed, effect, OnInit } from '@angular/core';
+import { Component, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Calificacion, FiltrosCalificaciones } from '../../../core/interfaces/calificacion.model';
@@ -32,8 +32,6 @@ export class Calificaciones {
   calificaciones = this.calificacionService.calificaciones;
   loading = this.calificacionService.loading;
   loadingLista = this.calificacionService.loadingLista;
-  error = this.calificacionService.error;
-  success = this.calificacionService.success;
 
   // Stats
   totalCalificaciones = this.calificacionService.totalCalificaciones;
