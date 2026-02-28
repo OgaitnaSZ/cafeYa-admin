@@ -46,6 +46,7 @@ export class ClientesService {
     }).pipe(
       tap(data => {
         this.clientes.set(data);
+        console.log(data);
       }),
       catchError(err => {
         this.error.set('Error al cargar clientes');

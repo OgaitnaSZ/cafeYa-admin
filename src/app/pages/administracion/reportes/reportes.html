@@ -11,7 +11,7 @@
     <div class="flex flex-wrap items-center gap-2">
       @for(preset of [['7d','7 días'],['30d','30 días'],['90d','90 días']]; track preset[0]) {
         <button
-          (click)="setPreset(preset[0])"
+          const from = this.daysAgo(this.presetDays[preset]);
           class="px-4 py-2 rounded-xl text-sm font-semibold transition cursor-pointer"
           [class.bg-orange-500]="rangoPreset() === preset[0]"
           [class.text-white]="rangoPreset() === preset[0]"
@@ -52,7 +52,7 @@
     <div class="grid grid-cols-2 lg:grid-cols-5 gap-3">
 
       <!-- Recaudado -->
-      <div class="col-span-2 sm:col-span-1 bg-gradient-to-br from-orange-500 to-red-500 rounded-2xl p-4 shadow-lg shadow-orange-500/25 text-white">
+      <div class="col-span-2 sm:col-span-1 bg-linear-to-br from-orange-500 to-red-500 rounded-2xl p-4 shadow-lg shadow-orange-500/25 text-white">
         <div class="flex items-start justify-between mb-3">
           <div class="w-9 h-9 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
             <lucide-angular [img]="TrendingUp" class="w-4 h-4 text-white"></lucide-angular>
