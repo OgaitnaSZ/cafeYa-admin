@@ -43,8 +43,8 @@ export class DashboardService {
   );
 
   // Computed - Mesas
-  mesas           = computed(() => this.resumen()?.mesas        ?? []);
-  mesasOcupadas   = computed(() => this.resumen()?.mesasOcupadas ?? 0);
+  mesas = computed(() => this.resumen()?.mesas        ?? []);
+  mesasOcupadas = computed(() => this.resumen()?.mesasOcupadas ?? 0);
   mesasDisponibles = computed(() =>
     (this.resumen()?.totalMesas ?? 0) - (this.resumen()?.mesasOcupadas ?? 0)
   );
@@ -79,8 +79,8 @@ export class DashboardService {
   topProductos = computed(() => this.resumen()?.topProductos ?? []);
 
   // Computed - Calificaciones
-  calificacionPromedio = computed(() => this.resumen()?.calificacionPromedio    ?? null);
-  totalCalificaciones = computed(() => this.resumen()?.totalCalificaciones     ?? 0);
+  calificacionPromedio = computed(() => this.resumen()?.calificacionPromedio ?? null);
+  totalCalificaciones = computed(() => this.resumen()?.totalCalificaciones ?? 0);
   calificacionesRecientes = computed(() => this.resumen()?.calificacionesRecientes ?? []);
 
   // Computed - Metadata

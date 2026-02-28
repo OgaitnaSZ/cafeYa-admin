@@ -79,6 +79,13 @@ export interface VariacionKpi {
   tendencia: 'sube' | 'baja' | 'igual';
 }
 
+export interface DailyGoal {
+  id: string;
+  label: string;
+  target: number;
+  current: number;
+}
+
 export function calcularVariacion(hoy: number, ayer: number): VariacionKpi {
   const diferencia = hoy - ayer;
   const porcentaje = ayer > 0 ? (diferencia / ayer) * 100 : 0;

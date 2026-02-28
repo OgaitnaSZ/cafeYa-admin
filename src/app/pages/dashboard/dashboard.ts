@@ -1,4 +1,4 @@
-import { Component, inject} from '@angular/core';
+import { Component, computed, inject} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import {
@@ -10,6 +10,7 @@ import {
 import { DashboardService } from '../../core/services/dashboard';
 import { PedidoEstado } from '../../core/interfaces/pedido.model';
 import { Auth } from '../../core/services/auth';
+import { DailyGoal } from '../../core/interfaces/dashboard.model';
 
 @Component({
   selector: 'app-dashboard',
@@ -135,6 +136,36 @@ export class Dashboard {
   getPagosPorcentaje(tipo: 'efectivo' | 'tarjeta' | 'app'): number {
     return { efectivo: this.pctEfectivo(), tarjeta: this.pctTarjeta(), app: this.pctApp() }[tipo];
   }
+
+  // Goals
+  dailyGoals = computed<DailyGoal[]>(() => [
+  {
+      id: 'entregas',
+      label: 'Pedidos',
+      target: 20,
+      current: this.totalPedidosHoy(),
+    },
+    {
+      id: 'recaudado',
+      label: 'Recaudado',
+      target: 50000,
+      current: this.recaudadoHoy()
+    },
+    {
+      id: 'calificaciones',
+      label: 'Calificaciones',
+      target: 10,
+      current: this.totalCalificaciones()
+    },
+  ]);
+
+  getGoalsPorcentaje(goal: DailyGoal): number {
+    return Math.min((goal.current / goal.target) * 100, 100);
+  }
+
+  goalsCompletados = computed(() => 
+    this.dailyGoals().filter(g => g.current >= g.target).length
+  );
 
   // Icons
   readonly TrendingUp = TrendingUp;
