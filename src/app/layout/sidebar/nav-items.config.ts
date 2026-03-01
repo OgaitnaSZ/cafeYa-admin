@@ -27,20 +27,20 @@ export const NAV_ITEMS: NavItem[] = [
     ]
   },
   {
-    id: 'clientes', label: 'Clientes', icon: Users, roles: ['admin'],
+    id: 'clientes', label: 'Clientes', icon: Users, roles: ['admin', 'encargado'],
     children: [
-      { id: 'clientes-lista',          label: 'Clientes',       icon: Users,         route: '/clientes/clientes',                  roles: ['admin'] },
-      { id: 'clientes-pedidos',        label: 'Pedidos',        icon: ClipboardList, route: '/clientes/pedidos',          roles: ['admin'] },
-      { id: 'clientes-calificaciones', label: 'Calificaciones', icon: Star,          route: '/clientes/calificaciones',   roles: ['admin'] },
-      { id: 'clientes-pagos',          label: 'Pagos',          icon: CreditCard,    route: '/clientes/pagos',            roles: ['admin'] },
+      { id: 'clientes-lista',          label: 'Clientes',       icon: Users,         route: '/clientes/clientes',         roles: ['admin', 'encargado'] },
+      { id: 'clientes-pedidos',        label: 'Pedidos',        icon: ClipboardList, route: '/clientes/pedidos',          roles: ['admin', 'encargado'] },
+      { id: 'clientes-calificaciones', label: 'Calificaciones', icon: Star,          route: '/clientes/calificaciones',   roles: ['admin', 'encargado'] },
+      { id: 'clientes-pagos',          label: 'Pagos',          icon: CreditCard,    route: '/clientes/pagos',            roles: ['admin', 'encargado'] },
     ]
   },
   {
     id: 'administracion', label: 'Administración', icon: Settings2, roles: ['admin'],
     children: [
-      { id: 'admin-reportes',  label: 'Reportes e Informes', icon: BarChart2,      route: 'administracion/reportes', roles: ['admin'] },
-      { id: 'admin-usuarios',  label: 'Usuarios',            icon: User,           route: 'administracion/usuarios', roles: ['admin'] },
-      { id: 'admin-errorlog',  label: 'Error Log',           icon: AlertTriangle,  route: 'administracion/logs',     roles: ['admin'] },
+      { id: 'admin-reportes',  label: 'Reportes e Informes', icon: BarChart2,      route: 'administracion/reportes', roles: ['admin', 'encargado'] },
+      { id: 'admin-usuarios',  label: 'Usuarios',            icon: User,           route: 'administracion/usuarios', roles: ['admin', 'encargado'] },
+      { id: 'admin-errorlog',  label: 'Error Log',           icon: AlertTriangle,  route: 'administracion/logs',     roles: ['admin', 'encargado'] },
     ]
   },
 ];

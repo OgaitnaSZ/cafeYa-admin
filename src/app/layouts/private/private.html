@@ -17,6 +17,7 @@
       [pageTitle]="pageTitle"
       [pageSubtitle]="pageSubtitle"
       [pedidosActivos]="pedidosActivos()"
+      [rol]="usuario()?.rol"
       [nombreUsuario]="usuario()?.nombre"
       (toggleSidebar)="toggleSidebar()"
     />

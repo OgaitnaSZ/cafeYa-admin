@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
 import { filter, map } from 'rxjs';
 import { Sidebar } from '../../layout/sidebar/sidebar';
-import { Header, Notificacion } from '../../layout/header/header';
+import { Header } from '../../layout/header/header';
 import { Auth } from '../../core/services/auth';
 import { PedidosServices } from '../../core/services/pedidos';
 

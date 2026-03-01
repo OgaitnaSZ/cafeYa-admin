@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Bell, LucideAngularModule, Menu, X } from 'lucide-angular';
 import { SocketConnection } from '../components/socket-connection/socket-connection';
 import { NotificacionService, NOTIF_SERVIDOR_META, NOTIF_ESTADO_META, TipoNotifServidor, TipoNotifEstado } from '../../core/services/notificacion';
+import { UserRole } from '../../core/interfaces/user.model';
 
 export interface Notificacion {
   id: string;
@@ -25,6 +26,7 @@ export class Header {
   @Input() pageTitle: string = 'Dashboard';
   @Input() pageSubtitle: string = '';
   @Input() pedidosActivos: number = 0;
+  @Input({ required: true }) rol: UserRole | undefined;
   @Input() nombreUsuario: string | undefined = 'Usuario';
   @Input() notificaciones: Notificacion[] = [];
   @Output() notificacionClick = new EventEmitter<Notificacion>();

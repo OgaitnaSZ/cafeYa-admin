@@ -34,7 +34,8 @@ export class Login {
 
   constructor() {
     effect(() => {
-      if (this.auth.isLoggedIn()) this.router.navigate(['/dashboard']);
+      if (this.auth.isLoggedIn() && this.auth.user()?.rol !== 'cocina') this.router.navigate(['/dashboard']);
+      if (this.auth.isLoggedIn() && this.auth.user()?.rol === 'cocina') this.router.navigate(['/pedidos-activos']);
     });
   }
 
