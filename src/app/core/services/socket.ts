@@ -182,30 +182,55 @@ export class SocketService implements OnDestroy {
     this.socket.on('admin:nuevo-pedido', (data: NuevoPedidoPayload) => {
       this.pedidos.update(list => [data, ...list]);
       this.pedidosSinLeer.update(n => n + 1);
-      this.ns.info(`🍽️ Nuevo pedido #${data.numero_pedido}`, `Mesa · ${data.productos} productos · $${data.precio_total}`);
+      this.ns.agregarServidor({
+        tipo: 'pedido',
+        titulo: `Nuevo pedido #${data.numero_pedido}`,
+        mensaje: `Cliente ${data.nombre_cliente} · ${data.productos} productos · $${data.precio_total}`,
+        url: '/pedidos-activos'
+      });
     });
 
     this.socket.on('admin:mesa-ocupada', (data: NuevaMesaOcupadaPayload) => {
       this.mesasOcupadas.update(list => [data, ...list]);
-      this.ns.info(`🪑 Mesa ${data.mesa_numero} ocupada`, '');
+      this.ns.agregarServidor({
+        tipo: 'mesa',
+        titulo: `Mesa ${data.mesa_numero} ocupada`,
+        mensaje: `Ocupada a las ${new Date(data.ocupadaAt).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' })}`,
+        url: '/mesas'
+      });
     });
 
     this.socket.on('admin:nueva-resena', (data: NuevaResenaPayload) => {
       this.resenas.update(list => [data, ...list]);
       this.resenasSinLeer.update(n => n + 1);
-      this.ns.info(`⭐ Nueva reseña de ${data.nombre_cliente}`, `${data.puntuacion}/5 · "${data.resena}"`);
+      this.ns.agregarServidor({
+        tipo: 'resena',
+        titulo: `Nueva reseña de ${data.nombre_cliente}`,
+        mensaje: `${'⭐'.repeat(data.puntuacion)} · "${data.resena}"`,
+        url: `/clientes/calificaciones?pedido_id=${data.pedido_id}`
+      });
     });
 
     this.socket.on('admin:nuevo-pago', (data: NuevoPagoPayload) => {
       this.pagos.update(list => [data, ...list]);
       this.pagosSinLeer.update(n => n + 1);
-      this.ns.info(`💳 Pago recibido - Mesa ${data.mesa_numero}`, `$${data.monto_final} · ${data.metodoPago}`);
+      this.ns.agregarServidor({
+        tipo: 'pago',
+        titulo: `Pago recibido - Mesa ${data.mesa_numero}`,
+        mensaje: `$${data.monto_final} · ${data.metodoPago}`,
+        url: `/clientes/pagos?pedido_id=${data.pedido_id}`
+      });
     });
 
     this.socket.on('admin:llamada-mozo', (data: LlamadaMozoPayload) => {
       this.llamadasMozo.update(list => [data, ...list]);
       this.llamadasSinLeer.update(n => n + 1);
-      this.ns.warning(`🔔 Llamada al mozo - Mesa ${data.mesa_numero}`, data.nombre_usuario);
+      this.ns.agregarServidor({
+        tipo: 'mozo',
+        titulo: `🔔 Llamada al mozo - Mesa ${data.mesa_numero}`,
+        mensaje: data.nombre_usuario,
+        url: '/mesas'
+      });
     });
   }
 

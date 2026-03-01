@@ -2,7 +2,7 @@ export interface Calificacion {
   id: string;
   pedido_id: string;
   puntuacion: number; // 1-5
-  resena?: string;
+  resena: string;
   created_at: Date;
   nombre_cliente: string;
   

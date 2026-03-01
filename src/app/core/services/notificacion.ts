@@ -63,19 +63,14 @@ function formatTiempo(date: Date): string {
   return date.toLocaleDateString('es-AR', { day: 'numeric', month: 'short' });
 }
 
-// Servicio
-
 @Injectable({ providedIn: 'root' })
 export class NotificacionService {
   private router = inject(Router);
   private toastService = inject(ToastService);
 
   // Signals 
-
   /** Notificaciones de eventos del servidor (websocket). Máximo 20 en memoria. */
-  readonly notificacionesServidor = signal<NotificacionServidor[]>([
-    // Por ahora vacío — se llenará al conectar el websocket
-  ]);
+  readonly notificacionesServidor = signal<NotificacionServidor[]>([]);
 
   /** Historial de notificaciones de estado (operaciones del admin). Máximo 20. */
   readonly notificacionesEstado = signal<NotificacionEstado[]>([]);
