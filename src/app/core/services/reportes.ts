@@ -34,7 +34,7 @@ export class ReportesService {
     const params = new HttpParams().set('from', from).set('to', to);
 
     this.http
-      .get<ReportesResumen>(`${this.apiUrl}resumen/${params}`)
+      .get<ReportesResumen>(`${this.apiUrl}resumen?${params}`)
       .pipe(
         tap((data) => this.resumen.set(data)),
         catchError((err) => {
@@ -54,7 +54,7 @@ export class ReportesService {
       .set('month', month.toString());
 
     this.http
-      .get<CalendarioReporte>(`${this.apiUrl}calendario/${params}`)
+      .get<CalendarioReporte>(`${this.apiUrl}calendario?${params}`)
       .pipe(
         tap((data) => this.calendario.set(data)),
         catchError((err) => {

@@ -117,7 +117,28 @@ export class Reportes {
   // Período filtrado (para el gráfico de línea)
   periodoData = computed<DayData[]>(() => {
     const { from, to } = this.getRange();
-    return this.allData().filter(d => d.date >= from && d.date <= to);
+    const dataMap = new Map(
+      this.allData().map(d => [d.date.toISOString().slice(0, 10), d])
+    );
+  
+    const result: DayData[] = [];
+    const cursor = new Date(from);
+    cursor.setHours(0, 0, 0, 0);
+  
+    while (cursor <= to) {
+      const key = cursor.toISOString().slice(0, 10);
+      result.push(
+        dataMap.get(key) ?? {
+          date:      new Date(cursor),
+          pedidos:   0,
+          clientes:  0,
+          recaudado: 0,
+        }
+      );
+      cursor.setDate(cursor.getDate() + 1);
+    }
+  
+    return result;
   });
 
   // KPIs (del backend)
@@ -300,6 +321,12 @@ export class Reportes {
       to: new Date(to + 'T23:59:59'),
     };
   }
+
+  presets: [RangoPreset, string][] = [
+    ['7d', '7 días'],
+    ['30d', '30 días'],
+    ['90d', '90 días']
+  ];
 
   setPreset(preset: RangoPreset) {
     this.rangoPreset.set(preset);

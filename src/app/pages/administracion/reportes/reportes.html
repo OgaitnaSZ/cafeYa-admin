@@ -9,9 +9,9 @@
 
     <!-- Filtros de fecha -->
     <div class="flex flex-wrap items-center gap-2">
-      @for(preset of [['7d','7 días'],['30d','30 días'],['90d','90 días']]; track preset[0]) {
+      @for(preset of presets; track preset[0]) {
         <button
-          const from = this.daysAgo(this.presetDays[preset]);
+          (click)="setPreset(preset[0])"
           class="px-4 py-2 rounded-xl text-sm font-semibold transition cursor-pointer"
           [class.bg-orange-500]="rangoPreset() === preset[0]"
           [class.text-white]="rangoPreset() === preset[0]"
@@ -340,7 +340,7 @@
               <div class="flex-1 min-w-0">
                 <div class="flex items-center justify-between mb-1">
                   <span class="text-sm font-bold text-gray-900 truncate">{{ prod.nombre }}</span>
-                  <span class="text-sm font-black text-gray-700 ml-2 shrink-0">{{ prod.cantidad }} uds</span>
+                  <span class="text-sm font-black text-gray-700 ml-2 shrink-0">{{ prod.cantidad }} u</span>
                 </div>
                 <div class="w-full bg-gray-100 rounded-full h-1.5">
                   <div
