@@ -76,12 +76,19 @@ export class PedidosActivos {
     
     // Auto-refresh
     this.startAutoRefresh();
+
+    setInterval(() => {
+      this.tiempoActualizado.set(Date.now());
+    }, 60000);
   }
 
   ngOnDestroy() {
     this.stopAutoRefresh();
     this.cleanupSocketListeners();
   }
+
+  // socket
+  tiempoActualizado = signal(Date.now());
 
   private setupSocketListeners() {
     // Nuevo pedido
@@ -156,27 +163,20 @@ export class PedidosActivos {
       const audio = new Audio('assets/sounds/notification.mp3');
       audio.volume = 0.3;
       audio.play().catch(() => {
-        // Ignorar si el navegador bloquea el audio
       });
     } catch (e) {
-      // Ignorar errores de audio
     }
   }
 
   // Calcular tiempo transcurrido
-  getTiempoTranscurrido(fecha: Date): string {
-    const ahora = new Date();
-    const diff = ahora.getTime() - new Date(fecha).getTime();
+  calcularTiempo(fecha: Date): string {
+    const diff = this.tiempoActualizado() - new Date(fecha).getTime();
     const minutos = Math.floor(diff / 60000);
-    
-    if (minutos < 1) return 'Ahora';
-    if (minutos < 60) return `${minutos}m`;
-    
     const horas = Math.floor(minutos / 60);
     const mins = minutos % 60;
-    return `${horas}h ${mins}m`;
+    return horas > 0 ? `${horas}h ${mins}m` : `${mins}m`;
   }
-
+  
   // Color de urgencia según tiempo
   getColorUrgencia(fecha: Date): 'normal' | 'warning' | 'urgent' {
     const ahora = new Date();

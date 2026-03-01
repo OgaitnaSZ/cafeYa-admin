@@ -106,7 +106,7 @@ export class Dashboard {
   } {
     const map: Record<PedidoEstado, { bg: string; text: string; dot: string; label: string }> = {
       Pendiente: { bg: 'bg-amber-50 border-amber-200', text: 'text-amber-700', dot: 'bg-amber-400',  label: 'Pendiente'       },
-      En_preparacion: { bg: 'bg-blue-50 border-blue-200',   text: 'text-blue-700',  dot: 'bg-blue-400',   label: 'En preparación'  },
+      En_preparacion: { bg: 'bg-blue-50 border-blue-200',   text: 'text-blue-700',  dot: 'bg-blue-400',   label: 'En_preparacion'  },
       Listo: { bg: 'bg-green-50 border-green-200', text: 'text-green-700', dot: 'bg-green-400',  label: 'Listo ✓'         },
       Entregado: { bg: 'bg-gray-50 border-gray-200',   text: 'text-gray-600',  dot: 'bg-gray-400',   label: 'Entregado'       },
       Cancelado: { bg: 'bg-red-50 border-red-200',     text: 'text-red-600',   dot: 'bg-red-400',    label: 'Cancelado'       },

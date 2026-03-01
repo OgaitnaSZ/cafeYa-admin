@@ -16,7 +16,7 @@ const PAGE_TITLES: Record<string, { title: string, subtitle: string }> = {
 
   '/pedidos-activos': {
     title: 'Pedidos Activos',
-    subtitle: 'Órdenes en preparación y servicio'
+    subtitle: 'Órdenes En_preparacion y servicio'
   },
 
   '/productos/productos': {

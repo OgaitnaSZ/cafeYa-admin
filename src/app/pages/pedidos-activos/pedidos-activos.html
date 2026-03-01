@@ -141,7 +141,7 @@
                     [class.bg-red-100]="urgencia === 'urgent'"
                     [class.text-red-700]="urgencia === 'urgent'"
                   >
-                    {{ getTiempoTranscurrido(pedido.created_at) }}
+                    {{ calcularTiempo(pedido.created_at) }}
                   </div>
                 </div>
 
@@ -185,14 +185,14 @@
           </div>
         </div>
 
-        <!-- Columna: EN PREPARACIÓN -->
+        <!-- Columna: En_preparacion -->
         <div class="space-y-4">
           <!-- Header columna -->
           <div class="bg-linear-to-r from-blue-500 to-indigo-600 rounded-2xl p-4 shadow-lg">
             <div class="flex items-center justify-between text-white">
               <div class="flex items-center gap-2">
                 <lucide-angular [img]="Package" class="w-5 h-5"></lucide-angular>
-                <h3 class="text-lg font-black">EN PREPARACIÓN</h3>
+                <h3 class="text-lg font-black">En_preparacion</h3>
               </div>
               <div class="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
                 <span class="text-sm font-black">{{ pedidosEnPreparacion().length }}</span>
@@ -200,12 +200,12 @@
             </div>
           </div>
 
-          <!-- Pedidos en preparación -->
+          <!-- Pedidos En_preparacion -->
           <div class="space-y-3">
             @if(pedidosEnPreparacion().length === 0) {
               <div class="bg-white rounded-xl p-6 text-center border-2 border-dashed border-gray-200">
                 <div class="text-4xl mb-2">👨‍🍳</div>
-                <p class="text-sm text-gray-500 font-medium">Sin pedidos en preparación</p>
+                <p class="text-sm text-gray-500 font-medium">Sin pedidos En_preparacion</p>
               </div>
             }
             @for(pedido of pedidosEnPreparacion(); track pedido.pedido_id) {
@@ -240,7 +240,7 @@
                     [class.bg-red-100]="urgencia === 'urgent'"
                     [class.text-red-700]="urgencia === 'urgent'"
                   >
-                    {{ getTiempoTranscurrido(pedido.created_at) }}
+                    {{ calcularTiempo(pedido.created_at) }}
                   </div>
                 </div>
 
@@ -322,7 +322,7 @@
                   </div>
                   
                   <div class="px-2 py-1 bg-green-100 text-green-700 rounded-lg text-xs font-bold">
-                    {{ getTiempoTranscurrido(pedido.created_at) }}
+                    {{ calcularTiempo(pedido.created_at) }}
                   </div>
                 </div>
 
@@ -402,7 +402,7 @@
               [class.bg-red-100]="urgencia === 'urgent'"
               [class.text-red-700]="urgencia === 'urgent'"
             >
-              {{ getTiempoTranscurrido(pedido.created_at) }}
+              {{ calcularTiempo(pedido.created_at) }}
             </div>
           </div>
 

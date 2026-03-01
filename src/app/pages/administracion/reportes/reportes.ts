@@ -236,7 +236,7 @@ export class Reportes {
     if (!e) return [];
     return [
       { estado: 'Entregados', count: e.Entregado, bgColor: 'bg-green-500' },
-      { estado: 'En preparación', count: e.En_preparacion, bgColor: 'bg-blue-500' },
+      { estado: 'En_preparacion', count: e.En_preparacion, bgColor: 'bg-blue-500' },
       { estado: 'Pendientes', count: e.Pendiente, bgColor: 'bg-amber-500' },
       { estado: 'Cancelados', count: e.Cancelado, bgColor: 'bg-red-400' },
     ];
