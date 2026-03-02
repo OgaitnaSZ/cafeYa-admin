@@ -85,8 +85,16 @@ export class Productos {
   toggleDestacado(producto: Producto, event: Event) {
     event.preventDefault();
     event.stopPropagation();
+
+    const checked = (event.target as HTMLInputElement).checked;
+
+    // Si se desactiva el destacado, permitir siempre
+    if (!checked) return this.productoService.destacarProducto(producto.producto_id!);
+
+    // Si se activa, validar reglas
     if(this.productosDestacados() >= 4) return this.ns.error("Límite alcanzado", "Desmarque un producto destacado para poder seleccionar uno nuevo."); 
     if(producto.estado === "Inactivo") return this.ns.error("Producto inactivo", "Habilite el producto para poder destacarlo."); 
+    
     this.productoService.destacarProducto(producto.producto_id!);
   }
 

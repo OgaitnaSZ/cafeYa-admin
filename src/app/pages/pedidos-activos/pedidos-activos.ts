@@ -75,7 +75,7 @@ export class PedidosActivos {
     this.setupSocketListeners();
     
     // Auto-refresh
-    this.startAutoRefresh();
+    this.pedidoService.cargarPedidosActivos();
 
     setInterval(() => {
       this.tiempoActualizado.set(Date.now());
