@@ -59,6 +59,7 @@
       <table class="w-full">
         <thead>
           <tr class="border-b border-gray-100 bg-gray-50/70">
+            <th class="text-left text-xs font-bold text-gray-400 uppercase tracking-wide px-5 py-3 hidden md:table-cell">#</th>
             <th class="text-left text-xs font-bold text-gray-400 uppercase tracking-wide px-5 py-3 w-28">Acción</th>
             <th class="text-left text-xs font-bold text-gray-400 uppercase tracking-wide px-5 py-3">Descripción</th>
             <th class="text-left text-xs font-bold text-gray-400 uppercase tracking-wide px-5 py-3 hidden md:table-cell">Usuario</th>
@@ -87,6 +88,11 @@
               [class.hover:bg-gray-50/50]="!abierto"
               (click)="toggleExpand(log.id)"
             >
+
+              <td class="px-5 py-3.5 hidden md:table-cell">
+                <p class="text-xs text-gray-400 font-mono mt-0.5">{{ log?.id }}</p>
+              </td>
+
               <td class="px-5 py-3.5">
                 <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-black"
                   [class]="s.bg + ' ' + s.text">
@@ -126,7 +132,7 @@
               </td>
 
               <td class="px-5 py-3.5">
-                <p class="text-xs text-gray-500">{{ formatTiempo(log.created_at) }}</p>
+                <p class="text-xs text-gray-500">{{ log.created_at | tiempoRelativo }}</p>
                 <p class="text-[10px] text-gray-400 font-mono">{{ formatHora(log.created_at) }}</p>
               </td>
 

@@ -1,4 +1,4 @@
-import { Component, signal, computed, inject, OnInit } from '@angular/core';
+import { Component, signal, computed, inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuditAccion, Log } from '../../../core/interfaces/audit.model';
@@ -9,10 +9,12 @@ import {
   FileText, Activity
 } from 'lucide-angular';
 import { LogsService } from '../../../core/services/logs';
+import { TiempoRelativoPipe } from '../../../core/pipes/tiempo-relativo/tiempo-relativo';
 
 @Component({
   selector: 'app-audit-log',
-  imports: [CommonModule, FormsModule, LucideAngularModule],
+  changeDetection: ChangeDetectionStrategy.OnPush, 
+  imports: [CommonModule, FormsModule, LucideAngularModule, TiempoRelativoPipe],
   templateUrl: './audit-log.html',
   styleUrl: './audit-log.css',
 })
@@ -117,14 +119,6 @@ export class AuditLog implements OnInit {
 
   formatHora(d: Date): string {
     return new Date(d).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-  }
-
-  formatTiempo(d: Date): string {
-    const diff = Math.floor((Date.now() - new Date(d).getTime()) / 1000);
-    if (diff < 60)    return 'Hace un momento';
-    if (diff < 3600)  return `Hace ${Math.floor(diff / 60)} min`;
-    if (diff < 86400) return `Hace ${Math.floor(diff / 3600)}h`;
-    return `Hace ${Math.floor(diff / 86400)}d`;
   }
 
   readonly Search       = Search;
