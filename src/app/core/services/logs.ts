@@ -28,11 +28,9 @@ export class LogsService {
 
     this.http.get<Log[]>(`${this.apiUrl}audit-log`).pipe(
       tap(data => {
-        console.log(data);
         this.auditLogs.set(data);
       }),
       catchError(err => {
-        console.log(err);
         this.ns.error('Error al cargar registros', err.error.message);
         return of([]);
       }),
