@@ -33,7 +33,7 @@ export const routes: Routes = [
             { path: 'clientes/calificaciones', loadComponent: () => import('./pages/clientes/calificaciones/calificaciones').then(m => m.Calificaciones) },
             { path: 'clientes/pagos',          loadComponent: () => import('./pages/clientes/pagos/pagos').then(m => m.Pagos) },
             { path: 'administracion/reportes',          loadComponent: () => import('./pages/administracion/reportes/reportes').then(m => m.Reportes) },
-            { path: 'administracion/logs',          loadComponent: () => import('./pages/administracion/logs/logs').then(m => m.Logs) },
+            { path: 'administracion/audit-log',          loadComponent: () => import('./pages/administracion/audit-log/audit-log').then(m => m.AuditLog) },
             { path: 'administracion/usuarios',       loadComponent: () => import('./pages/administracion/usuarios/usuarios').then(m => m.Usuarios) }
         ]
     }
