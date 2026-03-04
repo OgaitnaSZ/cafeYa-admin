@@ -1,6 +1,6 @@
 import { Injectable, signal, inject, computed, OnDestroy } from '@angular/core';
 import { io, Socket } from 'socket.io-client';
-import { environment } from '../../environments/environment';
+import { environment } from '../../../environments/environment';
 import { Auth } from './auth';
 import { NotificacionService } from './notificacion';
 

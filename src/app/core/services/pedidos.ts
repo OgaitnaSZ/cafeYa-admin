@@ -1,5 +1,5 @@
 import { Injectable, signal, inject, computed } from '@angular/core';
-import { environment } from '../../environments/environment';
+import { environment } from '../../../environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { TokenService } from './token';
 import { Pedido, FiltrosPedidos, StatsPedidos, PedidoEstado } from '../interfaces/pedido.model';
