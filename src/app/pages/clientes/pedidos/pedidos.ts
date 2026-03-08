@@ -34,8 +34,6 @@ import {
 })
 export class Pedidos {
   private pedidoService = inject(PedidosServices);
-  private clienteService = inject(ClientesService);
-  private mesaService = inject(MesaService);
   private socketAdminService = inject(SocketService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
@@ -75,16 +73,19 @@ export class Pedidos {
     this.route.queryParams.subscribe(params => {
       const filtros: FiltrosPedidos = {};
 
+      if (params['pedido_id']) {
+        this.filtroClienteId.set(params['pedido_id']);
+        filtros.pedido_id = params['pedido_id'];
+      }
+
       if (params['cliente_id']) {
         this.filtroClienteId.set(params['cliente_id']);
         filtros.cliente_id = params['cliente_id'];
-        this.cargarNombreCliente(params['cliente_id']);
       }
 
       if (params['mesa_id']) {
         this.filtroMesaId.set(params['mesa_id']);
         filtros.mesa_id = params['mesa_id'];
-        this.cargarNumeroMesa(params['mesa_id']);
       }
 
       if (params['estado']) {
@@ -117,28 +118,6 @@ export class Pedidos {
   private cleanupSocketListeners() {
     this.socketAdminService.off('pedido:nuevo');
     this.socketAdminService.off('pedido:cambio-estado');
-  }
-
-  private cargarNombreCliente(clienteId: string) {
-    this.clienteService.http.get<any>(`${this.clienteService['apiUrl']}${clienteId}`).subscribe({
-      next: (cliente) => {
-        this.nombreClienteFiltrado.set(cliente.nombre);
-      },
-      error: () => {
-        this.nombreClienteFiltrado.set('Cliente');
-      }
-    });
-  }
-
-  private cargarNumeroMesa(mesaId: string) {
-    this.mesaService.http.get<any>(`${this.mesaService['apiUrl']}mesa/${mesaId}`).subscribe({
-      next: (mesa) => {
-        this.numeroMesaFiltrada.set(mesa.numero);
-      },
-      error: () => {
-        this.numeroMesaFiltrada.set(null);
-      }
-    });
   }
 
   aplicarFiltros(filtrosExtra?: FiltrosPedidos) {

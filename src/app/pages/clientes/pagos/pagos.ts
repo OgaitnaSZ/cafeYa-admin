@@ -60,27 +60,15 @@ export class Pagos {
       if (params['pedido_id']) {
         this.filtroPedidoId.set(params['pedido_id']);
         filtros.pedido_id = params['pedido_id'];
-        this.cargarNumeroPedido(params['pedido_id']);
       }
 
-      if (params['medio_de_pago']) {
+      if (params['medio_de_pago'] !== undefined) {
         this.filtroMedioPago.set(params['medio_de_pago'] as MedioDePago);
         filtros.medio_de_pago = params['medio_de_pago'] as MedioDePago;
       }
 
       // Cargar pagos con filtros
       this.aplicarFiltros(filtros);
-    });
-  }
-
-  private cargarNumeroPedido(pedidoId: string) {
-    this.pedidoService.http.get<any>(`${this.pedidoService['apiUrl']}${pedidoId}`).subscribe({
-      next: (pedido) => {
-        this.numeroPedidoFiltrado.set(pedido.numero_pedido);
-      },
-      error: () => {
-        this.numeroPedidoFiltrado.set('Pedido');
-      }
     });
   }
 
@@ -112,7 +100,7 @@ export class Pagos {
     this.filtroPedidoId.set(null);
     this.numeroPedidoFiltrado.set('');
     
-    this.router.navigate(['/admin/pagos']);
+    this.router.navigate(['/clientes/pagos']);
     this.pagoService.limpiarFiltros();
     this.aplicarFiltros();
   }

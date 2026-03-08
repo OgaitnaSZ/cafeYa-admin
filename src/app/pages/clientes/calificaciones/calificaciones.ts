@@ -72,7 +72,6 @@ export class Calificaciones {
   }
 
   private cargarNumeroPedido(pedidoId: string) {
-    // Asumiendo que tienes acceso al servicio de pedidos
     this.numeroPedidoFiltrado.set(`Pedido ${pedidoId.slice(0, 8)}`);
   }
 

@@ -48,6 +48,7 @@ export interface PedidoProducto {
 }
 
 export interface FiltrosPedidos {
+  pedido_id?: string;
   cliente_id?: string;
   mesa_id?: string;
   estado?: PedidoEstado | 'todos';

@@ -95,7 +95,7 @@ export class CalificacionService {
       params = params.set('puntuacion', filtros.puntuacion.toString());
     }
 
-    this.http.get<Calificacion[]>(`${this.apiUrl}`).pipe(
+    this.http.get<Calificacion[]>(`${this.apiUrl}`, {params}).pipe(
       tap(data => {
         this.calificaciones.set(data);
       }),

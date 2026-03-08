@@ -2,7 +2,7 @@ import { Injectable, signal, inject, computed } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { TokenService } from './token';
-import { Pago, FiltrosPagos, StatsPagos, MedioDePago } from '../interfaces/pago.model';
+import { Pago, FiltrosPagos, StatsPagos } from '../interfaces/pago.model';
 import { catchError, finalize, of, tap } from 'rxjs';
 import { NotificacionService } from './notificacion';
 
@@ -87,7 +87,9 @@ export class PagoService {
       params = params.set('fecha_hasta', filtros.fecha_hasta.toISOString());
     }
 
-    this.http.get<Pago[]>(`${this.apiUrl}pagos`).pipe(
+    console.log(`${this.apiUrl}pagos`);
+
+    this.http.get<Pago[]>(`${this.apiUrl}pagos`, { params }).pipe(
       tap(data => {
         this.pagos.set(data);
       }),

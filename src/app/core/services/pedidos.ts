@@ -97,7 +97,7 @@ export class PedidosServices {
       params = params.set('search', filtros.search);
     }
 
-    this.http.get<Pedido[]>(`${this.apiUrl}pedidos`).pipe(
+    this.http.get<Pedido[]>(`${this.apiUrl}pedidos`, { params }).pipe(
       tap(data => {
         const pedidosNormalizados = data.map(p => ({
           ...p,
