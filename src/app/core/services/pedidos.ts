@@ -56,6 +56,7 @@ export class PedidosServices {
   tieneFiltros = computed(() => {
     const filtros = this.filtrosActivos();
     return !!(
+      filtros.pedido_id || 
       filtros.cliente_id || 
       filtros.mesa_id || 
       (filtros.estado && filtros.estado !== 'todos') ||
@@ -77,7 +78,10 @@ export class PedidosServices {
 
     // Construir query params
     let params = new HttpParams();
-    
+
+    if (filtros?.pedido_id) {
+      params = params.set('pedido_id', filtros.pedido_id);
+    }
     if (filtros?.cliente_id) {
       params = params.set('cliente_id', filtros.cliente_id);
     }

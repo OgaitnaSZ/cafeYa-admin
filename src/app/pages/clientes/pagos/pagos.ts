@@ -1,7 +1,6 @@
 import { Component, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { PedidosServices } from '../../../core/services/pedidos';
 import { Pago, FiltrosPagos, MedioDePago } from '../../../core/interfaces/pago.model';
 import { PagoService } from '../../../core/services/pago';
 import { 
@@ -27,7 +26,6 @@ import {
 })
 export class Pagos {
   private pagoService = inject(PagoService);
-  private pedidoService = inject(PedidosServices);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
 

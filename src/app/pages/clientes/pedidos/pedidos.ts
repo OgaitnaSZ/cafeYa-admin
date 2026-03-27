@@ -2,8 +2,6 @@ import { Component, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PedidoDetalleModal } from './pedido-detalle-modal/pedido-detalle-modal';
-import { ClientesService } from '../../../core/services/clientes';
-import { MesaService } from '../../../core/services/mesa';
 import { Pedido, FiltrosPedidos, PedidoEstado } from '../../../core/interfaces/pedido.model';
 import { PedidosServices } from '../../../core/services/pedidos';
 import { SocketService } from '../../../core/services/socket';
@@ -52,6 +50,7 @@ export class Pedidos {
   filtrosActivos = this.pedidoService.filtrosActivos;
   tieneFiltros = this.pedidoService.tieneFiltros;
   
+  filtroPedidoId = signal<string | null>(null);
   filtroEstado = signal<PedidoEstado | 'todos'>('todos');
   filtroClienteId = signal<string | null>(null);
   filtroMesaId = signal<string | null>(null);
@@ -74,7 +73,7 @@ export class Pedidos {
       const filtros: FiltrosPedidos = {};
 
       if (params['pedido_id']) {
-        this.filtroClienteId.set(params['pedido_id']);
+        this.filtroPedidoId.set(params['pedido_id']);
         filtros.pedido_id = params['pedido_id'];
       }
 
@@ -122,6 +121,7 @@ export class Pedidos {
 
   aplicarFiltros(filtrosExtra?: FiltrosPedidos) {
     const filtros: FiltrosPedidos = {
+      pedido_id: this.filtroPedidoId() || undefined,
       estado: this.filtroEstado() !== 'todos' ? this.filtroEstado() as PedidoEstado : undefined,
       cliente_id: this.filtroClienteId() || undefined,
       mesa_id: this.filtroMesaId() || undefined,
@@ -140,6 +140,7 @@ export class Pedidos {
 
   limpiarFiltroCliente() {
     this.filtroClienteId.set(null);
+    this.filtroPedidoId.set(null);
     this.nombreClienteFiltrado.set('');
     this.updateQueryParams({ cliente_id: null });
     this.aplicarFiltros();
@@ -153,6 +154,7 @@ export class Pedidos {
   }
 
   limpiarTodosFiltros() {
+    this.filtroPedidoId.set(null);
     this.filtroEstado.set('todos');
     this.filtroClienteId.set(null);
     this.filtroMesaId.set(null);

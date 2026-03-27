@@ -34,6 +34,18 @@
           </div>
           
           <div class="flex flex-wrap gap-2">
+            @if(filtroPedidoId()) {
+              <div class="flex items-center gap-2 px-3 py-1.5 bg-white border border-blue-200 rounded-lg">
+                <lucide-angular [img]="Package" class="w-4 h-4 text-blue-600"></lucide-angular>
+                <span class="text-sm font-semibold text-gray-900">
+                  Pedido: #
+                </span>
+                <button (click)="limpiarFiltroCliente()" class="ml-1 text-gray-400 hover:text-red-600 transition">
+                  <lucide-angular [img]="X" class="w-4 h-4"></lucide-angular>
+                </button>
+              </div>
+            }
+
             @if(filtroClienteId()) {
               <div class="flex items-center gap-2 px-3 py-1.5 bg-white border border-blue-200 rounded-lg">
                 <lucide-angular [img]="User" class="w-4 h-4 text-blue-600"></lucide-angular>
