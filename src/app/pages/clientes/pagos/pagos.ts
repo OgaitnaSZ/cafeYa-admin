@@ -17,7 +17,9 @@ import {
   TrendingUp,
   ReceiptText,
   Search,
-  Calendar
+  Calendar,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-angular';
 
 @Component({
@@ -35,7 +37,37 @@ export class Pagos {
   pagos = this.pagoService.pagos;
   loading = this.pagoService.loading;
   loadingLista = this.pagoService.loadingLista;
+  paginaActual      = this.pagoService.paginaActual;
+  limitePorPagina   = this.pagoService.limitePorPagina;
+  totalRegistros    = this.pagoService.totalRegistros;
+  totalPaginas      = this.pagoService.totalPaginas;
+  registroDesde     = this.pagoService.registroDesde;
+  registroHasta     = this.pagoService.registroHasta;
 
+  readonly LIMITES_PAGINA = [10, 20, 50, 100];
+
+  irAPagina(pagina: number) {
+    this.pagoService.irAPagina(pagina);
+  }
+  
+  cambiarLimite(event: Event) {
+    const limite = +(event.target as HTMLSelectElement).value;
+    this.pagoService.cambiarLimite(limite);
+  }
+
+  getPaginas(): (number | null)[] {
+    const total   = this.totalPaginas();
+    const actual  = this.paginaActual();
+    if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
+  
+    const pages: (number | null)[] = [1];
+    if (actual > 3)          pages.push(null);
+    for (let i = Math.max(2, actual - 1); i <= Math.min(total - 1, actual + 1); i++) pages.push(i);
+    if (actual < total - 2)  pages.push(null);
+    pages.push(total);
+    return pages;
+  }
+  
   // Stats
   totalPagos = this.pagoService.totalPagos;
   totalRecaudado = this.pagoService.totalRecaudado;
@@ -201,4 +233,7 @@ export class Pagos {
   readonly ReceiptText = ReceiptText;
   readonly Search = Search;
   readonly Calendar = Calendar;
+  readonly ChevronLeft = ChevronLeft;
+  readonly ChevronRight = ChevronRight;
+
 }
