@@ -5,7 +5,7 @@ export interface Pago {
   pedido_id: string;
   medio_de_pago: MedioDePago;
   monto: number;
-  IVA: number;
+  iva: number;
   monto_final: number;
   created_at: Date;
   

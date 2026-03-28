@@ -120,6 +120,7 @@ export class Pagos {
   }
 
   recargarPagos() {
+    console.log(this.totalIVA())
     this.aplicarFiltros();
   }
 

@@ -38,9 +38,12 @@ export class PagoService {
     this.pagos().reduce((sum, p) => sum + Number(p.monto_final), 0)
   );
   totalIVA = computed(() => 
-    this.pagos().reduce((sum, p) => sum + Number(p.IVA), 0)
+    this.pagos().reduce<number>((sum, p) => {
+      const iva = Number(p.iva);
+      return sum + (isNaN(iva) ? 0 : iva);
+    }, 0)
   );
-
+  
   pagosPorMedio = computed(() => {
     const pagos = this.pagos();
     return {
