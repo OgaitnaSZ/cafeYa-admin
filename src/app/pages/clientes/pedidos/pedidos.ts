@@ -22,7 +22,9 @@ import {
   DollarSign,
   CreditCard,
   Star,
-  Calendar
+  Calendar,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-angular';
 
 @Component({
@@ -41,6 +43,36 @@ export class Pedidos {
   pedidos = this.pedidoService.pedidos;
   loading = this.pedidoService.loading;
   loadingLista = this.pedidoService.loadingLista;
+  paginaActual    = this.pedidoService.paginaActual;
+  limitePorPagina = this.pedidoService.limitePorPagina;
+  totalRegistros  = this.pedidoService.totalRegistros;
+  totalPaginas    = this.pedidoService.totalPaginas;
+  registroDesde   = this.pedidoService.registroDesde;
+  registroHasta   = this.pedidoService.registroHasta;
+
+  readonly LIMITES_PAGINA = [10, 20, 50, 100];
+
+  irAPagina(pagina: number) {
+    this.pedidoService.irAPagina(pagina);
+  }
+  
+  cambiarLimite(event: Event) {
+    const limite = +(event.target as HTMLSelectElement).value;
+    this.pedidoService.cambiarLimite(limite);
+  }
+  
+  getPaginas(): (number | null)[] {
+    const total  = this.totalPaginas();
+    const actual = this.paginaActual();
+    if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
+  
+    const pages: (number | null)[] = [1];
+    if (actual > 3)         pages.push(null);
+    for (let i = Math.max(2, actual - 1); i <= Math.min(total - 1, actual + 1); i++) pages.push(i);
+    if (actual < total - 2) pages.push(null);
+    pages.push(total);
+    return pages;
+  }
 
   // Stats
   totalPedidos = this.pedidoService.totalPedidos;
@@ -292,4 +324,6 @@ export class Pedidos {
   readonly CreditCard = CreditCard;
   readonly Star = Star;
   readonly Calendar = Calendar;
+  readonly ChevronLeft  = ChevronLeft;
+  readonly ChevronRight = ChevronRight;
 }

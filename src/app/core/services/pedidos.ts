@@ -6,6 +6,14 @@ import { Pedido, FiltrosPedidos, StatsPedidos, PedidoEstado } from '../interface
 import { catchError, finalize, of, tap } from 'rxjs';
 import { NotificacionService } from './notificacion';
 
+export interface PaginatedPedidos {
+  data:       Pedido[];
+  total:      number;
+  page:       number;
+  limit:      number;
+  totalPages: number;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -22,6 +30,12 @@ export class PedidosServices {
   pedidosActivos = signal<Pedido[]>([]);
   pedido = signal<Pedido | null>(null);
   stats = signal<StatsPedidos | null>(null);
+
+  // Paginación
+  paginaActual    = signal(1);
+  limitePorPagina = signal(10);
+  totalRegistros  = signal(0);
+  totalPaginas    = signal(0);
 
   // Estados
   loading = signal(false);
@@ -52,7 +66,16 @@ export class PedidosServices {
       .reduce((sum, p) => sum + Number(p.precio_total), 0)
   );
 
-  // Tiene filtros activos
+  registroDesde = computed(() =>
+    this.totalRegistros() === 0
+      ? 0
+      : (this.paginaActual() - 1) * this.limitePorPagina() + 1
+  );
+
+  registroHasta = computed(() =>
+    Math.min(this.paginaActual() * this.limitePorPagina(), this.totalRegistros())
+  );
+
   tieneFiltros = computed(() => {
     const filtros = this.filtrosActivos();
     return !!(
@@ -66,56 +89,43 @@ export class PedidosServices {
     );
   });
 
-  cargarPedidos(filtros?: FiltrosPedidos): void {
+  cargarPedidos(filtros?: FiltrosPedidos, pagina = this.paginaActual()): void {
     this.loadingLista.set(true);
     this.error.set(null);
     this.success.set(null);
 
-    // Guardar filtros activos
     if (filtros) {
       this.filtrosActivos.set(filtros);
+      this.paginaActual.set(1);
+      pagina = 1;
     }
 
-    // Construir query params
-    let params = new HttpParams();
+    const f = filtros ?? this.filtrosActivos();
+    let params = new HttpParams()
+      .set('page',  pagina)
+      .set('limit', this.limitePorPagina());
 
-    if (filtros?.pedido_id) {
-      params = params.set('pedido_id', filtros.pedido_id);
+    if (f.pedido_id) params = params.set('pedido_id', f.pedido_id);
+    if (f.cliente_id) params = params.set('cliente_id', f.cliente_id);
+    if (f.mesa_id) params = params.set('mesa_id', f.mesa_id);
+    if (f.estado && f.estado !== 'todos') params = params.set('estado', f.estado);
+    if (f.search) params = params.set('search', f.search);
+    if (f.fecha_desde) {
+      const d = new Date(f.fecha_desde as any);
+      if (!isNaN(d.getTime())) params = params.set('fecha_desde', d.toISOString());
     }
-    if (filtros?.cliente_id) {
-      params = params.set('cliente_id', filtros.cliente_id);
-    }
-    if (filtros?.mesa_id) {
-      params = params.set('mesa_id', filtros.mesa_id);
-    }
-    if (filtros?.estado && filtros.estado !== 'todos') {
-      params = params.set('estado', filtros.estado);
-    }
-    if (filtros?.fecha_desde) {
-      const fecha = new Date(filtros.fecha_desde as any);
-    
-      if (!isNaN(fecha.getTime())) {
-        params = params.set('fecha_desde', fecha.toISOString());
-      }
-    }
-    if (filtros?.fecha_hasta) {
-      const fecha = new Date(filtros.fecha_hasta as any);
-      if (!isNaN(fecha.getTime())) {
-        params = params.set('fecha_hasta', fecha.toISOString());
-      }
-    }
-    if (filtros?.search) {
-      params = params.set('search', filtros.search);
+    if (f.fecha_hasta) {
+      const d = new Date(f.fecha_hasta as any);
+      if (!isNaN(d.getTime())) params = params.set('fecha_hasta', d.toISOString());
     }
 
-    this.http.get<Pedido[]>(`${this.apiUrl}pedidos`, { params }).pipe(
-      tap(data => {
-        const pedidosNormalizados = data.map(p => ({
-          ...p,
-          productos: p.productos ?? [],
-        }));
-      
-        this.pedidos.set(pedidosNormalizados);
+    this.http.get<PaginatedPedidos>(`${this.apiUrl}pedidos`, { params }).pipe(
+      tap(res => {
+        this.pedidos.set(res.data.map(p => ({ ...p, productos: p.productos ?? [] })));
+        this.paginaActual.set(res.page);
+        this.limitePorPagina.set(res.limit);
+        this.totalRegistros.set(res.total);
+        this.totalPaginas.set(res.totalPages);
       }),
       catchError(err => {
         this.ns.error('Error al cargar pedidos', err.error.message);
@@ -123,6 +133,18 @@ export class PedidosServices {
       }),
       finalize(() => this.loadingLista.set(false))
     ).subscribe();
+  }
+
+  irAPagina(pagina: number): void {
+    if (pagina < 1 || pagina > this.totalPaginas()) return;
+    this.paginaActual.set(pagina);
+    this.cargarPedidos(undefined, pagina);
+  }
+
+  cambiarLimite(limite: number): void {
+    this.limitePorPagina.set(limite);
+    this.paginaActual.set(1);
+    this.cargarPedidos(undefined, 1);
   }
 
   cargarPedido(pedidoId: string): void {
