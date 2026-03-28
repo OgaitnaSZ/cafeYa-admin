@@ -16,7 +16,8 @@ import {
   Clock,
   Receipt,
   ChevronRight,
-  Search
+  Search,
+  ChevronLeft
 } from 'lucide-angular';
 
 @Component({
@@ -27,13 +28,47 @@ import {
   styleUrl: './clientes.css',
 })
 export class Clientes {
+  // Servicios
   private clienteService = inject(ClientesService);
   private ns = inject(NotificacionService);
   private router = inject(Router);
 
+  // Signals
   clientes = this.clienteService.clientes;
   loading = this.clienteService.loading;
   loadingLista = this.clienteService.loadingLista;
+
+  // Paginacion
+  paginaActual    = this.clienteService.paginaActual;
+  limitePorPagina = this.clienteService.limitePorPagina;
+  totalRegistros  = this.clienteService.totalRegistros;
+  totalPaginas    = this.clienteService.totalPaginas;
+  registroDesde   = this.clienteService.registroDesde;
+  registroHasta   = this.clienteService.registroHasta;
+
+  readonly LIMITES_PAGINA = [10, 20, 50, 100];
+
+  irAPagina(pagina: number) {
+    this.clienteService.irAPagina(pagina);
+  }
+  
+  cambiarLimite(event: Event) {
+    const limite = +(event.target as HTMLSelectElement).value;
+    this.clienteService.cambiarLimite(limite);
+  }
+  
+  getPaginas(): (number | null)[] {
+    const total  = this.totalPaginas();
+    const actual = this.paginaActual();
+    if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
+  
+    const pages: (number | null)[] = [1];
+    if (actual > 3)         pages.push(null);
+    for (let i = Math.max(2, actual - 1); i <= Math.min(total - 1, actual + 1); i++) pages.push(i);
+    if (actual < total - 2) pages.push(null);
+    pages.push(total);
+    return pages;
+  }
 
   // Modales
   showDeleteModal = signal(false);
@@ -143,5 +178,6 @@ export class Clientes {
   readonly Clock = Clock;
   readonly Receipt = Receipt;
   readonly ChevronRight = ChevronRight;
+  readonly ChevronLeft = ChevronLeft;
   readonly Search = Search;
 }
