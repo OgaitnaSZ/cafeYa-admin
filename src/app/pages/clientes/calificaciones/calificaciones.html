@@ -1,7 +1,7 @@
 <div class="space-y-6">
 
   <!-- Header -->
-  <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+  <div>
     <h2 class="text-2xl font-black text-gray-900">Calificaciones</h2>
     <p class="text-sm text-gray-500">
       {{ totalCalificaciones() }} calificación{{ totalCalificaciones() !== 1 ? 'es' : '' }} registrada{{ totalCalificaciones() !== 1 ? 's' : '' }}
@@ -69,7 +69,6 @@
 
   <!-- Stats cards -->
   <div class="grid grid-cols-2 lg:grid-cols-7 gap-4">
-    <!-- Total Calificaciones -->
     <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
       <div class="flex items-center gap-2 mb-2">
         <lucide-angular [img]="MessageSquare" class="w-4 h-4 text-purple-600"></lucide-angular>
@@ -78,15 +77,15 @@
       <p class="text-2xl font-black text-gray-900">{{ totalCalificaciones() }}</p>
     </div>
 
-    <!-- Promedio -->
+    <!-- Promedio — card destacada, mantiene su estilo especial -->
     <div class="xl:col-span-2 bg-linear-to-br from-orange-50 to-red-50 rounded-2xl p-4 shadow-sm border-2 border-orange-200">
       <p class="text-xs text-orange-700 font-semibold mb-2">Promedio General</p>
       <div class="flex items-center gap-3">
         <p class="text-3xl font-black text-orange-600">{{ promedioGeneral().toFixed(1) }}</p>
         <div class="flex gap-0.5">
           @for(estrella of getEstrellas(promedioGeneral()); track $index) {
-            <lucide-angular 
-              [img]="Star" 
+            <lucide-angular
+              [img]="Star"
               class="w-5 h-5"
               [class.text-orange-500]="estrella"
               [class.fill-orange-500]="estrella"
@@ -97,39 +96,35 @@
       </div>
     </div>
 
-    <!-- 5 Estrellas -->
     <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
-      <p class="text-xs text-gray-600 font-medium mb-2 flex items-center gap-1">
-        <lucide-angular [img]="Star" class="w-3 h-3 text-green-500 fill-green-500"></lucide-angular>
-        5 estrellas
-      </p>
+      <div class="flex items-center gap-2 mb-2">
+        <lucide-angular [img]="Star" class="w-4 h-4 text-green-500 fill-green-500"></lucide-angular>
+        <p class="text-xs text-gray-600 font-medium">5 estrellas</p>
+      </div>
       <p class="text-2xl font-black text-green-600">{{ calificacionesPorPuntuacion().cinco }}</p>
     </div>
 
-    <!-- 4 Estrellas -->
     <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
-      <p class="text-xs text-gray-600 font-medium mb-2 flex items-center gap-1">
-        <lucide-angular [img]="Star" class="w-3 h-3 text-green-500 fill-green-500"></lucide-angular>
-        4 estrellas
-      </p>
+      <div class="flex items-center gap-2 mb-2">
+        <lucide-angular [img]="Star" class="w-4 h-4 text-green-500 fill-green-500"></lucide-angular>
+        <p class="text-xs text-gray-600 font-medium">4 estrellas</p>
+      </div>
       <p class="text-2xl font-black text-green-600">{{ calificacionesPorPuntuacion().cuatro }}</p>
     </div>
 
-    <!-- 3 Estrellas -->
     <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
-      <p class="text-xs text-gray-600 font-medium mb-2 flex items-center gap-1">
-        <lucide-angular [img]="Star" class="w-3 h-3 text-yellow-500 fill-yellow-500"></lucide-angular>
-        3 estrellas
-      </p>
+      <div class="flex items-center gap-2 mb-2">
+        <lucide-angular [img]="Star" class="w-4 h-4 text-yellow-500 fill-yellow-500"></lucide-angular>
+        <p class="text-xs text-gray-600 font-medium">3 estrellas</p>
+      </div>
       <p class="text-2xl font-black text-yellow-600">{{ calificacionesPorPuntuacion().tres }}</p>
     </div>
 
-    <!-- 1-2 Estrellas -->
     <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
-      <p class="text-xs text-gray-600 font-medium mb-2 flex items-center gap-1">
-        <lucide-angular [img]="Star" class="w-3 h-3 text-red-500 fill-red-500"></lucide-angular>
-        1-2 estrellas
-      </p>
+      <div class="flex items-center gap-2 mb-2">
+        <lucide-angular [img]="Star" class="w-4 h-4 text-red-500 fill-red-500"></lucide-angular>
+        <p class="text-xs text-gray-600 font-medium">1-2 estrellas</p>
+      </div>
       <p class="text-2xl font-black text-red-600">{{ calificacionesPorPuntuacion().dos + calificacionesPorPuntuacion().uno }}</p>
     </div>
   </div>
