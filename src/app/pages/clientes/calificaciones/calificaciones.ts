@@ -14,7 +14,9 @@ import {
   RefreshCw,
   ExternalLink,
   TrendingUp,
-  User
+  User,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-angular';
 
 @Component({
@@ -32,6 +34,38 @@ export class Calificaciones {
   calificaciones = this.calificacionService.calificaciones;
   loading = this.calificacionService.loading;
   loadingLista = this.calificacionService.loadingLista;
+
+  // Paginación
+  paginaActual = this.calificacionService.paginaActual;
+  limitePorPagina = this.calificacionService.limitePorPagina;
+  totalRegistros = this.calificacionService.totalRegistros;
+  totalPaginas = this.calificacionService.totalPaginas;
+  registroDesde = this.calificacionService.registroDesde;
+  registroHasta = this.calificacionService.registroHasta;
+
+  readonly LIMITES_PAGINA = [12, 24, 48, 96];
+
+  irAPagina(pagina: number) {
+    this.calificacionService.irAPagina(pagina);
+  }
+  
+  cambiarLimite(event: Event) {
+    const limite = +(event.target as HTMLSelectElement).value;
+    this.calificacionService.cambiarLimite(limite);
+  }
+  
+  getPaginas(): (number | null)[] {
+    const total = this.totalPaginas();
+    const actual = this.paginaActual();
+    if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
+  
+    const pages: (number | null)[] = [1];
+    if (actual > 3) pages.push(null);
+    for (let i = Math.max(2, actual - 1); i <= Math.min(total - 1, actual + 1); i++) pages.push(i);
+    if (actual < total - 2) pages.push(null);
+    pages.push(total);
+    return pages;
+  }
 
   // Stats
   totalCalificaciones = this.calificacionService.totalCalificaciones;
@@ -167,4 +201,6 @@ export class Calificaciones {
   readonly ExternalLink = ExternalLink;
   readonly TrendingUp = TrendingUp;
   readonly User = User;
+  readonly ChevronLeft  = ChevronLeft;
+  readonly ChevronRight = ChevronRight;
 }

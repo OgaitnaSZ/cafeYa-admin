@@ -6,6 +6,14 @@ import { Calificacion, FiltrosCalificaciones, StatsCalificaciones } from '../int
 import { catchError, finalize, of, tap } from 'rxjs';
 import { NotificacionService } from './notificacion';
 
+export interface PaginatedCalificaciones {
+  data: Calificacion[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -21,6 +29,12 @@ export class CalificacionService {
   calificaciones = signal<Calificacion[]>([]);
   calificacion = signal<Calificacion | null>(null);
   stats = signal<StatsCalificaciones | null>(null);
+
+  // Paginación
+  paginaActual = signal(1);
+  limitePorPagina = signal(12);
+  totalRegistros = signal(0);
+  totalPaginas = signal(0);
 
   // Estados
   loading = signal(false);
@@ -54,7 +68,14 @@ export class CalificacionService {
     this.calificaciones().filter(c => c.resena && c.resena.trim().length > 0).length
   );
 
-  // Tiene filtros activos
+  registroDesde = computed(() =>
+    this.totalRegistros() === 0 ? 0 : (this.paginaActual() - 1) * this.limitePorPagina() + 1
+  );
+
+  registroHasta = computed(() =>
+    Math.min(this.paginaActual() * this.limitePorPagina(), this.totalRegistros())
+  );
+
   tieneFiltros = computed(() => {
     const filtros = this.filtrosActivos();
     return !!(
@@ -66,38 +87,35 @@ export class CalificacionService {
     );
   });
 
-  cargarCalificaciones(filtros?: FiltrosCalificaciones): void {
+  cargarCalificaciones(filtros?: FiltrosCalificaciones, pagina = this.paginaActual()): void {
     this.loadingLista.set(true);
     this.error.set(null);
     this.success.set(null);
 
-    // Guardar filtros activos
     if (filtros) {
       this.filtrosActivos.set(filtros);
+      this.paginaActual.set(1);
+      pagina = 1;
     }
 
-    // Construir query params
-    let params = new HttpParams();
-    
-    if (filtros?.pedido_id) {
-      params = params.set('pedido_id', filtros.pedido_id);
-    }
-    if (filtros?.fecha_desde) {
-      params = params.set('fecha_desde', filtros.fecha_desde.toISOString());
-    }
-    if (filtros?.fecha_hasta) {
-      params = params.set('fecha_hasta', filtros.fecha_hasta.toISOString());
-    }
-    if (filtros?.search) {
-      params = params.set('search', filtros.search);
-    }
-    if (filtros?.puntuacion) {
-      params = params.set('puntuacion', filtros.puntuacion.toString());
-    }
+    const f = filtros ?? this.filtrosActivos();
+    let params = new HttpParams()
+      .set('page', pagina)
+      .set('limit', this.limitePorPagina());
 
-    this.http.get<Calificacion[]>(`${this.apiUrl}`, {params}).pipe(
-      tap(data => {
-        this.calificaciones.set(data);
+    if (f.pedido_id) params = params.set('pedido_id', f.pedido_id);
+    if (f.puntuacion) params = params.set('puntuacion', f.puntuacion.toString());
+    if (f.search) params = params.set('search', f.search);
+    if (f.fecha_desde) params = params.set('fecha_desde', f.fecha_desde.toISOString());
+    if (f.fecha_hasta) params = params.set('fecha_hasta', f.fecha_hasta.toISOString());
+
+    this.http.get<PaginatedCalificaciones>(`${this.apiUrl}`, {params}).pipe(
+      tap(res => {
+        this.calificaciones.set(res.data);
+        this.paginaActual.set(res.page);
+        this.limitePorPagina.set(res.limit);
+        this.totalRegistros.set(res.total);
+        this.totalPaginas.set(res.totalPages);
       }),
       catchError(err => {
         this.ns.error('Error al cargar calificaciones', err.error.message);
@@ -105,6 +123,18 @@ export class CalificacionService {
       }),
       finalize(() => this.loadingLista.set(false))
     ).subscribe();
+  }
+
+  irAPagina(pagina: number): void {
+    if (pagina < 1 || pagina > this.totalPaginas()) return;
+    this.paginaActual.set(pagina);
+    this.cargarCalificaciones(undefined, pagina);
+  }
+
+  cambiarLimite(limite: number): void {
+    this.limitePorPagina.set(limite);
+    this.paginaActual.set(1);
+    this.cargarCalificaciones(undefined, 1);
   }
 
   cargarCalificacion(calificacionId: string): void {
