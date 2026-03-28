@@ -81,14 +81,22 @@ export class PagoService {
       params = params.set('medio_de_pago', filtros.medio_de_pago);
     }
     if (filtros?.fecha_desde) {
-      params = params.set('fecha_desde', filtros.fecha_desde.toISOString());
+      const fecha = new Date(filtros.fecha_desde as any);
+    
+      if (!isNaN(fecha.getTime())) {
+        params = params.set('fecha_desde', fecha.toISOString());
+      }
     }
     if (filtros?.fecha_hasta) {
-      params = params.set('fecha_hasta', filtros.fecha_hasta.toISOString());
+      const fecha = new Date(filtros.fecha_hasta as any);
+      if (!isNaN(fecha.getTime())) {
+        params = params.set('fecha_hasta', fecha.toISOString());
+      }
     }
-
-    console.log(`${this.apiUrl}pagos`);
-
+    if (filtros?.search) {
+      params = params.set('search', filtros.search);
+    }
+    
     this.http.get<Pago[]>(`${this.apiUrl}pagos`, { params }).pipe(
       tap(data => {
         this.pagos.set(data);

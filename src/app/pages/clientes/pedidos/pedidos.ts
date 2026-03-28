@@ -21,7 +21,8 @@ import {
   RefreshCw,
   DollarSign,
   CreditCard,
-  Star
+  Star,
+  Calendar
 } from 'lucide-angular';
 
 @Component({
@@ -55,6 +56,8 @@ export class Pedidos {
   filtroClienteId = signal<string | null>(null);
   filtroMesaId = signal<string | null>(null);
   searchTerm = signal('');
+  fechaDesde = signal<Date | null>(null);
+  fechaHasta = signal<Date | null>(null);
 
   // Info adicional para breadcrumbs
   nombreClienteFiltrado = signal<string>('');
@@ -126,6 +129,8 @@ export class Pedidos {
       cliente_id: this.filtroClienteId() || undefined,
       mesa_id: this.filtroMesaId() || undefined,
       search: this.searchTerm() || undefined,
+      fecha_desde: this.fechaDesde() || undefined,
+      fecha_hasta: this.fechaHasta() || undefined,
       ...filtrosExtra
     };
 
@@ -286,4 +291,5 @@ export class Pedidos {
   readonly DollarSign = DollarSign;
   readonly CreditCard = CreditCard;
   readonly Star = Star;
+  readonly Calendar = Calendar;
 }

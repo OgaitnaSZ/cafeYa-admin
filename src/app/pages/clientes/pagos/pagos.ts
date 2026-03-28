@@ -15,7 +15,9 @@ import {
   RefreshCw,
   ExternalLink,
   TrendingUp,
-  ReceiptText
+  ReceiptText,
+  Search,
+  Calendar
 } from 'lucide-angular';
 
 @Component({
@@ -43,6 +45,9 @@ export class Pagos {
   // Filtros
   filtrosActivos = this.pagoService.filtrosActivos;
   tieneFiltros = this.pagoService.tieneFiltros;
+  searchTerm = signal('');
+  fechaDesde = signal<Date | null>(null);
+  fechaHasta = signal<Date | null>(null);
   
   filtroMedioPago = signal<MedioDePago | 'todos'>('todos');
   filtroPedidoId = signal<string | null>(null);
@@ -74,6 +79,9 @@ export class Pagos {
     const filtros: FiltrosPagos = {
       medio_de_pago: this.filtroMedioPago() !== 'todos' ? this.filtroMedioPago() as MedioDePago : undefined,
       pedido_id: this.filtroPedidoId() || undefined,
+      search: this.searchTerm() || undefined,
+      fecha_desde: this.fechaDesde() || undefined,
+      fecha_hasta: this.fechaHasta() || undefined,
       ...filtrosExtra
     };
 
@@ -190,4 +198,6 @@ export class Pagos {
   readonly ExternalLink = ExternalLink;
   readonly TrendingUp = TrendingUp;
   readonly ReceiptText = ReceiptText;
+  readonly Search = Search;
+  readonly Calendar = Calendar;
 }

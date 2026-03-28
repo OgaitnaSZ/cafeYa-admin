@@ -92,10 +92,17 @@ export class PedidosServices {
       params = params.set('estado', filtros.estado);
     }
     if (filtros?.fecha_desde) {
-      params = params.set('fecha_desde', filtros.fecha_desde.toISOString());
+      const fecha = new Date(filtros.fecha_desde as any);
+    
+      if (!isNaN(fecha.getTime())) {
+        params = params.set('fecha_desde', fecha.toISOString());
+      }
     }
     if (filtros?.fecha_hasta) {
-      params = params.set('fecha_hasta', filtros.fecha_hasta.toISOString());
+      const fecha = new Date(filtros.fecha_hasta as any);
+      if (!isNaN(fecha.getTime())) {
+        params = params.set('fecha_hasta', fecha.toISOString());
+      }
     }
     if (filtros?.search) {
       params = params.set('search', filtros.search);
@@ -111,7 +118,7 @@ export class PedidosServices {
         this.pedidos.set(pedidosNormalizados);
       }),
       catchError(err => {
-        this.ns.error('Error al cargar pedidos', err.error.message.message);
+        this.ns.error('Error al cargar pedidos', err.error.message);
         return of([]);
       }),
       finalize(() => this.loadingLista.set(false))

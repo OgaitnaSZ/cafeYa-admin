@@ -26,6 +26,7 @@ export interface Pago {
 export interface FiltrosPagos {
   pedido_id?: string;
   medio_de_pago?: MedioDePago | 'todos';
+  search?: string; 
   fecha_desde?: Date;
   fecha_hasta?: Date;
 }
